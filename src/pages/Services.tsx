@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -39,7 +38,7 @@ const Services = () => {
             .filter(service => service.status === "active" || !service.status)
             .map(service => ({
               ...service,
-              longDescription: service.longDescription || service.description
+              longDescription: service.longdescription || service.description
             }));
           
           console.log("Services page data:", activeServices);
@@ -54,6 +53,7 @@ const Services = () => {
               icon: "01",
               longDescription: "Notre approche de conception web combine esthétique soignée et fonctionnalité optimale. Nous créons des sites responsifs, intuitifs et engageants qui reflètent parfaitement l'identité de votre marque.",
               imageUrl: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+              status: "active",
               created_at: new Date().toISOString()
             },
             {
@@ -63,6 +63,7 @@ const Services = () => {
               icon: "02",
               longDescription: "Une identité de marque forte est essentielle pour se démarquer. Nous créons des identités visuelles mémorables qui captent l'essence de votre entreprise et établissent une connexion avec votre audience.",
               imageUrl: "https://images.unsplash.com/photo-1634084462412-b54873c0a56d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+              status: "active",
               created_at: new Date().toISOString()
             },
             {
@@ -72,6 +73,7 @@ const Services = () => {
               icon: "03",
               longDescription: "Une communication efficace est la clé pour atteindre et engager votre audience. Nous développons des stratégies sur mesure qui intègrent tous les canaux pertinents pour maximiser votre impact.",
               imageUrl: "https://images.unsplash.com/photo-1552664730-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+              status: "active",
               created_at: new Date().toISOString()
             },
             {
@@ -81,6 +83,7 @@ const Services = () => {
               icon: "04",
               longDescription: "Le succès repose sur une stratégie solide basée sur des données concrètes. Notre équipe analyse votre marché, identifie les opportunités et élabore des stratégies personnalisées pour atteindre vos objectifs.",
               imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+              status: "active",
               created_at: new Date().toISOString()
             },
           ];
@@ -91,7 +94,16 @@ const Services = () => {
           for (const service of staticServices) {
             const { error: insertError } = await supabase
               .from('services')
-              .upsert(service, { onConflict: 'id' });
+              .upsert({
+                id: service.id,
+                title: service.title,
+                description: service.description,
+                icon: service.icon,
+                longdescription: service.longDescription,
+                imageurl: service.imageUrl,
+                status: service.status,
+                created_at: service.created_at
+              }, { onConflict: 'id' });
             
             if (insertError) {
               console.error("Error inserting static service:", insertError);
@@ -116,6 +128,7 @@ const Services = () => {
             icon: "01",
             longDescription: "Notre approche de conception web combine esthétique soignée et fonctionnalité optimale. Nous créons des sites responsifs, intuitifs et engageants qui reflètent parfaitement l'identité de votre marque.",
             imageUrl: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+            status: "active",
             created_at: new Date().toISOString()
           },
           {
@@ -125,6 +138,7 @@ const Services = () => {
             icon: "02",
             longDescription: "Une identité de marque forte est essentielle pour se démarquer. Nous créons des identités visuelles mémorables qui captent l'essence de votre entreprise et établissent une connexion avec votre audience.",
             imageUrl: "https://images.unsplash.com/photo-1634084462412-b54873c0a56d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+            status: "active",
             created_at: new Date().toISOString()
           },
         ];

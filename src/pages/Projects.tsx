@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -44,17 +45,18 @@ const Projects = () => {
             .filter(project => project.status === "published" || !project.status)
             .map(project => ({
               ...project,
-              category: project.category || 'Non catégorisé' // Ensure category is not undefined
+              category: project.category || 'Non catégorisé', // Ensure category is not undefined
+              status: (project.status as "published" | "draft" | "archived") || "published" // Cast status to the expected type
             }));
           
           console.log("Projects page data:", publishedProjects); // Debug log
           
-          setProjects(publishedProjects);
+          setProjects(publishedProjects as Project[]);
           
           // Extract unique categories
           const uniqueCategories = ['Tous', ...Array.from(new Set(publishedProjects.map(p => p.category)))];
           setCategories(uniqueCategories);
-          setFilteredProjects(publishedProjects);
+          setFilteredProjects(publishedProjects as Project[]);
         } else {
           // Si aucun projet n'est trouvé, créer des projets de test et les insérer
           const staticProjects: Project[] = [
@@ -65,6 +67,7 @@ const Projects = () => {
               description: "Refonte complète avec une expérience utilisateur optimisée et une identité visuelle percutante.",
               image_url: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop",
               client: "ModernRetail",
+              status: "published",
               created_at: new Date().toISOString()
             },
             {
@@ -74,6 +77,7 @@ const Projects = () => {
               description: "Stratégie omnicanal avec contenus personnalisés pour augmenter la notoriété et les conversions.",
               image_url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
               client: "EcoSolutions",
+              status: "published",
               created_at: new Date().toISOString()
             },
             {
@@ -83,6 +87,7 @@ const Projects = () => {
               description: "Création d'une identité de marque distinctive avec logo, charte graphique et supports de communication.",
               image_url: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2064&auto=format&fit=crop",
               client: "NeoTech",
+              status: "published",
               created_at: new Date().toISOString()
             },
             {
@@ -92,6 +97,7 @@ const Projects = () => {
               description: "Conception d'une application intuitive pour améliorer l'expérience des participants à un événement majeur.",
               image_url: "https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1974&auto=format&fit=crop",
               client: "EventPro",
+              status: "published",
               created_at: new Date().toISOString()
             },
           ];
@@ -133,6 +139,7 @@ const Projects = () => {
             description: "Refonte complète avec une expérience utilisateur optimisée et une identité visuelle percutante.",
             image_url: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop",
             client: "ModernRetail",
+            status: "published",
             created_at: new Date().toISOString()
           },
           {
@@ -142,6 +149,7 @@ const Projects = () => {
             description: "Stratégie omnicanal avec contenus personnalisés pour augmenter la notoriété et les conversions.",
             image_url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
             client: "EcoSolutions",
+            status: "published",
             created_at: new Date().toISOString()
           },
         ];
