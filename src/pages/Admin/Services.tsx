@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -31,11 +32,7 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Pencil, Trash2, Plus } from 'lucide-react';
 import { fetchServices, supabase } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
-import { Service as ServiceType } from '@/types/models';
-
-interface Service extends ServiceType {
-  created_at: string;
-}
+import { Service } from '@/types/models';
 
 const AdminServices = () => {
   const [services, setServices] = useState<Service[]>([]);
@@ -52,11 +49,7 @@ const AdminServices = () => {
     setIsLoading(true);
     try {
       const data = await fetchServices();
-      const servicesWithCreatedAt = data.map(service => ({
-        ...service,
-        created_at: service.created_at || new Date().toISOString()
-      }));
-      setServices(servicesWithCreatedAt as Service[]);
+      setServices(data as Service[]);
     } catch (error) {
       console.error('Error loading services:', error);
       toast({
@@ -98,7 +91,7 @@ const AdminServices = () => {
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: string | undefined) => {
     switch (status) {
       case 'active':
         return <Badge className="bg-green-500">Actif</Badge>;
@@ -107,7 +100,7 @@ const AdminServices = () => {
       case 'archived':
         return <Badge variant="secondary">Archivé</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant="outline">{status || 'Inconnu'}</Badge>;
     }
   };
 
@@ -159,7 +152,7 @@ const AdminServices = () => {
                       <TableRow key={service.id}>
                         <TableCell className="font-medium">{service.title}</TableCell>
                         <TableCell>{service.icon}</TableCell>
-                        <TableCell>{getStatusBadge(service.status || 'active')}</TableCell>
+                        <TableCell>{getStatusBadge(service.status)}</TableCell>
                         <TableCell>{new Date(service.created_at).toLocaleDateString('fr-FR')}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">

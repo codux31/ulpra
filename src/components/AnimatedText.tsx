@@ -25,7 +25,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
     setIsMounted(true);
   }, []);
 
-  // Pour corriger le problème d'espacement des caractères
+  // Format text to ensure proper spacing
   const formattedText = text.replace(/\s+/g, ' ');
   
   const letterVariants = {
@@ -34,7 +34,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
   };
 
   if (!isMounted) {
-    // Afficher le texte en HTML brut pendant le chargement pour éviter les problèmes de formatage
+    // Show text in raw HTML during loading to avoid formatting issues
     return <span className={className}>{formattedText}</span>;
   }
 
@@ -65,9 +65,8 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
                 style={{ display: 'inline-block' }}
                 transition={{
                   duration,
-                  repeat: once ? 0 : 1,
-                  repeatType: "reverse" as const,
-                  repeatDelay: 8
+                  // Removing the repeating animation that was causing text to disappear
+                  ease: "easeOut"
                 }}
               >
                 {char}

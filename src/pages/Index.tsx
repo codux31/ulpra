@@ -9,11 +9,24 @@ import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import Testimonials from '@/components/Testimonials';
 import { Loader2 } from 'lucide-react';
+import { initializeDatabase } from '@/utils/seedDatabase';
+import Scene3D from '@/components/Scene3D';
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Initialize the database and seed data if needed
+    const setupApp = async () => {
+      try {
+        await initializeDatabase();
+      } catch (error) {
+        console.error('Error initializing app:', error);
+      }
+    };
+    
+    setupApp();
+    
     // Add a small delay to ensure components have time to initialize
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -78,15 +91,22 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
-      <Hero />
-      <Services />
-      <Projects />
-      <Testimonials />
-      <Pricing />
-      <Contact />
-      <Footer />
+    <div className="min-h-screen bg-background text-foreground relative">
+      {/* 3D background elements that respond to scroll */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <Scene3D />
+      </div>
+      
+      <div className="relative z-10">
+        <Navbar />
+        <Hero />
+        <Services />
+        <Projects />
+        <Testimonials />
+        <Pricing />
+        <Contact />
+        <Footer />
+      </div>
     </div>
   );
 };

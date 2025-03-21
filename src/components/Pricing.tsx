@@ -1,76 +1,30 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import AnimatedText from './AnimatedText';
-import { Check, ArrowRight } from 'lucide-react';
-
-interface PricingPlan {
-  id: number;
-  name: string;
-  tagline: string;
-  audience: string;
-  price: number;
-  annualPrice: number;
-  features: string[];
-  popular?: boolean;
-}
-
-const pricingPlans: PricingPlan[] = [
-  {
-    id: 1,
-    name: "Pack Starter Pulse",
-    tagline: "L'essentiel pour lancer votre activité sur le web !",
-    audience: "Petits entrepreneurs, indépendants, débutants",
-    price: 249,
-    annualPrice: 2490,
-    features: [
-      "Site vitrine professionnel",
-      "Hébergement & maintenance",
-      "Référencement SEO basique",
-      "Identité visuelle simple",
-      "Support technique prioritaire (email)",
-    ],
-  },
-  {
-    id: 2,
-    name: "Pack Growth Impact",
-    tagline: "Votre business passe à la vitesse supérieure !",
-    audience: "PME, e-commerçants en développement, startups",
-    price: 449,
-    annualPrice: 4490,
-    features: [
-      "Site vitrine avancé ou e-commerce",
-      "Maintenance technique complète",
-      "SEO approfondi",
-      "Campagnes SEA mensuelles",
-      "Community management léger",
-      "Identité visuelle étendue",
-      "Suivi mensuel & rapport de performance",
-    ],
-    popular: true,
-  },
-  {
-    id: 3,
-    name: "Pack Scale Elite",
-    tagline: "Un accompagnement total pour propulser votre marque !",
-    audience: "Entreprises ambitieuses souhaitant se démarquer",
-    price: 849,
-    annualPrice: 8490,
-    features: [
-      "Site e-commerce ou institutionnel premium",
-      "Hébergement haute performance & maintenance VIP",
-      "Stratégie complète de référencement SEO",
-      "Campagnes publicitaires mensuelles",
-      "Community management avancé",
-      "Création régulière de contenus visuels",
-      "Identité visuelle premium",
-      "Conseil stratégique mensuel",
-    ],
-  },
-];
+import { Check, ArrowRight, Loader2 } from 'lucide-react';
+import { fetchPricing } from '@/lib/supabase';
+import { Pricing as PricingType } from '@/types/models';
 
 const Pricing: React.FC = () => {
-  const [isAnnual, setIsAnnual] = React.useState(true);
+  const [isAnnual, setIsAnnual] = useState(true);
+  const [pricingPlans, setPricingPlans] = useState<PricingType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const pricingRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const loadPricing = async () => {
+      try {
+        const pricing = await fetchPricing();
+        setPricingPlans(pricing);
+      } catch (error) {
+        console.error('Error loading pricing:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadPricing();
+  }, []);
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -99,6 +53,16 @@ const Pricing: React.FC = () => {
       }
     };
   }, []);
+
+  if (isLoading) {
+    return (
+      <div id="pricing" className="py-24 px-6 relative overflow-hidden">
+        <div className="container mx-auto flex justify-center items-center min-h-[300px]">
+          <Loader2 className="w-8 h-8 animate-spin text-ulpra-yellow" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div id="pricing" className="py-24 px-6 relative overflow-hidden">
@@ -156,9 +120,9 @@ const Pricing: React.FC = () => {
               
               <div className="text-center mb-8">
                 <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                <p className="text-muted-foreground text-sm mb-4">{plan.tagline}</p>
+                <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
                 <div className="text-4xl font-display font-bold">
-                  {isAnnual ? plan.annualPrice : plan.price}€
+                  {isAnnual ? plan.price * 10 : plan.price}€
                   <span className="text-muted-foreground text-base font-normal">
                     /{isAnnual ? 'an' : 'mois'}
                   </span>

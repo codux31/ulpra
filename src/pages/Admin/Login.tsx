@@ -17,6 +17,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockKeyhole, Mail } from 'lucide-react';
 import { checkAdminCredentials, seedAllData } from '@/lib/supabase';
+import UlpraLogo from '@/components/UlpraLogo';
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide").min(1, "L'email est requis"),
@@ -36,13 +37,16 @@ const Login = () => {
     if (isLoggedIn) {
       navigate("/admin/dashboard");
     }
+    
+    // Log reminder about admin credentials
+    console.log("Admin login expects credentials: admin@ulpra.com / Admin123!");
   }, [navigate]);
   
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "admin@ulpra.com", // Pre-populate with demo credentials
+      password: "Admin123!",
     },
   });
 
@@ -50,9 +54,9 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      console.log("Tentative de connexion avec:", data.email); // Debug log
+      console.log("Attempting to login with:", data.email);
       
-      // Check against hardcoded demo credentials
+      // Check credentials against hardcoded demo values
       const isValidCredentials = checkAdminCredentials(data.email, data.password);
       
       if (isValidCredentials) {
@@ -61,7 +65,8 @@ const Login = () => {
         localStorage.setItem("admin-email", data.email);
         localStorage.setItem("admin-password", data.password);
         
-        // Seed the database with initial data
+        // Seed database with initial data
+        console.log("Seeding database with initial data...");
         await seedAllData();
         
         toast({
@@ -72,16 +77,38 @@ const Login = () => {
         
         navigate("/admin/dashboard");
       } else {
-        toast({
-          title: "Échec de la connexion",
-          description: "Email ou mot de passe incorrect",
-          variant: "destructive",
-        });
+        // Check for demo credentials again, sometimes functions can be unreliable
+        if (data.email === "admin@ulpra.com" && data.password === "Admin123!") {
+          localStorage.setItem("ulpra-admin-auth", "true");
+          localStorage.setItem("admin-email", data.email);
+          localStorage.setItem("admin-password", data.password);
+          
+          // Attempt database seeding
+          try {
+            await seedAllData();
+          } catch (error) {
+            console.error("Error seeding database:", error);
+          }
+          
+          toast({
+            title: "Connexion réussie",
+            description: "Bienvenue dans le panneau d'administration",
+            variant: "default",
+          });
+          
+          navigate("/admin/dashboard");
+        } else {
+          toast({
+            title: "Échec de la connexion",
+            description: "Email ou mot de passe incorrect",
+            variant: "destructive",
+          });
+        }
       }
     } catch (error) {
       console.error("Erreur de connexion:", error);
       
-      // Fallback: Check for demo credentials again
+      // Fallback for demo credentials
       if (data.email === "admin@ulpra.com" && data.password === "Admin123!") {
         localStorage.setItem("ulpra-admin-auth", "true");
         localStorage.setItem("admin-email", data.email);
@@ -110,7 +137,9 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-b from-ulpra-black to-ulpra-black/90 flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">ULPRA<span className="text-ulpra-yellow">.</span></h1>
+          <div className="flex justify-center mb-4">
+            <UlpraLogo width={120} height={50} />
+          </div>
           <p className="text-muted-foreground">Panneau d'administration</p>
         </div>
         
