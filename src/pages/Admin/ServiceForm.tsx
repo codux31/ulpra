@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -80,19 +79,17 @@ const ServiceForm = () => {
       if (error) throw error;
       if (!data) throw new Error('Service non trouvé');
       
-      // Set form values
       form.reset({
         title: data.title || "",
         icon: data.icon || "",
         description: data.description || "",
-        longDescription: data.longDescription || "",
-        image_url: data.imageUrl || "",
-        status: data.status || "active",
+        longDescription: data.longdescription || "",
+        image_url: data.imageurl || "",
+        status: (data.status as "active" | "draft" | "archived") || "active",
       });
       
-      // Set image preview if available
-      if (data.imageUrl) {
-        setImagePreview(data.imageUrl);
+      if (data.imageurl) {
+        setImagePreview(data.imageurl);
       }
     } catch (error) {
       console.error('Error loading service:', error);
@@ -112,7 +109,6 @@ const ServiceForm = () => {
       const file = e.target.files[0];
       setImageFile(file);
       
-      // Create preview
       const reader = new FileReader();
       reader.onload = (event) => {
         setImagePreview(event.target?.result as string);
@@ -147,7 +143,6 @@ const ServiceForm = () => {
     setIsLoading(true);
     
     try {
-      // Upload image if selected
       let imageUrl = values.image_url;
       if (imageFile) {
         imageUrl = await uploadImage();
@@ -157,14 +152,13 @@ const ServiceForm = () => {
         title: values.title,
         icon: values.icon,
         description: values.description,
-        longDescription: values.longDescription,
-        imageUrl: imageUrl,
+        longdescription: values.longDescription,
+        imageurl: imageUrl,
         status: values.status,
         updated_at: new Date().toISOString(),
       };
       
       if (isEditing) {
-        // Update existing service
         const { error } = await supabase
           .from('services')
           .update(serviceData)
@@ -177,7 +171,6 @@ const ServiceForm = () => {
           description: "Le service a été mis à jour avec succès",
         });
       } else {
-        // Create new service
         const { error } = await supabase
           .from('services')
           .insert([{

@@ -227,9 +227,19 @@ export const fetchServices = async (): Promise<Service[]> => {
       return defaultServices;
     }
     
-    // If we got data from Supabase, use it
+    // If we got data from Supabase, transform it to match our model
     if (data && data.length > 0) {
-      return data as unknown as Service[];
+      return data.map(item => ({
+        id: item.id,
+        title: item.title,
+        icon: item.icon,
+        description: item.description,
+        longDescription: item.longdescription,
+        imageUrl: item.imageurl,
+        status: item.status as "active" | "draft" | "archived",
+        created_at: item.created_at,
+        updated_at: item.updated_at
+      }));
     }
     
     // Otherwise use default data
@@ -257,9 +267,12 @@ export const fetchProjects = async (): Promise<Project[]> => {
       return defaultProjects;
     }
     
-    // If we got data from Supabase, use it
+    // If we got data from Supabase, transform it if needed
     if (data && data.length > 0) {
-      return data as unknown as Project[];
+      return data.map(item => ({
+        ...item,
+        status: item.status as "published" | "draft" | "archived"
+      }));
     }
     
     // Otherwise use default data
@@ -287,9 +300,12 @@ export const fetchTestimonials = async (): Promise<Testimonial[]> => {
       return defaultTestimonials;
     }
     
-    // If we got data from Supabase, use it
+    // If we got data from Supabase, transform it if needed
     if (data && data.length > 0) {
-      return data as unknown as Testimonial[];
+      return data.map(item => ({
+        ...item,
+        status: item.status as "published" | "draft" | "archived"
+      }));
     }
     
     // Otherwise use default data
@@ -317,9 +333,13 @@ export const fetchResources = async (): Promise<Resource[]> => {
       return defaultResources;
     }
     
-    // If we got data from Supabase, use it
+    // If we got data from Supabase, transform it if needed
     if (data && data.length > 0) {
-      return data as unknown as Resource[];
+      return data.map(item => ({
+        ...item,
+        status: item.status as "published" | "draft" | "archived",
+        readTime: item.readtime
+      }));
     }
     
     // Otherwise use default data
@@ -347,9 +367,18 @@ export const fetchPricing = async (): Promise<Pricing[]> => {
       return defaultPricing;
     }
     
-    // If we got data from Supabase, use it
+    // If we got data from Supabase, transform it if needed
     if (data && data.length > 0) {
-      return data as unknown as Pricing[];
+      return data.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        description: item.description || '',
+        features: Array.isArray(item.features) ? item.features : [],
+        popular: !!item.popular,
+        created_at: item.created_at,
+        updated_at: item.updated_at
+      }));
     }
     
     // Otherwise use default data
@@ -378,9 +407,15 @@ export const seedServices = async (): Promise<void> => {
       const { error: insertError } = await supabase
         .from('services')
         .insert(defaultServices.map(service => ({
-          ...service,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          id: service.id,
+          title: service.title,
+          icon: service.icon,
+          description: service.description,
+          longdescription: service.longDescription,
+          imageurl: service.imageUrl,
+          status: service.status,
+          created_at: service.created_at || new Date().toISOString(),
+          updated_at: service.updated_at || new Date().toISOString()
         })));
         
       if (insertError) throw insertError;
@@ -403,13 +438,25 @@ export const seedProjects = async (): Promise<void> => {
     // If no data, seed with default projects
     if (!data || data.length === 0) {
       console.log('Seeding projects table...');
+      
+      // Create projects without IDs to use Supabase's UUID generation
+      const projectsToInsert = defaultProjects.map(project => ({
+        title: project.title,
+        category: project.category,
+        client: project.client,
+        description: project.description,
+        image_url: project.image_url,
+        color: project.color,
+        status: project.status,
+        date: project.date,
+        link: project.link,
+        created_at: project.created_at || new Date().toISOString(),
+        updated_at: project.updated_at || new Date().toISOString()
+      }));
+      
       const { error: insertError } = await supabase
         .from('projects')
-        .insert(defaultProjects.map(project => ({
-          ...project,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })));
+        .insert(projectsToInsert);
         
       if (insertError) throw insertError;
       console.log('Projects seeded successfully');
@@ -431,13 +478,23 @@ export const seedTestimonials = async (): Promise<void> => {
     // If no data, seed with default testimonials
     if (!data || data.length === 0) {
       console.log('Seeding testimonials table...');
+      
+      const testimonialsToInsert = defaultTestimonials.map(testimonial => ({
+        name: testimonial.name,
+        company: testimonial.company,
+        role: testimonial.role,
+        quote: testimonial.quote,
+        content: testimonial.content,
+        avatar_url: testimonial.avatar_url,
+        rating: testimonial.rating,
+        status: testimonial.status,
+        created_at: testimonial.created_at || new Date().toISOString(),
+        updated_at: testimonial.updated_at || new Date().toISOString()
+      }));
+      
       const { error: insertError } = await supabase
         .from('testimonials')
-        .insert(defaultTestimonials.map(testimonial => ({
-          ...testimonial,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })));
+        .insert(testimonialsToInsert);
         
       if (insertError) throw insertError;
       console.log('Testimonials seeded successfully');
@@ -459,13 +516,27 @@ export const seedResources = async (): Promise<void> => {
     // If no data, seed with default resources
     if (!data || data.length === 0) {
       console.log('Seeding resources table...');
+      
+      const resourcesToInsert = defaultResources.map(resource => ({
+        title: resource.title,
+        description: resource.description,
+        content: resource.content,
+        excerpt: resource.excerpt,
+        image_url: resource.image_url,
+        category: resource.category,
+        type: resource.type,
+        download_url: resource.download_url,
+        author: resource.author,
+        date: resource.date,
+        readtime: resource.readTime,
+        status: resource.status,
+        created_at: resource.created_at || new Date().toISOString(),
+        updated_at: resource.updated_at || new Date().toISOString()
+      }));
+      
       const { error: insertError } = await supabase
         .from('resources')
-        .insert(defaultResources.map(resource => ({
-          ...resource,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })));
+        .insert(resourcesToInsert);
         
       if (insertError) throw insertError;
       console.log('Resources seeded successfully');
@@ -487,13 +558,20 @@ export const seedPricing = async (): Promise<void> => {
     // If no data, seed with default pricing
     if (!data || data.length === 0) {
       console.log('Seeding pricing table...');
+      
+      const pricingToInsert = defaultPricing.map(plan => ({
+        name: plan.name,
+        price: plan.price,
+        description: plan.description,
+        features: plan.features,
+        popular: plan.popular,
+        created_at: plan.created_at || new Date().toISOString(),
+        updated_at: plan.updated_at || new Date().toISOString()
+      }));
+      
       const { error: insertError } = await supabase
         .from('pricing')
-        .insert(defaultPricing.map(plan => ({
-          ...plan,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        })));
+        .insert(pricingToInsert);
         
       if (insertError) throw insertError;
       console.log('Pricing seeded successfully');

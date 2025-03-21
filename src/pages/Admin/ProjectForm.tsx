@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,7 +60,7 @@ const ProjectForm = () => {
       client: "",
       description: "",
       image_url: "",
-      status: "draft",
+      status: "draft" as "draft" | "published" | "archived",
       date: new Date().toISOString().split('T')[0],
       link: "",
     },
@@ -84,7 +83,6 @@ const ProjectForm = () => {
       if (error) throw error;
       if (!data) throw new Error('Projet non trouvé');
       
-      // Set form values
       form.reset({
         title: data.title || "",
         category: data.category || "",
@@ -96,7 +94,6 @@ const ProjectForm = () => {
         link: data.link || "",
       });
       
-      // Set image preview if available
       if (data.image_url) {
         setImagePreview(data.image_url);
       }
@@ -118,7 +115,6 @@ const ProjectForm = () => {
       const file = e.target.files[0];
       setImageFile(file);
       
-      // Create preview
       const reader = new FileReader();
       reader.onload = (event) => {
         setImagePreview(event.target?.result as string);
@@ -153,20 +149,24 @@ const ProjectForm = () => {
     setIsLoading(true);
     
     try {
-      // Upload image if selected
       let imageUrl = values.image_url;
       if (imageFile) {
         imageUrl = await uploadImage();
       }
       
       const projectData = {
-        ...values,
+        title: values.title,
+        category: values.category,
+        client: values.client,
+        description: values.description,
         image_url: imageUrl,
+        status: values.status,
+        date: values.date,
+        link: values.link,
         updated_at: new Date().toISOString(),
       };
       
       if (isEditing) {
-        // Update existing project
         const { error } = await supabase
           .from('projects')
           .update(projectData)
@@ -179,13 +179,15 @@ const ProjectForm = () => {
           description: "Le projet a été mis à jour avec succès",
         });
       } else {
-        // Create new project
+        const newProject = {
+          ...projectData,
+          title: values.title,
+          created_at: new Date().toISOString(),
+        };
+        
         const { error } = await supabase
           .from('projects')
-          .insert([{
-            ...projectData,
-            created_at: new Date().toISOString(),
-          }]);
+          .insert([newProject]);
           
         if (error) throw error;
         
@@ -420,7 +422,7 @@ const ProjectForm = () => {
               <ul className="space-y-3 text-sm text-muted-foreground">
                 <li>• Utilisez un titre clair et descriptif pour votre projet</li>
                 <li>• Rédigez une description détaillée qui met en valeur les points forts</li>
-                <li>• Choisissez une catégorie pertinente pour faciliter la navigation</li>
+                <li>�� Choisissez une catégorie pertinente pour faciliter la navigation</li>
                 <li>• Ajoutez une image de qualité en respectant les proportions</li>
                 <li>• Mentionnez le nom du client pour ajouter de la crédibilité</li>
                 <li>• Si possible, incluez un lien vers le projet en ligne</li>
