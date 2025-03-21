@@ -37,14 +37,14 @@ const projectsData: Record<string, Project> = {
     category: 'Site Web',
     client: 'Riviera Escape & Spa',
     year: '2023',
-    description: 'Refonte complète du site web d'un resort de luxe avec réservation en ligne et expérience immersive.',
-    challenge: 'Riviera Escape & Spa cherchait à moderniser son site web vieillissant pour refléter l'expérience haut de gamme offerte par l'établissement. Les principaux défis incluaient la création d'une expérience en ligne immersive, l'optimisation du système de réservation et l'amélioration de la présentation des différentes offres et services.',
-    solution: 'Nous avons conçu une expérience utilisateur centrée sur l'immersion visuelle avec des animations subtiles et élégantes. Le site intègre un système de réservation personnalisé, des visites virtuelles des suites et installations, ainsi qu'une présentation dynamique des offres saisonnières.',
+    description: 'Refonte complète du site web d\'un resort de luxe avec réservation en ligne et expérience immersive.',
+    challenge: 'Riviera Escape & Spa cherchait à moderniser son site web vieillissant pour refléter l\'expérience haut de gamme offerte par l\'établissement. Les principaux défis incluaient la création d\'une expérience en ligne immersive, l\'optimisation du système de réservation et l\'amélioration de la présentation des différentes offres et services.',
+    solution: 'Nous avons conçu une expérience utilisateur centrée sur l\'immersion visuelle avec des animations subtiles et élégantes. Le site intègre un système de réservation personnalisé, des visites virtuelles des suites et installations, ainsi qu\'une présentation dynamique des offres saisonnières.',
     results: [
       'Augmentation de 45% des réservations en ligne',
       'Temps moyen passé sur le site multiplié par 2,5',
       'Diminution de 30% du taux de rebond',
-      'Amélioration significative de l'expérience mobile',
+      'Amélioration significative de l\'expérience mobile',
     ],
     technologies: ['WordPress', 'JavaScript', 'GSAP', 'Stripe', 'API de réservation sur mesure'],
     heroImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
@@ -54,7 +54,7 @@ const projectsData: Record<string, Project> = {
       'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
     ],
     testimonial: {
-      content: 'ULPRA a parfaitement saisi l'essence de notre marque de luxe et l'a traduite en une expérience digitale exceptionnelle. Le nouveau site a considérablement amélioré notre image et nos performances commerciales.',
+      content: 'ULPRA a parfaitement saisi l\'essence de notre marque de luxe et l\'a traduite en une expérience digitale exceptionnelle. Le nouveau site a considérablement amélioré notre image et nos performances commerciales.',
       author: 'Sophie Renaud',
       role: 'Directrice Marketing, Riviera Escape & Spa',
     },
@@ -66,9 +66,9 @@ const projectsData: Record<string, Project> = {
     category: 'Branding & Web',
     client: 'Nexus Innovation',
     year: '2023',
-    description: 'Création d'identité de marque et développement web pour une startup technologique innovante.',
-    challenge: 'Nexus Innovation, jeune startup spécialisée en intelligence artificielle, avait besoin d'établir une présence de marque forte et distinctive sur un marché très concurrentiel. L'entreprise souhaitait une identité reflétant à la fois son caractère innovant et sa rigueur scientifique.',
-    solution: 'Nous avons développé une identité de marque complète, incluant logo, charte graphique et guidelines, puis conçu un site web dynamique présentant leurs solutions d'IA de manière claire et engageante, avec des démonstrations interactives de leurs technologies.',
+    description: 'Création d\'identité de marque et développement web pour une startup technologique innovante.',
+    challenge: 'Nexus Innovation, jeune startup spécialisée en intelligence artificielle, avait besoin d\'établir une présence de marque forte et distinctive sur un marché très concurrentiel. L\'entreprise souhaitait une identité reflétant à la fois son caractère innovant et sa rigueur scientifique.',
+    solution: 'Nous avons développé une identité de marque complète, incluant logo, charte graphique et guidelines, puis conçu un site web dynamique présentant leurs solutions d\'IA de manière claire et engageante, avec des démonstrations interactives de leurs technologies.',
     results: [
       'Identité de marque unanimement appréciée par les parties prenantes',
       'Augmentation de 60% des demandes de démonstration via le site',
@@ -83,7 +83,7 @@ const projectsData: Record<string, Project> = {
       'https://images.unsplash.com/photo-1661956602153-23384936a1d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
     ],
     testimonial: {
-      content: 'L'équipe d'ULPRA a su transformer notre vision technique complexe en une identité de marque claire et impactante. Leur approche créative couplée à une compréhension approfondie de notre secteur a dépassé nos attentes.',
+      content: 'L\'équipe d\'ULPRA a su transformer notre vision technique complexe en une identité de marque claire et impactante. Leur approche créative couplée à une compréhension approfondie de notre secteur a dépassé nos attentes.',
       author: 'Alexandre Dubois',
       role: 'CEO, Nexus Innovation',
     },
@@ -95,14 +95,14 @@ const projectsData: Record<string, Project> = {
     category: 'E-commerce',
     client: 'Maison Gourmande',
     year: '2022',
-    description: 'Boutique en ligne pour une marque d'épicerie fine avec personnalisation de commandes et abonnements.',
-    challenge: 'Maison Gourmande souhaitait transformer son activité de vente d'épicerie fine traditionnelle en une expérience e-commerce premium, permettant la personnalisation des commandes et un système d'abonnement pour les produits récurrents. Le défi était de retranscrire en ligne l'expérience client exclusive de leurs boutiques physiques.',
-    solution: 'Nous avons développé une plateforme e-commerce sur mesure avec Shopify Plus, intégrant un configurateur de paniers gourmands personnalisés, un système d'abonnement flexible, et une présentation immersive des produits avec storytelling autour des producteurs et des origines.',
+    description: 'Boutique en ligne pour une marque d\'épicerie fine avec personnalisation de commandes et abonnements.',
+    challenge: 'Maison Gourmande souhaitait transformer son activité de vente d\'épicerie fine traditionnelle en une expérience e-commerce premium, permettant la personnalisation des commandes et un système d\'abonnement pour les produits récurrents. Le défi était de retranscrire en ligne l\'expérience client exclusive de leurs boutiques physiques.',
+    solution: 'Nous avons développé une plateforme e-commerce sur mesure avec Shopify Plus, intégrant un configurateur de paniers gourmands personnalisés, un système d\'abonnement flexible, et une présentation immersive des produits avec storytelling autour des producteurs et des origines.',
     results: [
       'Lancement réussi avec 200% des objectifs de vente atteints le premier mois',
       'Panier moyen 35% plus élevé que dans les boutiques physiques',
       'Taux de conversion de 4.8%, bien au-dessus de la moyenne du secteur',
-      'Plus de 500 abonnements actifs après 6 mois d'exploitation',
+      'Plus de 500 abonnements actifs après 6 mois d\'exploitation',
     ],
     technologies: ['Shopify Plus', 'JavaScript', 'Liquid', 'Apps Shopify sur mesure', 'Klaviyo', 'ReCharge'],
     heroImage: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80',
@@ -112,7 +112,7 @@ const projectsData: Record<string, Project> = {
       'https://images.unsplash.com/photo-1556679343-c7306c1976bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
     ],
     testimonial: {
-      content: 'ULPRA a réussi à capturer l'essence de notre marque et à la transposer parfaitement dans l'univers digital. Notre boutique en ligne est devenue un véritable prolongement de notre expérience en magasin, voire plus.',
+      content: 'ULPRA a réussi à capturer l\'essence de notre marque et à la transposer parfaitement dans l\'univers digital. Notre boutique en ligne est devenue un véritable prolongement de notre expérience en magasin, voire plus.',
       author: 'Marie Lefevre',
       role: 'Fondatrice, Maison Gourmande',
     },
@@ -125,12 +125,12 @@ const projectsData: Record<string, Project> = {
     client: 'Verde Style',
     year: '2022',
     description: 'Stratégie de communication complète pour une marque de mode éthique en pleine expansion.',
-    challenge: 'Verde Style, marque de mode éthique en croissance, cherchait à renforcer sa présence sur le marché français et européen. L'entreprise avait besoin d'une stratégie de communication cohérente pour mettre en avant ses engagements environnementaux tout en consolidant son image fashion et désirable.',
-    solution: 'Nous avons développé une stratégie de communication omnicanale, incluant une refonte de l'identité visuelle, des campagnes sur les réseaux sociaux centrées sur le storytelling, un programme d'influence avec des ambassadeurs partageant les mêmes valeurs, et des supports de communication imprimés eco-responsables.',
+    challenge: 'Verde Style, marque de mode éthique en croissance, cherchait à renforcer sa présence sur le marché français et européen. L\'entreprise avait besoin d\'une stratégie de communication cohérente pour mettre en avant ses engagements environnementaux tout en consolidant son image fashion et désirable.',
+    solution: 'Nous avons développé une stratégie de communication omnicanale, incluant une refonte de l\'identité visuelle, des campagnes sur les réseaux sociaux centrées sur le storytelling, un programme d\'influence avec des ambassadeurs partageant les mêmes valeurs, et des supports de communication imprimés eco-responsables.',
     results: [
       'Croissance de 78% de la communauté Instagram en 6 mois',
       'Augmentation de 45% du trafic organique vers le site web',
-      'Campagne d'influence générant un ROI de 350%',
+      'Campagne d\'influence générant un ROI de 350%',
       'Mention dans 3 grands magazines de mode comme "marque éthique à suivre"',
     ],
     technologies: ['Adobe Creative Suite', 'Canva Pro', 'Later', 'Mention', 'Sarbacane', 'Google Analytics 4'],
@@ -141,7 +141,7 @@ const projectsData: Record<string, Project> = {
       'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2201&q=80',
     ],
     testimonial: {
-      content: 'L'équipe d'ULPRA a compris nos valeurs dès le premier jour et a su créer une stratégie de communication qui respecte notre éthique tout en boostant considérablement notre visibilité et notre image de marque.',
+      content: 'L\'équipe d\'ULPRA a compris nos valeurs dès le premier jour et a su créer une stratégie de communication qui respecte notre éthique tout en boostant considérablement notre visibilité et notre image de marque.',
       author: 'Lucas Martin',
       role: 'Directeur Marketing, Verde Style',
     },
@@ -335,7 +335,10 @@ const ProjectDetail: React.FC = () => {
               {project.testimonial && (
                 <div className="mb-16 glassmorphism p-8 rounded-xl reveal-content opacity-0">
                   <div className="text-ulpra-yellow mb-4">
-                    <Quote size={32} />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-quote">
+                      <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path>
+                      <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path>
+                    </svg>
                   </div>
                   <blockquote className="text-xl font-medium mb-6 italic">
                     "{project.testimonial.content}"
