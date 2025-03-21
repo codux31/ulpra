@@ -2,6 +2,7 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Sphere, Box, Torus } from '@react-three/drei';
+import * as THREE from 'three';
 
 // A component for animated 3D objects
 const AnimatedObject = ({ 
