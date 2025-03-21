@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Quote, ArrowRight } from 'lucide-react';
 import AnimatedText from './AnimatedText';
 import { fetchTestimonials } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
