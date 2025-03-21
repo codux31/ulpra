@@ -13,7 +13,8 @@ const ScrollResponsiveObject = ({
   scale = 1,
   shape = "sphere"
 }) => {
-  const ref = useRef();
+  // Explicitly type the ref as THREE.Mesh
+  const ref = useRef<THREE.Mesh>(null);
   const [scrollY, setScrollY] = useState(0);
   
   // Update scroll position
