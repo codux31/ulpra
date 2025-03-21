@@ -10,7 +10,7 @@ export interface Service {
   longDescription?: string;
   imageUrl?: string;
   status?: "active" | "draft" | "archived";
-  created_at?: string;
+  created_at: string;
   updated_at?: string;
 }
 
@@ -18,7 +18,7 @@ export interface Service {
 export interface Project {
   id: string;
   title: string;
-  category?: string;
+  category: string;
   client?: string;
   description: string;
   image_url?: string;
@@ -26,7 +26,7 @@ export interface Project {
   status?: "published" | "draft" | "archived";
   date?: string;
   link?: string;
-  created_at?: string;
+  created_at: string;
   updated_at?: string;
 }
 
@@ -34,14 +34,14 @@ export interface Project {
 export interface Testimonial {
   id: string;
   name: string;
-  company?: string;
+  company: string;
   role?: string;
   quote: string;
   content?: string;
   avatar_url?: string;
   rating: number;
   status?: "published" | "draft" | "archived";
-  created_at?: string;
+  created_at: string;
   updated_at?: string;
 }
 
@@ -51,16 +51,18 @@ export interface Resource {
   title: string;
   description: string;
   content?: string;
-  excerpt?: string;
+  excerpt: string;
   image_url?: string;
-  category?: string;
+  image?: string; // For compatibility with some components
+  category: string;
   type?: string;
   download_url?: string;
   author?: string;
   date?: string;
   readTime?: string;
+  tags?: string[]; // For compatibility with some components
   status?: "published" | "draft" | "archived";
-  created_at?: string;
+  created_at: string;
   updated_at?: string;
 }
 
@@ -72,9 +74,11 @@ export interface Pricing {
   description: string;
   features: string[];
   popular: boolean;
-  created_at?: string;
+  created_at: string;
   updated_at?: string;
 }
+
+export type PricingPlan = Pricing;
 
 // Type guard functions
 export const isService = (obj: any): obj is Service => {

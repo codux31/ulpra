@@ -7,22 +7,12 @@ import { ArrowRight, Search, Calendar, User, Clock, Tag, Download } from 'lucide
 import { motion } from 'framer-motion';
 import { fetchResources } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
+import { Resource as ResourceType } from '@/types/models';
 
-// Types pour les ressources
-interface Resource {
-  id: string;
-  title: string;
-  excerpt: string;
-  content?: string;
-  category: string;
-  date: string;
-  author: string;
-  readTime: string;
-  image: string;
-  tags: string[];
-  type: 'article' | 'tutorial' | 'download';
-  downloadUrl?: string;
-  status?: string;
+// Local interface for Resources page that includes all required fields
+interface Resource extends ResourceType {
+  image: string; // Required for this component
+  tags: string[]; // Required for this component
 }
 
 const Resources: React.FC = () => {
@@ -44,14 +34,19 @@ const Resources: React.FC = () => {
         // Only use resources with status "published" or null (for backward compatibility)
         const publishedResources = data.filter(
           resource => resource.status === "published" || !resource.status
-        );
+        ).map(resource => ({
+          ...resource,
+          image: resource.image_url || '', // Map image_url to image for component compatibility
+          tags: resource.tags || [], // Ensure tags is always an array
+          excerpt: resource.excerpt || resource.description.substring(0, 120) + '...' // Ensure excerpt exists
+        }));
         
         if (publishedResources.length > 0) {
           // Extract unique categories
           const uniqueCategories = ['Tous', ...Array.from(new Set(publishedResources.map(r => r.category)))];
           
-          setResources(publishedResources);
-          setFilteredResources(publishedResources);
+          setResources(publishedResources as Resource[]);
+          setFilteredResources(publishedResources as Resource[]);
           setCategories(uniqueCategories);
         } else {
           // Fallback to static data if no resources in database

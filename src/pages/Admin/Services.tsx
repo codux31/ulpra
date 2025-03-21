@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -32,15 +31,9 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Pencil, Trash2, Plus } from 'lucide-react';
 import { fetchServices, supabase } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
+import { Service as ServiceType } from '@/types/models';
 
-interface Service {
-  id: string;
-  title: string;
-  description: string;
-  longDescription?: string;
-  icon: string;
-  imageUrl?: string;
-  status?: string;
+interface Service extends ServiceType {
   created_at: string;
 }
 
@@ -59,7 +52,11 @@ const AdminServices = () => {
     setIsLoading(true);
     try {
       const data = await fetchServices();
-      setServices(data);
+      const servicesWithCreatedAt = data.map(service => ({
+        ...service,
+        created_at: service.created_at || new Date().toISOString()
+      }));
+      setServices(servicesWithCreatedAt as Service[]);
     } catch (error) {
       console.error('Error loading services:', error);
       toast({
@@ -88,7 +85,6 @@ const AdminServices = () => {
         description: "Le service a été supprimé avec succès",
       });
       
-      // Refresh services list
       loadServices();
     } catch (error) {
       console.error('Error deleting service:', error);

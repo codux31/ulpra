@@ -32,14 +32,11 @@ import { Badge } from "@/components/ui/badge";
 import { Eye, Pencil, Trash2, Plus } from 'lucide-react';
 import { fetchProjects, supabase } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
+import { Project as ProjectType } from '@/types/models';
 
-interface Project {
-  id: string;
-  title: string;
-  category: string;
-  status: string;
-  created_at: string;
-  image_url?: string;
+// Local interface for Admin/Projects page that includes all required fields
+interface Project extends ProjectType {
+  category: string; // Required for this component
 }
 
 const AdminProjects = () => {
@@ -57,7 +54,12 @@ const AdminProjects = () => {
     setIsLoading(true);
     try {
       const data = await fetchProjects();
-      setProjects(data);
+      // Ensure all projects have the required category field
+      const projectsWithCategory = data.map(project => ({
+        ...project,
+        category: project.category || 'Non catégorisé'
+      }));
+      setProjects(projectsWithCategory as Project[]);
     } catch (error) {
       console.error('Error loading projects:', error);
       toast({

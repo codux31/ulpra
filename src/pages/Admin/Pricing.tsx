@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Card, 
@@ -45,16 +44,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/components/ui/use-toast";
+import { Pricing } from '@/types/models';
 
-interface PricingPlan {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  features: string[];
-  popular?: boolean;
-  created_at: string;
-}
+type PricingPlan = Pricing;
 
 const pricingSchema = z.object({
   name: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
@@ -67,7 +59,7 @@ const pricingSchema = z.object({
 type PricingFormValues = z.infer<typeof pricingSchema>;
 
 const AdminPricing = () => {
-  const [plans, setPlans] = useState<PricingPlan[]>([]);
+  const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<PricingPlan | null>(null);
@@ -93,7 +85,7 @@ const AdminPricing = () => {
     setIsLoading(true);
     try {
       const data = await fetchPricing();
-      setPlans(data);
+      setPricingPlans(data as PricingPlan[]);
     } catch (error) {
       console.error('Error loading pricing plans:', error);
       toast({
@@ -151,7 +143,6 @@ const AdminPricing = () => {
       };
       
       if (editingPlan) {
-        // Update existing plan
         const { error } = await supabase
           .from('pricing')
           .update(planData)
@@ -164,7 +155,6 @@ const AdminPricing = () => {
           description: "Le forfait a été mis à jour avec succès",
         });
       } else {
-        // Create new plan
         const { error } = await supabase
           .from('pricing')
           .insert([{
@@ -208,7 +198,6 @@ const AdminPricing = () => {
         description: "Le forfait a été supprimé avec succès",
       });
       
-      // Refresh list
       loadPricingPlans();
     } catch (error) {
       console.error('Error deleting pricing plan:', error);
@@ -238,7 +227,7 @@ const AdminPricing = () => {
         <CardHeader>
           <CardTitle>Tous les forfaits</CardTitle>
           <CardDescription>
-            Vous avez {plans.length} forfait{plans.length !== 1 ? 's' : ''} au total.
+            Vous avez {pricingPlans.length} forfait{pricingPlans.length !== 1 ? 's' : ''} au total.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -259,14 +248,14 @@ const AdminPricing = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {plans.length === 0 ? (
+                  {pricingPlans.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                         Aucun forfait n'a été trouvé. Commencez par en ajouter un.
                       </TableCell>
                     </TableRow>
                   ) : (
-                    plans.map((plan) => (
+                    pricingPlans.map((plan) => (
                       <TableRow key={plan.id}>
                         <TableCell className="font-medium">{plan.name}</TableCell>
                         <TableCell>{plan.price} €</TableCell>
@@ -330,7 +319,6 @@ const AdminPricing = () => {
         </CardContent>
       </Card>
 
-      {/* Add/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>

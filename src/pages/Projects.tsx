@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -7,15 +6,10 @@ import AnimatedText from '@/components/AnimatedText';
 import { ArrowRight } from 'lucide-react';
 import { fetchProjects } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
+import { Project as ProjectType } from '@/types/models';
 
-interface Project {
-  id: string;
-  title: string;
+interface Project extends ProjectType {
   category: string;
-  description: string;
-  image_url?: string;
-  client: string;
-  status?: string;
 }
 
 const Projects = () => {
@@ -37,7 +31,10 @@ const Projects = () => {
         // Only use projects with status "published" or null (for backward compatibility)
         const publishedProjects = data.filter(
           project => project.status === "published" || !project.status
-        );
+        ).map(project => ({
+          ...project,
+          category: project.category || 'Non catégorisé' // Ensure category is not undefined
+        }));
         
         console.log("Projects page data:", publishedProjects); // Debug log
         

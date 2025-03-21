@@ -62,7 +62,9 @@ function App() {
           
           <Route path="/admin" element={
             <AdminRoute>
-              <AdminLayout />
+              <AdminLayout>
+                {/* AdminLayout needs children */}
+              </AdminLayout>
             </AdminRoute>
           }>
             <Route path="dashboard" element={<Dashboard />} />

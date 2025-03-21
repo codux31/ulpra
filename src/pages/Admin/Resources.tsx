@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -40,17 +39,10 @@ import {
 } from 'lucide-react';
 import { fetchResources, supabase } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
+import { Resource as ResourceType } from '@/types/models';
 
-interface Resource {
-  id: string;
-  title: string;
+interface Resource extends ResourceType {
   excerpt: string;
-  category: string;
-  type: 'article' | 'tutorial' | 'download';
-  date: string;
-  author: string;
-  created_at: string;
-  status?: string;
 }
 
 const AdminResources = () => {
@@ -68,8 +60,11 @@ const AdminResources = () => {
     setIsLoading(true);
     try {
       const data = await fetchResources();
-      console.log("Resources data loaded:", data); // Debug log
-      setResources(data);
+      const resourcesWithExcerpt = data.map(resource => ({
+        ...resource,
+        excerpt: resource.excerpt || resource.description.substring(0, 120) + '...'
+      }));
+      setResources(resourcesWithExcerpt as Resource[]);
     } catch (error) {
       console.error('Error loading resources:', error);
       toast({
@@ -78,7 +73,6 @@ const AdminResources = () => {
         variant: "destructive",
       });
       
-      // Utiliser des ressources fictives en cas d'erreur
       const dummyResources = [
         {
           id: "tendances-design-2023",
@@ -128,7 +122,6 @@ const AdminResources = () => {
         description: "La ressource a été supprimée avec succès",
       });
       
-      // Refresh resources list
       loadResources();
     } catch (error) {
       console.error('Error deleting resource:', error);
@@ -138,7 +131,6 @@ const AdminResources = () => {
         variant: "destructive",
       });
       
-      // Simuler la suppression pour la démo
       setResources(prevResources => prevResources.filter(resource => resource.id !== resourceToDelete));
       
       toast({

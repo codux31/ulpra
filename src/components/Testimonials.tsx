@@ -1,21 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Quote, ArrowRight } from 'lucide-react';
 import { fetchTestimonials } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from 'react-router-dom';
+import { Testimonial as TestimonialType } from '@/types/models';
 
-// Type pour les témoignages
-interface Testimonial {
-  id: string | number;
-  name: string;
+interface Testimonial extends TestimonialType {
   company: string;
-  role: string;
-  content: string;
-  rating: number;
-  image_url?: string;
-  status?: string;
 }
 
 const Testimonials: React.FC = () => {
@@ -25,52 +17,23 @@ const Testimonials: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Charger les témoignages depuis Supabase
   useEffect(() => {
     const loadTestimonials = async () => {
       try {
         setIsLoading(true);
         const data = await fetchTestimonials();
-        
-        // Filtrer seulement les témoignages publiés
-        const publishedTestimonials = data.filter(
-          testimonial => testimonial.status === "published" || !testimonial.status
-        );
-        
-        if (publishedTestimonials.length > 0) {
-          setTestimonials(publishedTestimonials);
-          console.log("Témoignages chargés:", publishedTestimonials);
-        } else {
-          // Fallback si aucun témoignage n'est trouvé
-          setTestimonials([
-            {
-              id: "1",
-              name: "Sophie Martin",
-              company: "DigitalCorp",
-              role: "Directrice Marketing",
-              content: "Une équipe professionnelle qui a su transformer notre vision en réalité. Très satisfaite du résultat!",
-              rating: 5
-            },
-            {
-              id: "2",
-              name: "Thomas Dubois",
-              company: "EcoTech",
-              role: "Fondateur",
-              content: "Leur approche créative et leur rigueur technique nous ont permis de lancer notre startup avec une identité forte.",
-              rating: 5
-            }
-          ]);
-          console.log("Fallback - Témoignages prédéfinis chargés");
-        }
+        const testimonialsWithCompany = data.map(testimonial => ({
+          ...testimonial,
+          company: testimonial.company || 'Client'
+        }));
+        setTestimonials(testimonialsWithCompany as Testimonial[]);
       } catch (error) {
-        console.error('Erreur lors du chargement des témoignages:', error);
+        console.error('Error loading testimonials:', error);
         toast({
           title: "Erreur",
           description: "Impossible de charger les témoignages",
           variant: "destructive",
         });
-        
-        // Fallback en cas d'erreur
         setTestimonials([
           {
             id: "1",
@@ -89,19 +52,16 @@ const Testimonials: React.FC = () => {
     loadTestimonials();
   }, [toast]);
 
-  // Fonction pour passer au témoignage suivant
   const nextTestimonial = () => {
     if (testimonials.length === 0) return;
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
   };
 
-  // Fonction pour revenir au témoignage précédent
   const prevTestimonial = () => {
     if (testimonials.length === 0) return;
     setCurrentIndex((prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length);
   };
 
-  // Autoplay
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
@@ -116,7 +76,6 @@ const Testimonials: React.FC = () => {
     };
   }, [autoplay, currentIndex, testimonials.length]);
 
-  // Pause l'autoplay au survol
   const handleMouseEnter = () => setAutoplay(false);
   const handleMouseLeave = () => setAutoplay(true);
 
@@ -140,12 +99,10 @@ const Testimonials: React.FC = () => {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              {/* Grande citation */}
               <div className="absolute -top-6 -left-6 text-ulpra-yellow opacity-20">
                 <Quote size={120} />
               </div>
               
-              {/* Carrousel */}
               <div className="relative z-10">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -156,7 +113,6 @@ const Testimonials: React.FC = () => {
                     transition={{ duration: 0.5 }}
                     className="flex flex-col md:flex-row gap-8 items-center"
                   >
-                    {/* Image */}
                     {testimonials[currentIndex].image_url && (
                       <div className="md:w-1/3 flex justify-center">
                         <div className="relative w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden border-2 border-ulpra-yellow/30">
@@ -169,7 +125,6 @@ const Testimonials: React.FC = () => {
                       </div>
                     )}
                     
-                    {/* Contenu */}
                     <div className={testimonials[currentIndex].image_url ? "md:w-2/3" : "w-full"}>
                       <blockquote className="text-xl md:text-2xl font-medium mb-6 italic">
                         "{testimonials[currentIndex].content}"
@@ -194,7 +149,6 @@ const Testimonials: React.FC = () => {
                   </motion.div>
                 </AnimatePresence>
                 
-                {/* Contrôles - seulement si plus d'un témoignage */}
                 {testimonials.length > 1 && (
                   <div className="flex justify-center mt-8 space-x-4">
                     <button 
@@ -205,7 +159,6 @@ const Testimonials: React.FC = () => {
                       <ChevronLeft size={20} />
                     </button>
                     
-                    {/* Indicateurs */}
                     <div className="flex items-center space-x-2">
                       {testimonials.map((_, index) => (
                         <button
@@ -248,7 +201,6 @@ const Testimonials: React.FC = () => {
         </div>
       </div>
       
-      {/* Éléments 3D subtils */}
       <div className="absolute top-1/2 left-0 w-64 h-64 rounded-full bg-ulpra-yellow/5 blur-[100px] opacity-30"></div>
       <div className="absolute bottom-0 right-1/4 w-48 h-48 rounded-full bg-ulpra-yellow/10 blur-[80px] opacity-20"></div>
     </section>

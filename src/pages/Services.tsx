@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -7,14 +6,10 @@ import AnimatedText from '@/components/AnimatedText';
 import { ArrowRight } from 'lucide-react';
 import { fetchServices } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
+import { Service as ServiceType } from '@/types/models';
 
-interface Service {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
+interface Service extends ServiceType {
   longDescription: string;
-  imageUrl: string;
 }
 
 const Services = () => {
@@ -23,22 +18,22 @@ const Services = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Load services from Supabase
     const loadServices = async () => {
       try {
         setIsLoading(true);
         const data = await fetchServices();
         
-        // Only use services with status "active" or null (for backward compatibility)
         const activeServices = data.filter(
           service => service.status === "active" || !service.status
-        );
+        ).map(service => ({
+          ...service,
+          longDescription: service.longDescription || service.description
+        }));
         
         if (activeServices.length > 0) {
-          console.log("Services page data:", activeServices); // Debug log
-          setServices(activeServices);
+          console.log("Services page data:", activeServices);
+          setServices(activeServices as Service[]);
         } else {
-          // Fallback to static data if no services in database
           const staticServices = [
             {
               id: "web-design",
@@ -62,14 +57,14 @@ const Services = () => {
               description: "Stratégies de communication omnicanal, gestion des réseaux sociaux et création de contenu.",
               icon: "03",
               longDescription: "Une communication efficace est la clé pour atteindre et engager votre audience. Nous développons des stratégies sur mesure qui intègrent tous les canaux pertinents pour maximiser votre impact.",
-              imageUrl: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+              imageUrl: "https://images.unsplash.com/photo-1552664730-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
             },
             {
               id: "strategy",
               title: "Recherche Stratégique",
               description: "Analyse de marché, étude de la concurrence et élaboration de stratégies marketing efficaces.",
               icon: "04",
-              longDescription: "Le succès repose sur une stratégie solide basée sur des données concrètes. Notre équipe analyse votre marché, identifie les opportunités et élabore des stratégies personnalisées pour atteindre vos objectifs.",
+              longDescription: "Le succès repose sur une stratégie solide basée sur des données concrètes. Notre équipe analyse votre marché, identifie les opportunités et élabore des strat��gies personnalisées pour atteindre vos objectifs.",
               imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
             },
           ];
@@ -85,7 +80,6 @@ const Services = () => {
           variant: "destructive",
         });
         
-        // Ajouter des données statiques en cas d'erreur
         const fallbackServices = [
           {
             id: "web-design",
@@ -113,7 +107,6 @@ const Services = () => {
 
     loadServices();
     
-    // Observer for revealing elements on scroll
     const setupIntersectionObserver = () => {
       const observer = new IntersectionObserver(
         (entries) => {
@@ -135,7 +128,6 @@ const Services = () => {
     
     setupIntersectionObserver();
     
-    // Scroll to top on page load
     window.scrollTo(0, 0);
   }, [toast]);
 
@@ -143,7 +135,6 @@ const Services = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       
-      {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative overflow-hidden">
         <div className="container mx-auto">
           <div className="max-w-3xl mx-auto text-center">
@@ -156,11 +147,9 @@ const Services = () => {
           </div>
         </div>
         
-        {/* Background elements */}
         <div className="absolute top-1/3 right-0 w-[400px] h-[400px] rounded-full bg-ulpra-yellow/5 blur-[120px] opacity-50" />
       </section>
       
-      {/* Services List */}
       <section className="py-16 px-6 relative">
         <div className="container mx-auto">
           {isLoading ? (
@@ -220,11 +209,9 @@ const Services = () => {
           )}
         </div>
         
-        {/* Background elements */}
         <div className="absolute bottom-1/4 left-0 w-[300px] h-[300px] rounded-full bg-ulpra-yellow/10 blur-[100px] opacity-20" />
       </section>
       
-      {/* Process Section */}
       <section className="py-16 px-6 relative bg-black">
         <div className="container mx-auto">
           <div className="text-center mb-16">
@@ -276,11 +263,9 @@ const Services = () => {
           </div>
         </div>
         
-        {/* Background elements */}
         <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] rounded-full bg-ulpra-yellow/5 blur-[120px] opacity-30" />
       </section>
       
-      {/* Call to Action */}
       <section className="py-16 px-6 relative">
         <div className="container mx-auto">
           <div className="glassmorphism p-12 text-center relative z-10 reveal-content opacity-100">
@@ -300,7 +285,6 @@ const Services = () => {
           </div>
         </div>
         
-        {/* Background elements */}
         <div className="absolute top-1/3 left-0 w-[400px] h-[400px] rounded-full bg-ulpra-yellow/5 blur-[120px] opacity-30" />
       </section>
       
