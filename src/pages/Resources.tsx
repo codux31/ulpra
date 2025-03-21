@@ -6,6 +6,8 @@ import Footer from '@/components/Footer';
 import AnimatedText from '@/components/AnimatedText';
 import { ArrowRight, Search, Calendar, User, Clock, Tag, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { fetchResources } from '@/lib/supabase';
+import { useToast } from "@/components/ui/use-toast";
 
 // Types pour les ressources
 interface Resource {
@@ -21,117 +23,106 @@ interface Resource {
   tags: string[];
   type: 'article' | 'tutorial' | 'download';
   downloadUrl?: string;
+  status?: string;
 }
-
-// Données fictives de ressources (en production, ces données viendraient d'une API)
-const resourcesData: Resource[] = [
-  {
-    id: 'tendances-design-2023',
-    title: 'Tendances de Design Web pour 2023',
-    excerpt: 'Découvrez les tendances émergentes en design web qui domineront l\'année 2023 et comment les intégrer à vos projets.',
-    category: 'Design',
-    date: '15 janvier 2023',
-    author: 'Sophie Dubois',
-    readTime: '7 min',
-    image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
-    tags: ['Design Web', 'Tendances', 'UX/UI'],
-    type: 'article',
-  },
-  {
-    id: 'optimisation-seo-guide',
-    title: 'Guide Complet d\'Optimisation SEO',
-    excerpt: 'Un guide étape par étape pour améliorer le référencement de votre site web et gagner en visibilité dans les moteurs de recherche.',
-    category: 'Marketing',
-    date: '28 février 2023',
-    author: 'Alexandre Martin',
-    readTime: '12 min',
-    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
-    tags: ['SEO', 'Référencement', 'Google'],
-    type: 'article',
-  },
-  {
-    id: 'wordpress-shopify-comparaison',
-    title: 'WordPress vs Shopify: Quelle Plateforme Choisir?',
-    excerpt: 'Analyse comparative détaillée entre WordPress et Shopify pour vous aider à choisir la meilleure plateforme pour votre projet e-commerce.',
-    category: 'E-commerce',
-    date: '10 mars 2023',
-    author: 'Émilie Rousseau',
-    readTime: '9 min',
-    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
-    tags: ['WordPress', 'Shopify', 'E-commerce'],
-    type: 'article',
-  },
-  {
-    id: 'tutoriel-animation-gsap',
-    title: 'Tutoriel: Créer des Animations Web avec GSAP',
-    excerpt: 'Apprenez à créer des animations web fluides et impressionnantes avec la bibliothèque GSAP à travers ce tutoriel pas à pas.',
-    category: 'Développement',
-    date: '5 avril 2023',
-    author: 'Thomas Lefort',
-    readTime: '15 min',
-    image: 'https://images.unsplash.com/photo-1624996379697-f01d168b1a52?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
-    tags: ['JavaScript', 'Animation', 'GSAP', 'Tutoriel'],
-    type: 'tutorial',
-  },
-  {
-    id: 'template-portfolio-createur',
-    title: 'Template Portfolio pour Créateurs',
-    excerpt: 'Un modèle de portfolio prêt à l\'emploi pour les créatifs souhaitant mettre en valeur leurs travaux avec style et professionnalisme.',
-    category: 'Ressources',
-    date: '22 mai 2023',
-    author: 'Marie Durand',
-    readTime: '5 min',
-    image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
-    tags: ['Portfolio', 'Template', 'Figma'],
-    type: 'download',
-    downloadUrl: '#download-portfolio-template',
-  },
-  {
-    id: 'plugin-wordpress-seo',
-    title: 'Plugin WordPress pour Optimisation SEO',
-    excerpt: 'Un plugin WordPress personnalisé pour améliorer le référencement de votre site avec des fonctionnalités avancées d\'analyse et d\'optimisation.',
-    category: 'Ressources',
-    date: '18 juin 2023',
-    author: 'Paul Renard',
-    readTime: '6 min',
-    image: 'https://images.unsplash.com/photo-1614332287897-cdc485fa562d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
-    tags: ['WordPress', 'Plugin', 'SEO'],
-    type: 'download',
-    downloadUrl: '#download-seo-plugin',
-  },
-];
 
 const Resources: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredResources, setFilteredResources] = useState<Resource[]>(resourcesData);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [filteredResources, setFilteredResources] = useState<Resource[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>('Tous');
+  const [categories, setCategories] = useState<string[]>(['Tous']);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
   
-  // Liste des catégories uniques (+ "Tous")
-  const categories = ['Tous', ...Array.from(new Set(resourcesData.map(resource => resource.category)))];
-  
-  // Filtrer les ressources en fonction de la recherche et de la catégorie
+  // Load resources from Supabase
   useEffect(() => {
-    let filtered = resourcesData;
+    const loadResources = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchResources();
+        
+        // Only use resources with status "published" or null (for backward compatibility)
+        const publishedResources = data.filter(
+          resource => resource.status === "published" || !resource.status
+        );
+        
+        if (publishedResources.length > 0) {
+          // Process resources to ensure they have the correct format
+          const processedResources = publishedResources.map(resource => ({
+            ...resource,
+            tags: Array.isArray(resource.tags) ? resource.tags : (resource.tags ? JSON.parse(resource.tags as any) : []),
+            type: resource.type || 'article',
+          }));
+          
+          // Extract unique categories
+          const uniqueCategories = ['Tous', ...Array.from(new Set(processedResources.map(r => r.category)))];
+          
+          setResources(processedResources);
+          setFilteredResources(processedResources);
+          setCategories(uniqueCategories);
+        } else {
+          // Fallback to static data if no resources in database
+          const staticResources = [
+            {
+              id: 'tendances-design-2023',
+              title: 'Tendances de Design Web pour 2023',
+              excerpt: 'Découvrez les tendances émergentes en design web qui domineront l\'année 2023 et comment les intégrer à vos projets.',
+              category: 'Design',
+              date: '15 janvier 2023',
+              author: 'Sophie Dubois',
+              readTime: '7 min',
+              image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
+              tags: ['Design Web', 'Tendances', 'UX/UI'],
+              type: 'article',
+            },
+            {
+              id: 'optimisation-seo-guide',
+              title: 'Guide Complet d\'Optimisation SEO',
+              excerpt: 'Un guide étape par étape pour améliorer le référencement de votre site web et gagner en visibilité dans les moteurs de recherche.',
+              category: 'Marketing',
+              date: '28 février 2023',
+              author: 'Alexandre Martin',
+              readTime: '12 min',
+              image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
+              tags: ['SEO', 'Référencement', 'Google'],
+              type: 'article',
+            },
+            {
+              id: 'tutoriel-animation-gsap',
+              title: 'Tutoriel: Créer des Animations Web avec GSAP',
+              excerpt: 'Apprenez à créer des animations web fluides et impressionnantes avec la bibliothèque GSAP à travers ce tutoriel pas à pas.',
+              category: 'Développement',
+              date: '5 avril 2023',
+              author: 'Thomas Lefort',
+              readTime: '15 min',
+              image: 'https://images.unsplash.com/photo-1624996379697-f01d168b1a52?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
+              tags: ['JavaScript', 'Animation', 'GSAP', 'Tutoriel'],
+              type: 'tutorial',
+            },
+          ];
+          
+          setResources(staticResources);
+          setFilteredResources(staticResources);
+          
+          // Extract unique categories
+          const uniqueCategories = ['Tous', ...Array.from(new Set(staticResources.map(r => r.category)))];
+          setCategories(uniqueCategories);
+        }
+      } catch (error) {
+        console.error('Error loading resources:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les ressources",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
     
-    // Filtre par catégorie
-    if (activeCategory !== 'Tous') {
-      filtered = filtered.filter(resource => resource.category === activeCategory);
-    }
+    loadResources();
     
-    // Filtre par recherche
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(resource => 
-        resource.title.toLowerCase().includes(query) || 
-        resource.excerpt.toLowerCase().includes(query) ||
-        resource.tags.some(tag => tag.toLowerCase().includes(query))
-      );
-    }
-    
-    setFilteredResources(filtered);
-  }, [searchQuery, activeCategory]);
-  
-  useEffect(() => {
     // Remonter en haut de la page lors du chargement
     window.scrollTo(0, 0);
     
@@ -156,7 +147,29 @@ const Resources: React.FC = () => {
     };
     
     setupIntersectionObserver();
-  }, []);
+  }, [toast]);
+  
+  // Filtrer les ressources en fonction de la recherche et de la catégorie
+  useEffect(() => {
+    let filtered = resources;
+    
+    // Filtre par catégorie
+    if (activeCategory !== 'Tous') {
+      filtered = filtered.filter(resource => resource.category === activeCategory);
+    }
+    
+    // Filtre par recherche
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(resource => 
+        resource.title.toLowerCase().includes(query) || 
+        resource.excerpt.toLowerCase().includes(query) ||
+        (Array.isArray(resource.tags) && resource.tags.some(tag => tag.toLowerCase().includes(query)))
+      );
+    }
+    
+    setFilteredResources(filtered);
+  }, [searchQuery, activeCategory, resources]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -217,7 +230,11 @@ const Resources: React.FC = () => {
       {/* Articles et ressources */}
       <section className="py-20 px-6 relative">
         <div className="container mx-auto">
-          {filteredResources.length > 0 ? (
+          {isLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <span className="animate-spin h-8 w-8 border-t-2 border-ulpra-yellow rounded-full"></span>
+            </div>
+          ) : filteredResources.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredResources.map((resource, index) => (
                 <motion.div
@@ -278,17 +295,19 @@ const Resources: React.FC = () => {
                     </div>
                     
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {resource.tags.map((tag, tagIndex) => (
-                        <span 
-                          key={tagIndex} 
-                          className="inline-flex items-center px-2 py-1 bg-white/5 rounded-md text-xs"
-                        >
-                          <Tag size={10} className="mr-1 text-ulpra-yellow" />
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+                    {Array.isArray(resource.tags) && (
+                      <div className="flex flex-wrap gap-2 mb-6">
+                        {resource.tags.map((tag, tagIndex) => (
+                          <span 
+                            key={tagIndex} 
+                            className="inline-flex items-center px-2 py-1 bg-white/5 rounded-md text-xs"
+                          >
+                            <Tag size={10} className="mr-1 text-ulpra-yellow" />
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     
                     {/* Lien ou bouton de téléchargement */}
                     <div className="mt-auto">
@@ -354,7 +373,7 @@ const Resources: React.FC = () => {
         <div className="container mx-auto">
           <div className="max-w-3xl mx-auto glassmorphism p-8 md:p-12 rounded-2xl text-center reveal-content opacity-0">
             <h2 className="text-2xl md:text-3xl font-semibold mb-6">Abonnez-vous à notre newsletter</h2>
-            <p className="text-muted-foreground mb-8">
+            <p className="max-w-2xl mx-auto text-muted-foreground mb-8">
               Recevez en exclusivité nos derniers articles, tutoriels et ressources directement dans votre boîte mail. Pas de spam, promis !
             </p>
             

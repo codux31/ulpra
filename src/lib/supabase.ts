@@ -48,3 +48,31 @@ export const fetchTestimonials = async () => {
   
   return data || [];
 };
+
+export const fetchPricing = async () => {
+  const { data, error } = await supabase
+    .from('pricing')
+    .select('*')
+    .order('price', { ascending: true });
+    
+  if (error) {
+    console.error('Error fetching pricing plans:', error);
+    return [];
+  }
+  
+  return data || [];
+};
+
+export const fetchResources = async () => {
+  const { data, error } = await supabase
+    .from('resources')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) {
+    console.error('Error fetching resources:', error);
+    return [];
+  }
+  
+  return data || [];
+};

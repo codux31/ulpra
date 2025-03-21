@@ -1,87 +1,109 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnimatedText from '@/components/AnimatedText';
 import { ArrowRight } from 'lucide-react';
+import { fetchProjects } from '@/lib/supabase';
+import { useToast } from "@/components/ui/use-toast";
 
 interface Project {
   id: string;
   title: string;
   category: string;
   description: string;
-  image: string;
+  image_url?: string;
   client: string;
+  status?: string;
 }
-
-const projects: Project[] = [
-  {
-    id: "ecommerce-redesign",
-    title: "Refonte Site E-commerce",
-    category: "Web Design",
-    description: "Refonte complète avec une expérience utilisateur optimisée et une identité visuelle percutante.",
-    image: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop",
-    client: "ModernRetail"
-  },
-  {
-    id: "marketing-campaign",
-    title: "Campagne Marketing Digital",
-    category: "Communication",
-    description: "Stratégie omnicanal avec contenus personnalisés pour augmenter la notoriété et les conversions.",
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
-    client: "EcoSolutions"
-  },
-  {
-    id: "brand-identity",
-    title: "Identité Visuelle Startup",
-    category: "Branding",
-    description: "Création d'une identité de marque distinctive avec logo, charte graphique et supports de communication.",
-    image: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2064&auto=format&fit=crop",
-    client: "NeoTech"
-  },
-  {
-    id: "mobile-app",
-    title: "Application Mobile Événementielle",
-    category: "UX/UI Design",
-    description: "Conception d'une application intuitive pour améliorer l'expérience des participants à un événement majeur.",
-    image: "https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1974&auto=format&fit=crop",
-    client: "EventPro"
-  },
-  {
-    id: "website-banking",
-    title: "Site Web Bancaire",
-    category: "Web Design",
-    description: "Interface sécurisée et moderne pour une banque en ligne avec fonctionnalités avancées.",
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
-    client: "FinanceSecure"
-  },
-  {
-    id: "print-campaign",
-    title: "Campagne Print Nationale",
-    category: "Communication",
-    description: "Série d'affichages urbains et de supports imprimés pour une campagne nationale.",
-    image: "https://images.unsplash.com/photo-1618761714954-0b8cd0026356?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
-    client: "NationalBrand"
-  },
-];
-
-const categories = ['Tous', 'Web Design', 'Branding', 'Communication', 'UX/UI Design'];
 
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState('Tous');
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [activeProject, setActiveProject] = useState<string | null>(null);
-  
-  // Fix: Use useEffect with the correct dependency array
-  useEffect(() => {
-    if (activeCategory === 'Tous') {
-      setFilteredProjects(projects);
-    } else {
-      setFilteredProjects(projects.filter(project => project.category === activeCategory));
-    }
-  }, [activeCategory]);
+  const [categories, setCategories] = useState<string[]>(['Tous']);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
   
   useEffect(() => {
+    // Load projects from Supabase
+    const loadProjects = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchProjects();
+        
+        // Only use projects with status "published" or null (for backward compatibility)
+        const publishedProjects = data.filter(
+          project => project.status === "published" || !project.status
+        );
+        
+        if (publishedProjects.length > 0) {
+          // Extract unique categories
+          const uniqueCategories = ['Tous', ...Array.from(new Set(publishedProjects.map(p => p.category)))];
+          
+          setProjects(publishedProjects);
+          setCategories(uniqueCategories);
+          setFilteredProjects(publishedProjects);
+        } else {
+          // Fallback to static data if no projects in database
+          const staticProjects = [
+            {
+              id: "ecommerce-redesign",
+              title: "Refonte Site E-commerce",
+              category: "Web Design",
+              description: "Refonte complète avec une expérience utilisateur optimisée et une identité visuelle percutante.",
+              image_url: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop",
+              client: "ModernRetail"
+            },
+            {
+              id: "marketing-campaign",
+              title: "Campagne Marketing Digital",
+              category: "Communication",
+              description: "Stratégie omnicanal avec contenus personnalisés pour augmenter la notoriété et les conversions.",
+              image_url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
+              client: "EcoSolutions"
+            },
+            {
+              id: "brand-identity",
+              title: "Identité Visuelle Startup",
+              category: "Branding",
+              description: "Création d'une identité de marque distinctive avec logo, charte graphique et supports de communication.",
+              image_url: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2064&auto=format&fit=crop",
+              client: "NeoTech"
+            },
+            {
+              id: "mobile-app",
+              title: "Application Mobile Événementielle",
+              category: "UX/UI Design",
+              description: "Conception d'une application intuitive pour améliorer l'expérience des participants à un événement majeur.",
+              image_url: "https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1974&auto=format&fit=crop",
+              client: "EventPro"
+            },
+          ];
+          
+          setProjects(staticProjects);
+          
+          // Extract unique categories
+          const uniqueCategories = ['Tous', ...Array.from(new Set(staticProjects.map(p => p.category)))];
+          setCategories(uniqueCategories);
+          setFilteredProjects(staticProjects);
+        }
+      } catch (error) {
+        console.error('Error loading projects:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les projets",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadProjects();
+    
     // Observer for revealing elements on scroll
     const setupIntersectionObserver = () => {
       const observer = new IntersectionObserver(
@@ -106,7 +128,16 @@ const Projects = () => {
     
     // Scroll to top on page load
     window.scrollTo(0, 0);
-  }, []);
+  }, [toast]);
+  
+  // Filter projects when category changes
+  useEffect(() => {
+    if (activeCategory === 'Tous') {
+      setFilteredProjects(projects);
+    } else {
+      setFilteredProjects(projects.filter(project => project.category === activeCategory));
+    }
+  }, [activeCategory, projects]);
 
   const handleMouseEnter = (id: string) => {
     setActiveProject(id);
@@ -165,7 +196,11 @@ const Projects = () => {
       {/* Projects Grid */}
       <section className="py-8 px-6 relative">
         <div className="container mx-auto">
-          {filteredProjects.length > 0 ? (
+          {isLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <span className="animate-spin h-8 w-8 border-t-2 border-ulpra-yellow rounded-full"></span>
+            </div>
+          ) : filteredProjects.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {filteredProjects.map((project, index) => (
                 <Link 
@@ -181,7 +216,7 @@ const Projects = () => {
                   />
                   
                   <img 
-                    src={project.image} 
+                    src={project.image_url} 
                     alt={project.title}
                     className="w-full h-[400px] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     loading="lazy"

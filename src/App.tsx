@@ -23,6 +23,12 @@ import EmailSettings from "./pages/Admin/EmailSettings";
 import AdminLayout from "./components/AdminLayout";
 import AdminRoute from "./components/AdminRoute";
 
+// New admin routes for Services, Resources and Pricing
+import AdminServices from "./pages/Admin/Services";
+import ServiceForm from "./pages/Admin/ServiceForm";
+import AdminResources from "./pages/Admin/Resources";
+import AdminPricing from "./pages/Admin/Pricing";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -50,6 +56,7 @@ const App = () => (
               </AdminLayout>
             </AdminRoute>
           } />
+          
           {/* Project Routes */}
           <Route path="/admin/projects" element={
             <AdminRoute>
@@ -79,6 +86,49 @@ const App = () => (
               </AdminLayout>
             </AdminRoute>
           } />
+          
+          {/* Service Routes */}
+          <Route path="/admin/services" element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminServices />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/services/add" element={
+            <AdminRoute>
+              <AdminLayout>
+                <ServiceForm />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/services/edit/:serviceId" element={
+            <AdminRoute>
+              <AdminLayout>
+                <ServiceForm />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          
+          {/* Resources Routes */}
+          <Route path="/admin/resources" element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminResources />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          
+          {/* Pricing Routes */}
+          <Route path="/admin/pricing" element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminPricing />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          
+          {/* Email Settings */}
           <Route path="/admin/email-settings" element={
             <AdminRoute>
               <AdminLayout>
@@ -86,7 +136,6 @@ const App = () => (
               </AdminLayout>
             </AdminRoute>
           } />
-          {/* Ajoutez d'autres routes admin ici */}
           
           {/* Route 404 */}
           <Route path="*" element={<NotFound />} />

@@ -1,10 +1,12 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnimatedText from '@/components/AnimatedText';
 import { ArrowRight } from 'lucide-react';
+import { fetchServices } from '@/lib/supabase';
+import { useToast } from "@/components/ui/use-toast";
 
 interface Service {
   id: string;
@@ -15,43 +17,76 @@ interface Service {
   imageUrl: string;
 }
 
-const services: Service[] = [
-  {
-    id: "web-design",
-    title: "Design Digital",
-    description: "Création de sites web, d'applications et d'interfaces utilisateur intuitives et esthétiques.",
-    icon: "01",
-    longDescription: "Notre approche de conception web combine esthétique soignée et fonctionnalité optimale. Nous créons des sites responsifs, intuitifs et engageants qui reflètent parfaitement l'identité de votre marque.",
-    imageUrl: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "branding",
-    title: "Branding",
-    description: "Développement d'identités de marque distinctives, logos, et chartes graphiques complètes.",
-    icon: "02",
-    longDescription: "Une identité de marque forte est essentielle pour se démarquer. Nous créons des identités visuelles mémorables qui captent l'essence de votre entreprise et établissent une connexion avec votre audience.",
-    imageUrl: "https://images.unsplash.com/photo-1634084462412-b54873c0a56d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "communication",
-    title: "Communication",
-    description: "Stratégies de communication omnicanal, gestion des réseaux sociaux et création de contenu.",
-    icon: "03",
-    longDescription: "Une communication efficace est la clé pour atteindre et engager votre audience. Nous développons des stratégies sur mesure qui intègrent tous les canaux pertinents pour maximiser votre impact.",
-    imageUrl: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-  {
-    id: "strategy",
-    title: "Recherche Stratégique",
-    description: "Analyse de marché, étude de la concurrence et élaboration de stratégies marketing efficaces.",
-    icon: "04",
-    longDescription: "Le succès repose sur une stratégie solide basée sur des données concrètes. Notre équipe analyse votre marché, identifie les opportunités et élabore des stratégies personnalisées pour atteindre vos objectifs.",
-    imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
-  },
-];
-
 const Services = () => {
+  const [services, setServices] = useState<Service[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+
   useEffect(() => {
+    // Load services from Supabase
+    const loadServices = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchServices();
+        
+        // Only use services with status "active" or null (for backward compatibility)
+        const activeServices = data.filter(
+          service => service.status === "active" || !service.status
+        );
+        
+        if (activeServices.length > 0) {
+          setServices(activeServices);
+        } else {
+          // Fallback to static data if no services in database
+          setServices([
+            {
+              id: "web-design",
+              title: "Design Digital",
+              description: "Création de sites web, d'applications et d'interfaces utilisateur intuitives et esthétiques.",
+              icon: "01",
+              longDescription: "Notre approche de conception web combine esthétique soignée et fonctionnalité optimale. Nous créons des sites responsifs, intuitifs et engageants qui reflètent parfaitement l'identité de votre marque.",
+              imageUrl: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+            },
+            {
+              id: "branding",
+              title: "Branding",
+              description: "Développement d'identités de marque distinctives, logos, et chartes graphiques complètes.",
+              icon: "02",
+              longDescription: "Une identité de marque forte est essentielle pour se démarquer. Nous créons des identités visuelles mémorables qui captent l'essence de votre entreprise et établissent une connexion avec votre audience.",
+              imageUrl: "https://images.unsplash.com/photo-1634084462412-b54873c0a56d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+            },
+            {
+              id: "communication",
+              title: "Communication",
+              description: "Stratégies de communication omnicanal, gestion des réseaux sociaux et création de contenu.",
+              icon: "03",
+              longDescription: "Une communication efficace est la clé pour atteindre et engager votre audience. Nous développons des stratégies sur mesure qui intègrent tous les canaux pertinents pour maximiser votre impact.",
+              imageUrl: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+            },
+            {
+              id: "strategy",
+              title: "Recherche Stratégique",
+              description: "Analyse de marché, étude de la concurrence et élaboration de stratégies marketing efficaces.",
+              icon: "04",
+              longDescription: "Le succès repose sur une stratégie solide basée sur des données concrètes. Notre équipe analyse votre marché, identifie les opportunités et élabore des stratégies personnalisées pour atteindre vos objectifs.",
+              imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+            },
+          ]);
+        }
+      } catch (error) {
+        console.error('Error loading services:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les services",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadServices();
+    
     // Observer for revealing elements on scroll
     const setupIntersectionObserver = () => {
       const observer = new IntersectionObserver(
@@ -76,7 +111,7 @@ const Services = () => {
     
     // Scroll to top on page load
     window.scrollTo(0, 0);
-  }, []);
+  }, [toast]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -102,41 +137,47 @@ const Services = () => {
       {/* Services List */}
       <section className="py-16 px-6 relative">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 gap-16">
-            {services.map((service, index) => (
-              <div 
-                key={service.id} 
-                className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center reveal-content ${
-                  index % 2 === 1 ? 'md:flex-row-reverse' : ''
-                }`}
-              >
-                <div className={`${index % 2 === 1 ? 'md:order-2' : ''}`}>
-                  <div className="text-ulpra-yellow font-display text-5xl font-bold mb-6">
-                    {service.icon}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <span className="animate-spin h-8 w-8 border-t-2 border-ulpra-yellow rounded-full"></span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-16">
+              {services.map((service, index) => (
+                <div 
+                  key={service.id} 
+                  className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center reveal-content ${
+                    index % 2 === 1 ? 'md:flex-row-reverse' : ''
+                  }`}
+                >
+                  <div className={`${index % 2 === 1 ? 'md:order-2' : ''}`}>
+                    <div className="text-ulpra-yellow font-display text-5xl font-bold mb-6">
+                      {service.icon}
+                    </div>
+                    <h2 className="text-3xl font-semibold mb-4">{service.title}</h2>
+                    <p className="text-muted-foreground mb-6">
+                      {service.longDescription}
+                    </p>
+                    <Link 
+                      to={`/services/${service.id}`} 
+                      className="inline-flex items-center text-ulpra-yellow hover:text-ulpra-yellow/80 transition-colors"
+                    >
+                      En savoir plus
+                      <ArrowRight size={16} className="ml-2" />
+                    </Link>
                   </div>
-                  <h2 className="text-3xl font-semibold mb-4">{service.title}</h2>
-                  <p className="text-muted-foreground mb-6">
-                    {service.longDescription}
-                  </p>
-                  <Link 
-                    to={`/services/${service.id}`} 
-                    className="inline-flex items-center text-ulpra-yellow hover:text-ulpra-yellow/80 transition-colors"
-                  >
-                    En savoir plus
-                    <ArrowRight size={16} className="ml-2" />
-                  </Link>
+                  <div className={`glassmorphism p-4 ${index % 2 === 1 ? 'md:order-1' : ''}`}>
+                    <img 
+                      src={service.imageUrl} 
+                      alt={service.title} 
+                      className="w-full h-auto rounded-xl object-cover"
+                      loading="lazy"
+                    />
+                  </div>
                 </div>
-                <div className={`glassmorphism p-4 ${index % 2 === 1 ? 'md:order-1' : ''}`}>
-                  <img 
-                    src={service.imageUrl} 
-                    alt={service.title} 
-                    className="w-full h-auto rounded-xl object-cover"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
         
         {/* Background elements */}
