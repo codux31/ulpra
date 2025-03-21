@@ -374,7 +374,7 @@ export const fetchPricing = async (): Promise<Pricing[]> => {
         name: item.name,
         price: item.price,
         description: item.description || '',
-        features: Array.isArray(item.features) ? item.features : [],
+        features: Array.isArray(item.features) ? item.features.map(f => String(f)) : [],
         popular: !!item.popular,
         created_at: item.created_at,
         updated_at: item.updated_at
@@ -563,7 +563,7 @@ export const seedPricing = async (): Promise<void> => {
         name: plan.name,
         price: plan.price,
         description: plan.description,
-        features: plan.features,
+        features: plan.features.map(f => String(f)),
         popular: plan.popular,
         created_at: plan.created_at || new Date().toISOString(),
         updated_at: plan.updated_at || new Date().toISOString()

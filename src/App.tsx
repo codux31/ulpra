@@ -67,12 +67,12 @@ function App() {
           }>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="services" element={<AdminServices />} />
-            <Route path="services/new" element={<ServiceForm />} />
-            <Route path="services/:id" element={<ServiceForm />} />
+            <Route path="services/add" element={<ServiceForm />} />
+            <Route path="services/edit/:serviceId" element={<ServiceForm />} />
             <Route path="projects" element={<AdminProjects />} />
             <Route path="projects/categories" element={<ProjectCategories />} />
-            <Route path="projects/new" element={<ProjectForm />} />
-            <Route path="projects/:id" element={<ProjectForm />} />
+            <Route path="projects/add" element={<ProjectForm />} />
+            <Route path="projects/edit/:projectId" element={<ProjectForm />} />
             <Route path="resources" element={<AdminResources />} />
             <Route path="pricing" element={<AdminPricing />} />
             <Route path="email" element={<EmailSettings />} />

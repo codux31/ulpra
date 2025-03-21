@@ -89,7 +89,7 @@ const ProjectForm = () => {
         client: data.client || "",
         description: data.description || "",
         image_url: data.image_url || "",
-        status: data.status || "draft",
+        status: (data.status as "draft" | "published" | "archived") || "draft",
         date: data.date || new Date().toISOString().split('T')[0],
         link: data.link || "",
       });
