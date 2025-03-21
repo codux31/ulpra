@@ -11,6 +11,7 @@ interface Service {
   title: string;
   description: string;
   icon: string;
+  status?: string;
 }
 
 const Services: React.FC = () => {
@@ -20,28 +21,74 @@ const Services: React.FC = () => {
   const { toast } = useToast();
   
   useEffect(() => {
-    // Load services from Supabase
+    // Charger les services depuis Supabase
     const loadServices = async () => {
       try {
         setIsLoading(true);
         const data = await fetchServices();
         
-        // Only use services with status "active" or null (for backward compatibility)
+        // N'utiliser que les services avec status "active" ou null (pour la rétrocompatibilité)
         const activeServices = data.filter(
           service => service.status === "active" || !service.status
         );
         
-        // Limit to 6 services for the homepage
-        setServices(activeServices.slice(0, 6));
-        console.log("Services loaded:", activeServices); // Debug log
+        if (activeServices.length > 0) {
+          // Limiter à 6 services pour la page d'accueil
+          setServices(activeServices.slice(0, 6));
+          console.log("Services chargés:", activeServices);
+        } else {
+          // Fallback si aucun service n'est trouvé
+          setServices([
+            {
+              id: "1",
+              title: "Web Design",
+              description: "Création de sites web modernes et responsives adaptés à votre marque",
+              icon: "🎨"
+            },
+            {
+              id: "2",
+              title: "Développement",
+              description: "Solutions web personnalisées avec les dernières technologies",
+              icon: "💻"
+            },
+            {
+              id: "3",
+              title: "Stratégie Digitale",
+              description: "Optimisation de votre présence en ligne et acquisition de clients",
+              icon: "📊"
+            },
+            {
+              id: "4",
+              title: "Branding",
+              description: "Création et refonte d'identités de marque mémorables",
+              icon: "✨"
+            }
+          ]);
+          console.log("Fallback - Services prédéfinis chargés");
+        }
       } catch (error) {
-        console.error('Error loading services:', error);
+        console.error('Erreur lors du chargement des services:', error);
         toast({
           title: "Erreur",
           description: "Impossible de charger les services",
           variant: "destructive",
         });
-        setServices([]);
+        
+        // Fallback en cas d'erreur
+        setServices([
+          {
+            id: "1",
+            title: "Web Design",
+            description: "Création de sites web modernes et responsives adaptés à votre marque",
+            icon: "🎨"
+          },
+          {
+            id: "2",
+            title: "Développement",
+            description: "Solutions web personnalisées avec les dernières technologies",
+            icon: "💻"
+          }
+        ]);
       } finally {
         setIsLoading(false);
       }
@@ -82,7 +129,7 @@ const Services: React.FC = () => {
       <div className="container mx-auto">
         <div className="text-center mb-16 relative z-10">
           <h2 className="mb-4 inline-block relative">
-            <AnimatedText text="Nos Services" className="text-gradient" />
+            <span className="block text-gradient text-4xl font-bold">Nos Services</span>
           </h2>
           <p className="max-w-2xl mx-auto text-muted-foreground">
             Nous transformons les visions créatives en honorant l'originalité dans chaque détail.

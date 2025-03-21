@@ -1,65 +1,83 @@
 
-import React, { useEffect, useRef } from 'react';
-import { cn } from '@/lib/utils';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 interface AnimatedTextProps {
   text: string;
   className?: string;
+  duration?: number;
   delay?: number;
-  as?: React.ElementType;
+  staggerChildren?: number;
+  once?: boolean;
 }
 
 const AnimatedText: React.FC<AnimatedTextProps> = ({
   text,
-  className,
+  className = "",
+  duration = 0.05,
   delay = 0,
-  as: Component = 'div',
+  staggerChildren = 0.03,
+  once = false
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-
+  const [isMounted, setIsMounted] = useState(false);
+  
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    setIsMounted(true);
+  }, []);
 
-    // Fix: Set initial opacity to visible to ensure text is always displayed
-    container.style.opacity = '1';
-    
-    // Use requestAnimationFrame to ensure DOM is ready
-    const timeoutId = setTimeout(() => {
-      // Animate each letter
-      const elements = container.querySelectorAll('.animated-letter');
-      elements.forEach((el, index) => {
-        setTimeout(() => {
-          (el as HTMLElement).style.transform = 'translateY(0)';
-          (el as HTMLElement).style.opacity = '1';
-        }, delay + index * 30);
-      });
-    }, 100); // Small delay to ensure everything is ready
-    
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [delay, text]);
+  // Pour corriger le problème d'espacement des caractères
+  const formattedText = text.replace(/\s+/g, ' ');
+  
+  const letterVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  if (!isMounted) {
+    // Afficher le texte en HTML brut pendant le chargement pour éviter les problèmes de formatage
+    return <span className={className}>{formattedText}</span>;
+  }
 
   return (
-    <Component className={cn('inline-block overflow-hidden', className)}>
-      <div 
-        ref={containerRef} 
-        className="inline-flex transition-opacity duration-500"
-        aria-label={text}
-      >
-        {text.split('').map((char, index) => (
-          <span
-            aria-hidden="true"
-            key={index}
-            className="animated-letter inline-block opacity-0 transform translate-y-full transition-transform duration-500 ease-out"
-            style={{ transitionDelay: `${index * 30}ms` }}
-          >
-            {char === ' ' ? '\u00A0' : char}
+    <motion.span
+      className={className + " inline-block leading-relaxed"}
+      aria-label={formattedText}
+      role="heading"
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: {},
+        visible: {
+          transition: {
+            staggerChildren,
+            delayChildren: delay
+          }
+        }
+      }}
+    >
+      {formattedText.split(" ").map((word, wordIndex) => (
+        <React.Fragment key={`word-${wordIndex}`}>
+          <span className="inline-block whitespace-nowrap">
+            {word.split("").map((char, charIndex) => (
+              <motion.span
+                key={`char-${charIndex}`}
+                variants={letterVariants}
+                style={{ display: 'inline-block' }}
+                transition={{
+                  duration,
+                  repeat: once ? 0 : 1,
+                  repeatType: "reverse" as const,
+                  repeatDelay: 8
+                }}
+              >
+                {char}
+              </motion.span>
+            ))}
           </span>
-        ))}
-      </div>
-    </Component>
+          {wordIndex < formattedText.split(" ").length - 1 && " "}
+        </React.Fragment>
+      ))}
+    </motion.span>
   );
 };
 

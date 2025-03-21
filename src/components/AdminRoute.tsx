@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useToast } from "@/components/ui/use-toast";
+import { checkAdminCredentials } from '@/lib/supabase';
 
 interface AdminRouteProps {
   children: React.ReactNode;
@@ -17,23 +18,20 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
     console.log("Admin authentication state:", isAuthenticated);
     
     // Si les identifiants de démo sont utilisés, garantir l'accès
-    // Cela n'est utilisé que pour la démo et devrait être remplacé par une véritable authentification
     if (!isAuthenticated) {
-      const demoAccounts = [
-        { email: "admin@ulpra.com", password: "Admin123!" }
-      ];
-      
       // Vérifier si les identifiants de démonstration sont saisis
       const storedEmail = localStorage.getItem('admin-email');
       const storedPassword = localStorage.getItem('admin-password');
       
       if (storedEmail && storedPassword) {
-        const isDemoAccount = demoAccounts.some(
-          account => account.email === storedEmail && account.password === storedPassword
-        );
+        const isDemoAccount = checkAdminCredentials(storedEmail, storedPassword);
         
         if (isDemoAccount) {
+          console.log("Demo admin credentials validated, granting access");
           localStorage.setItem('ulpra-admin-auth', 'true');
+          
+          // Recharger la page pour appliquer l'authentification
+          window.location.reload();
         }
       }
     }

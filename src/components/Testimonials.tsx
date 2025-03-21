@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Quote, ArrowRight } from 'lucide-react';
-import AnimatedText from './AnimatedText';
 import { fetchTestimonials } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from 'react-router-dom';
@@ -16,6 +15,7 @@ interface Testimonial {
   content: string;
   rating: number;
   image_url?: string;
+  status?: string;
 }
 
 const Testimonials: React.FC = () => {
@@ -37,14 +37,50 @@ const Testimonials: React.FC = () => {
           testimonial => testimonial.status === "published" || !testimonial.status
         );
         
-        setTestimonials(publishedTestimonials);
+        if (publishedTestimonials.length > 0) {
+          setTestimonials(publishedTestimonials);
+          console.log("Témoignages chargés:", publishedTestimonials);
+        } else {
+          // Fallback si aucun témoignage n'est trouvé
+          setTestimonials([
+            {
+              id: "1",
+              name: "Sophie Martin",
+              company: "DigitalCorp",
+              role: "Directrice Marketing",
+              content: "Une équipe professionnelle qui a su transformer notre vision en réalité. Très satisfaite du résultat!",
+              rating: 5
+            },
+            {
+              id: "2",
+              name: "Thomas Dubois",
+              company: "EcoTech",
+              role: "Fondateur",
+              content: "Leur approche créative et leur rigueur technique nous ont permis de lancer notre startup avec une identité forte.",
+              rating: 5
+            }
+          ]);
+          console.log("Fallback - Témoignages prédéfinis chargés");
+        }
       } catch (error) {
-        console.error('Error loading testimonials:', error);
+        console.error('Erreur lors du chargement des témoignages:', error);
         toast({
           title: "Erreur",
           description: "Impossible de charger les témoignages",
           variant: "destructive",
         });
+        
+        // Fallback en cas d'erreur
+        setTestimonials([
+          {
+            id: "1",
+            name: "Sophie Martin",
+            company: "DigitalCorp",
+            role: "Directrice Marketing",
+            content: "Une équipe professionnelle qui a su transformer notre vision en réalité. Très satisfaite du résultat!",
+            rating: 5
+          }
+        ]);
       } finally {
         setIsLoading(false);
       }
@@ -90,7 +126,7 @@ const Testimonials: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="relative inline-block">
-              <AnimatedText text="Ce Que Disent Nos Clients" className="text-gradient" />
+              <span className="block text-gradient text-4xl font-bold">Ce Que Disent Nos Clients</span>
             </h2>
           </div>
           
