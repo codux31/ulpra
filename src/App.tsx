@@ -63,19 +63,84 @@ function App() {
           <Route path="/admin" element={
             <AdminRoute>
               <AdminLayout>
-                <Routes>
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="services" element={<AdminServices />} />
-                  <Route path="services/add" element={<ServiceForm />} />
-                  <Route path="services/edit/:serviceId" element={<ServiceForm />} />
-                  <Route path="projects" element={<AdminProjects />} />
-                  <Route path="projects/categories" element={<ProjectCategories />} />
-                  <Route path="projects/add" element={<ProjectForm />} />
-                  <Route path="projects/edit/:projectId" element={<ProjectForm />} />
-                  <Route path="resources" element={<AdminResources />} />
-                  <Route path="pricing" element={<AdminPricing />} />
-                  <Route path="email" element={<EmailSettings />} />
-                </Routes>
+                <Dashboard />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/dashboard" element={
+            <AdminRoute>
+              <AdminLayout>
+                <Dashboard />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/services" element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminServices />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/services/add" element={
+            <AdminRoute>
+              <AdminLayout>
+                <ServiceForm />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/services/edit/:serviceId" element={
+            <AdminRoute>
+              <AdminLayout>
+                <ServiceForm />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/projects" element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminProjects />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/projects/categories" element={
+            <AdminRoute>
+              <AdminLayout>
+                <ProjectCategories />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/projects/add" element={
+            <AdminRoute>
+              <AdminLayout>
+                <ProjectForm />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/projects/edit/:projectId" element={
+            <AdminRoute>
+              <AdminLayout>
+                <ProjectForm />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/resources" element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminResources />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/pricing" element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminPricing />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/email" element={
+            <AdminRoute>
+              <AdminLayout>
+                <EmailSettings />
               </AdminLayout>
             </AdminRoute>
           } />

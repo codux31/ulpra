@@ -119,6 +119,7 @@ export const defaultResources: Resource[] = [
     category: "UX Design",
     type: "guide",
     download_url: "https://example.com/ux-guide-2023.pdf",
+    downloadUrl: "https://example.com/ux-guide-2023.pdf", // Added for compatibility
     created_at: new Date().toISOString()
   },
   {
@@ -131,6 +132,7 @@ export const defaultResources: Resource[] = [
     category: "Marketing Digital",
     type: "ebook",
     download_url: "https://example.com/seo-fundamentals.pdf",
+    downloadUrl: "https://example.com/seo-fundamentals.pdf", // Added for compatibility
     created_at: new Date().toISOString()
   },
   {
@@ -143,6 +145,7 @@ export const defaultResources: Resource[] = [
     category: "Marketing",
     type: "template",
     download_url: "https://example.com/marketing-template.xlsx",
+    downloadUrl: "https://example.com/marketing-template.xlsx", // Added for compatibility
     created_at: new Date().toISOString()
   }
 ];
@@ -336,7 +339,7 @@ export const fetchResources = async (): Promise<Resource[]> => {
       return defaultResources;
     }
     
-    // If we got data from Supabase, transform it if needed
+    // If we got data from Supabase, transform it to match our model
     if (data && data.length > 0) {
       return data.map(item => ({
         ...item,
@@ -344,9 +347,11 @@ export const fetchResources = async (): Promise<Resource[]> => {
         readTime: item.readtime,
         excerpt: item.excerpt || item.description || "",
         download_url: item.download_url,
-        downloadUrl: item.download_url,
-        image: item.image_url,
-        tags: []
+        downloadUrl: item.download_url, // For compatibility with Resources.tsx
+        image: item.image_url, // For compatibility with Resources.tsx
+        tags: item.tags || [], // Ensure tags is always an array
+        created_at: item.created_at || new Date().toISOString(), // Ensure created_at always exists
+        description: item.description || "" // Ensure description always exists
       }));
     }
     

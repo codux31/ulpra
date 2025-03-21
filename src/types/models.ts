@@ -54,15 +54,15 @@ export interface Resource {
   content?: string;
   excerpt: string;
   image_url?: string;
-  image?: string; // For compatibility with some components
+  image?: string; // For compatibility with Resources.tsx
   category: string;
   type?: string;
   download_url?: string;
-  downloadUrl?: string; // Added for compatibility with Resources.tsx
+  downloadUrl?: string; // For compatibility with Resources.tsx
   author?: string;
   date?: string;
   readTime?: string;
-  tags?: string[]; // For compatibility with some components
+  tags?: string[]; // For compatibility with Resources.tsx
   status?: "published" | "draft" | "archived";
   created_at: string;
   updated_at?: string;

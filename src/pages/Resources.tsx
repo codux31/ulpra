@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -54,6 +55,7 @@ const Resources: React.FC = () => {
             {
               id: 'tendances-design-2023',
               title: 'Tendances de Design Web pour 2023',
+              description: 'Découvrez les tendances émergentes en design web qui domineront l\'année 2023.',
               excerpt: 'Découvrez les tendances émergentes en design web qui domineront l\'année 2023 et comment les intégrer à vos projets.',
               category: 'Design',
               date: '15 janvier 2023',
@@ -62,10 +64,12 @@ const Resources: React.FC = () => {
               image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
               tags: ['Design Web', 'Tendances', 'UX/UI'],
               type: 'article',
+              created_at: new Date().toISOString()
             },
             {
               id: 'optimisation-seo-guide',
               title: 'Guide Complet d\'Optimisation SEO',
+              description: 'Un guide étape par étape pour améliorer le référencement de votre site web.',
               excerpt: 'Un guide étape par étape pour améliorer le référencement de votre site web et gagner en visibilité dans les moteurs de recherche.',
               category: 'Marketing',
               date: '28 février 2023',
@@ -74,10 +78,12 @@ const Resources: React.FC = () => {
               image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
               tags: ['SEO', 'Référencement', 'Google'],
               type: 'article',
+              created_at: new Date().toISOString()
             },
             {
               id: 'tutoriel-animation-gsap',
               title: 'Tutoriel: Créer des Animations Web avec GSAP',
+              description: 'Apprenez à créer des animations web fluides et impressionnantes avec GSAP.',
               excerpt: 'Apprenez à créer des animations web fluides et impressionnantes avec la bibliothèque GSAP à travers ce tutoriel pas à pas.',
               category: 'Développement',
               date: '5 avril 2023',
@@ -86,6 +92,7 @@ const Resources: React.FC = () => {
               image: 'https://images.unsplash.com/photo-1624996379697-f01d168b1a52?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80',
               tags: ['JavaScript', 'Animation', 'GSAP', 'Tutoriel'],
               type: 'tutorial',
+              created_at: new Date().toISOString()
             },
           ];
           

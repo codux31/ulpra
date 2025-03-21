@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -77,6 +78,7 @@ const AdminResources = () => {
         {
           id: "tendances-design-2023",
           title: "Tendances de Design Web pour 2023",
+          description: "Découvrez les tendances émergentes qui façonneront le design web cette année.",
           excerpt: "Découvrez les tendances émergentes qui façonneront le design web cette année.",
           category: "Design",
           date: new Date().toISOString(),
@@ -89,6 +91,7 @@ const AdminResources = () => {
         {
           id: "guide-seo-debutants",
           title: "Guide SEO pour Débutants",
+          description: "Tous les fondamentaux du référencement pour améliorer la visibilité de votre site.",
           excerpt: "Tous les fondamentaux du référencement pour améliorer la visibilité de votre site.",
           category: "Marketing",
           date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
