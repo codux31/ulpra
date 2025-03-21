@@ -39,6 +39,7 @@ export interface Testimonial {
   quote: string;
   content?: string;
   avatar_url?: string;
+  image_url?: string; // Added to match usage in Testimonials.tsx
   rating: number;
   status?: "published" | "draft" | "archived";
   created_at: string;
@@ -57,6 +58,7 @@ export interface Resource {
   category: string;
   type?: string;
   download_url?: string;
+  downloadUrl?: string; // Added for compatibility with Resources.tsx
   author?: string;
   date?: string;
   readTime?: string;

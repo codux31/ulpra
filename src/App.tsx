@@ -63,22 +63,22 @@ function App() {
           <Route path="/admin" element={
             <AdminRoute>
               <AdminLayout>
-                {/* AdminLayout needs children */}
+                <Routes>
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="services" element={<AdminServices />} />
+                  <Route path="services/add" element={<ServiceForm />} />
+                  <Route path="services/edit/:serviceId" element={<ServiceForm />} />
+                  <Route path="projects" element={<AdminProjects />} />
+                  <Route path="projects/categories" element={<ProjectCategories />} />
+                  <Route path="projects/add" element={<ProjectForm />} />
+                  <Route path="projects/edit/:projectId" element={<ProjectForm />} />
+                  <Route path="resources" element={<AdminResources />} />
+                  <Route path="pricing" element={<AdminPricing />} />
+                  <Route path="email" element={<EmailSettings />} />
+                </Routes>
               </AdminLayout>
             </AdminRoute>
-          }>
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="services" element={<AdminServices />} />
-            <Route path="services/add" element={<ServiceForm />} />
-            <Route path="services/edit/:serviceId" element={<ServiceForm />} />
-            <Route path="projects" element={<AdminProjects />} />
-            <Route path="projects/categories" element={<ProjectCategories />} />
-            <Route path="projects/add" element={<ProjectForm />} />
-            <Route path="projects/edit/:projectId" element={<ProjectForm />} />
-            <Route path="resources" element={<AdminResources />} />
-            <Route path="pricing" element={<AdminPricing />} />
-            <Route path="email" element={<EmailSettings />} />
-          </Route>
+          } />
           
           {/* 404 Route */}
           <Route path="*" element={<NotFound />} />

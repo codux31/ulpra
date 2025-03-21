@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -47,14 +48,15 @@ const Projects = () => {
           setFilteredProjects(publishedProjects);
         } else {
           // Fallback to static data if no projects in database
-          const staticProjects = [
+          const staticProjects: Project[] = [
             {
               id: "ecommerce-redesign",
               title: "Refonte Site E-commerce",
               category: "Web Design",
               description: "Refonte complète avec une expérience utilisateur optimisée et une identité visuelle percutante.",
               image_url: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop",
-              client: "ModernRetail"
+              client: "ModernRetail",
+              created_at: new Date().toISOString()
             },
             {
               id: "marketing-campaign",
@@ -62,7 +64,8 @@ const Projects = () => {
               category: "Communication",
               description: "Stratégie omnicanal avec contenus personnalisés pour augmenter la notoriété et les conversions.",
               image_url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
-              client: "EcoSolutions"
+              client: "EcoSolutions",
+              created_at: new Date().toISOString()
             },
             {
               id: "brand-identity",
@@ -70,7 +73,8 @@ const Projects = () => {
               category: "Branding",
               description: "Création d'une identité de marque distinctive avec logo, charte graphique et supports de communication.",
               image_url: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2064&auto=format&fit=crop",
-              client: "NeoTech"
+              client: "NeoTech",
+              created_at: new Date().toISOString()
             },
             {
               id: "mobile-app",
@@ -78,7 +82,8 @@ const Projects = () => {
               category: "UX/UI Design",
               description: "Conception d'une application intuitive pour améliorer l'expérience des participants à un événement majeur.",
               image_url: "https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1974&auto=format&fit=crop",
-              client: "EventPro"
+              client: "EventPro",
+              created_at: new Date().toISOString()
             },
           ];
           
@@ -99,14 +104,15 @@ const Projects = () => {
         });
         
         // Utiliser des données de démonstration en cas d'erreur
-        const fallbackProjects = [
+        const fallbackProjects: Project[] = [
           {
             id: "ecommerce-redesign",
             title: "Refonte Site E-commerce",
             category: "Web Design",
             description: "Refonte complète avec une expérience utilisateur optimisée et une identité visuelle percutante.",
             image_url: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop",
-            client: "ModernRetail"
+            client: "ModernRetail",
+            created_at: new Date().toISOString()
           },
           {
             id: "marketing-campaign",
@@ -114,7 +120,8 @@ const Projects = () => {
             category: "Communication",
             description: "Stratégie omnicanal avec contenus personnalisés pour augmenter la notoriété et les conversions.",
             image_url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
-            client: "EcoSolutions"
+            client: "EcoSolutions",
+            created_at: new Date().toISOString()
           },
         ];
         

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -34,14 +35,15 @@ const Services = () => {
           console.log("Services page data:", activeServices);
           setServices(activeServices as Service[]);
         } else {
-          const staticServices = [
+          const staticServices: Service[] = [
             {
               id: "web-design",
               title: "Design Digital",
               description: "Création de sites web, d'applications et d'interfaces utilisateur intuitives et esthétiques.",
               icon: "01",
               longDescription: "Notre approche de conception web combine esthétique soignée et fonctionnalité optimale. Nous créons des sites responsifs, intuitifs et engageants qui reflètent parfaitement l'identité de votre marque.",
-              imageUrl: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+              imageUrl: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+              created_at: new Date().toISOString()
             },
             {
               id: "branding",
@@ -49,7 +51,8 @@ const Services = () => {
               description: "Développement d'identités de marque distinctives, logos, et chartes graphiques complètes.",
               icon: "02",
               longDescription: "Une identité de marque forte est essentielle pour se démarquer. Nous créons des identités visuelles mémorables qui captent l'essence de votre entreprise et établissent une connexion avec votre audience.",
-              imageUrl: "https://images.unsplash.com/photo-1634084462412-b54873c0a56d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+              imageUrl: "https://images.unsplash.com/photo-1634084462412-b54873c0a56d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+              created_at: new Date().toISOString()
             },
             {
               id: "communication",
@@ -57,15 +60,17 @@ const Services = () => {
               description: "Stratégies de communication omnicanal, gestion des réseaux sociaux et création de contenu.",
               icon: "03",
               longDescription: "Une communication efficace est la clé pour atteindre et engager votre audience. Nous développons des stratégies sur mesure qui intègrent tous les canaux pertinents pour maximiser votre impact.",
-              imageUrl: "https://images.unsplash.com/photo-1552664730-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+              imageUrl: "https://images.unsplash.com/photo-1552664730-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+              created_at: new Date().toISOString()
             },
             {
               id: "strategy",
               title: "Recherche Stratégique",
               description: "Analyse de marché, étude de la concurrence et élaboration de stratégies marketing efficaces.",
               icon: "04",
-              longDescription: "Le succès repose sur une stratégie solide basée sur des données concrètes. Notre équipe analyse votre marché, identifie les opportunités et élabore des strat��gies personnalisées pour atteindre vos objectifs.",
-              imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+              longDescription: "Le succès repose sur une stratégie solide basée sur des données concrètes. Notre équipe analyse votre marché, identifie les opportunités et élabore des stratégies personnalisées pour atteindre vos objectifs.",
+              imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+              created_at: new Date().toISOString()
             },
           ];
           
@@ -80,14 +85,15 @@ const Services = () => {
           variant: "destructive",
         });
         
-        const fallbackServices = [
+        const fallbackServices: Service[] = [
           {
             id: "web-design",
             title: "Design Digital",
             description: "Création de sites web, d'applications et d'interfaces utilisateur intuitives et esthétiques.",
             icon: "01",
             longDescription: "Notre approche de conception web combine esthétique soignée et fonctionnalité optimale. Nous créons des sites responsifs, intuitifs et engageants qui reflètent parfaitement l'identité de votre marque.",
-            imageUrl: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+            imageUrl: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+            created_at: new Date().toISOString()
           },
           {
             id: "branding",
@@ -95,7 +101,8 @@ const Services = () => {
             description: "Développement d'identités de marque distinctives, logos, et chartes graphiques complètes.",
             icon: "02",
             longDescription: "Une identité de marque forte est essentielle pour se démarquer. Nous créons des identités visuelles mémorables qui captent l'essence de votre entreprise et établissent une connexion avec votre audience.",
-            imageUrl: "https://images.unsplash.com/photo-1634084462412-b54873c0a56d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+            imageUrl: "https://images.unsplash.com/photo-1634084462412-b54873c0a56d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+            created_at: new Date().toISOString()
           },
         ];
         

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Quote, ArrowRight } from 'lucide-react';
@@ -40,8 +41,10 @@ const Testimonials: React.FC = () => {
             name: "Sophie Martin",
             company: "DigitalCorp",
             role: "Directrice Marketing",
+            quote: "Une équipe professionnelle qui a su transformer notre vision en réalité. Très satisfaite du résultat!",
             content: "Une équipe professionnelle qui a su transformer notre vision en réalité. Très satisfaite du résultat!",
-            rating: 5
+            rating: 5,
+            created_at: new Date().toISOString()
           }
         ]);
       } finally {
@@ -113,11 +116,11 @@ const Testimonials: React.FC = () => {
                     transition={{ duration: 0.5 }}
                     className="flex flex-col md:flex-row gap-8 items-center"
                   >
-                    {testimonials[currentIndex].image_url && (
+                    {(testimonials[currentIndex].avatar_url || testimonials[currentIndex].image_url) && (
                       <div className="md:w-1/3 flex justify-center">
                         <div className="relative w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden border-2 border-ulpra-yellow/30">
                           <img 
-                            src={testimonials[currentIndex].image_url} 
+                            src={testimonials[currentIndex].avatar_url || testimonials[currentIndex].image_url} 
                             alt={testimonials[currentIndex].name}
                             className="w-full h-full object-cover"
                           />
@@ -125,9 +128,9 @@ const Testimonials: React.FC = () => {
                       </div>
                     )}
                     
-                    <div className={testimonials[currentIndex].image_url ? "md:w-2/3" : "w-full"}>
+                    <div className={(testimonials[currentIndex].avatar_url || testimonials[currentIndex].image_url) ? "md:w-2/3" : "w-full"}>
                       <blockquote className="text-xl md:text-2xl font-medium mb-6 italic">
-                        "{testimonials[currentIndex].content}"
+                        "{testimonials[currentIndex].content || testimonials[currentIndex].quote}"
                       </blockquote>
                       <div className="flex flex-col md:flex-row md:items-center justify-between">
                         <div>

@@ -114,6 +114,7 @@ export const defaultResources: Resource[] = [
     title: "Guide de l'UX Design en 2023",
     description: "Découvrez les dernières tendances et meilleures pratiques pour créer des expériences utilisateur exceptionnelles.",
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    excerpt: "Découvrez les dernières tendances et meilleures pratiques pour créer des expériences utilisateur exceptionnelles.",
     image_url: "https://picsum.photos/800/600?random=10",
     category: "UX Design",
     type: "guide",
@@ -125,6 +126,7 @@ export const defaultResources: Resource[] = [
     title: "Les fondamentaux du SEO",
     description: "Un guide complet pour comprendre et optimiser votre référencement naturel sur les moteurs de recherche.",
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    excerpt: "Un guide complet pour comprendre et optimiser votre référencement naturel sur les moteurs de recherche.",
     image_url: "https://picsum.photos/800/600?random=11",
     category: "Marketing Digital",
     type: "ebook",
@@ -136,6 +138,7 @@ export const defaultResources: Resource[] = [
     title: "Template de plan marketing digital",
     description: "Un modèle prêt à l'emploi pour planifier et exécuter vos campagnes marketing digitales avec succès.",
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    excerpt: "Un modèle prêt à l'emploi pour planifier et exécuter vos campagnes marketing digitales avec succès.",
     image_url: "https://picsum.photos/800/600?random=12",
     category: "Marketing",
     type: "template",
@@ -338,7 +341,12 @@ export const fetchResources = async (): Promise<Resource[]> => {
       return data.map(item => ({
         ...item,
         status: item.status as "published" | "draft" | "archived",
-        readTime: item.readtime
+        readTime: item.readtime,
+        excerpt: item.excerpt || item.description || "",
+        download_url: item.download_url,
+        downloadUrl: item.download_url,
+        image: item.image_url,
+        tags: []
       }));
     }
     
