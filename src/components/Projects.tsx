@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
@@ -6,17 +5,7 @@ import AnimatedText from './AnimatedText';
 import { motion } from 'framer-motion';
 import { fetchProjects } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
-
-// Type de projet
-interface Project {
-  id: string;
-  title: string;
-  category: string;
-  description: string;
-  image_url?: string;
-  color?: string;
-  client?: string;
-}
+import { Project } from '@/types/models';
 
 const Projects: React.FC = () => {
   // État pour les projets
@@ -43,7 +32,7 @@ const Projects: React.FC = () => {
             // Ajouter une couleur de dégradé aléatoire si non définie
             color: project.color || getRandomGradient(),
             // Utiliser image_url ou fallback si non définie
-            image: project.image_url || "https://images.unsplash.com/photo-1581089781785-603411fa81e5?auto=format&fit=crop&w=2340&q=80"
+            image_url: project.image_url || "https://images.unsplash.com/photo-1581089781785-603411fa81e5?auto=format&fit=crop&w=2340&q=80"
           }));
         
         setProjects(limitedProjects);

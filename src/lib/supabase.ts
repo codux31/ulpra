@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/integrations/supabase/types';
+import { Service, Project, Testimonial, Resource, Pricing } from '@/types/models';
 import { toast } from '@/hooks/use-toast';
 
 // Default data for use when Supabase tables haven't been created yet
-export const defaultServices = [
+export const defaultServices: Service[] = [
   {
     id: '1',
     title: "Site web responsive",
@@ -36,7 +37,7 @@ export const defaultServices = [
   }
 ];
 
-export const defaultProjects = [
+export const defaultProjects: Project[] = [
   {
     id: '1',
     title: "Refonte du site e-commerce Luxxus",
@@ -74,7 +75,7 @@ export const defaultProjects = [
   }
 ];
 
-export const defaultTestimonials = [
+export const defaultTestimonials: Testimonial[] = [
   {
     id: '1',
     name: "Sophie Martin",
@@ -107,7 +108,7 @@ export const defaultTestimonials = [
   }
 ];
 
-export const defaultResources = [
+export const defaultResources: Resource[] = [
   {
     id: '1',
     title: "Guide de l'UX Design en 2023",
@@ -143,7 +144,7 @@ export const defaultResources = [
   }
 ];
 
-export const defaultPricing = [
+export const defaultPricing: Pricing[] = [
   {
     id: '1',
     name: "Essentiel",
@@ -212,7 +213,7 @@ export const checkAdminCredentials = (email: string, password: string) => {
 };
 
 // Function to fetch services from Supabase, with fallback to local data
-export const fetchServices = async () => {
+export const fetchServices = async (): Promise<Service[]> => {
   try {
     // Try to fetch data from Supabase first
     const { data, error } = await supabase
@@ -228,7 +229,7 @@ export const fetchServices = async () => {
     
     // If we got data from Supabase, use it
     if (data && data.length > 0) {
-      return data;
+      return data as unknown as Service[];
     }
     
     // Otherwise use default data
@@ -242,7 +243,7 @@ export const fetchServices = async () => {
 };
 
 // Function to fetch projects from Supabase, with fallback to local data
-export const fetchProjects = async () => {
+export const fetchProjects = async (): Promise<Project[]> => {
   try {
     // Try to fetch data from Supabase first
     const { data, error } = await supabase
@@ -258,7 +259,7 @@ export const fetchProjects = async () => {
     
     // If we got data from Supabase, use it
     if (data && data.length > 0) {
-      return data;
+      return data as unknown as Project[];
     }
     
     // Otherwise use default data
@@ -272,7 +273,7 @@ export const fetchProjects = async () => {
 };
 
 // Function to fetch testimonials from Supabase, with fallback to local data
-export const fetchTestimonials = async () => {
+export const fetchTestimonials = async (): Promise<Testimonial[]> => {
   try {
     // Try to fetch data from Supabase first
     const { data, error } = await supabase
@@ -288,7 +289,7 @@ export const fetchTestimonials = async () => {
     
     // If we got data from Supabase, use it
     if (data && data.length > 0) {
-      return data;
+      return data as unknown as Testimonial[];
     }
     
     // Otherwise use default data
@@ -302,7 +303,7 @@ export const fetchTestimonials = async () => {
 };
 
 // Function to fetch resources from Supabase, with fallback to local data
-export const fetchResources = async () => {
+export const fetchResources = async (): Promise<Resource[]> => {
   try {
     // Try to fetch data from Supabase first
     const { data, error } = await supabase
@@ -318,7 +319,7 @@ export const fetchResources = async () => {
     
     // If we got data from Supabase, use it
     if (data && data.length > 0) {
-      return data;
+      return data as unknown as Resource[];
     }
     
     // Otherwise use default data
@@ -332,7 +333,7 @@ export const fetchResources = async () => {
 };
 
 // Function to fetch pricing from Supabase, with fallback to local data
-export const fetchPricing = async () => {
+export const fetchPricing = async (): Promise<Pricing[]> => {
   try {
     // Try to fetch data from Supabase first
     const { data, error } = await supabase
@@ -348,7 +349,7 @@ export const fetchPricing = async () => {
     
     // If we got data from Supabase, use it
     if (data && data.length > 0) {
-      return data;
+      return data as unknown as Pricing[];
     }
     
     // Otherwise use default data
@@ -359,6 +360,156 @@ export const fetchPricing = async () => {
     // Fallback to local data in case of errors
     return defaultPricing;
   }
+};
+
+// Seed data functions
+export const seedServices = async (): Promise<void> => {
+  try {
+    const { data, error } = await supabase
+      .from('services')
+      .select('id')
+      .limit(1);
+      
+    if (error) throw error;
+    
+    // If no data, seed with default services
+    if (!data || data.length === 0) {
+      console.log('Seeding services table...');
+      const { error: insertError } = await supabase
+        .from('services')
+        .insert(defaultServices.map(service => ({
+          ...service,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })));
+        
+      if (insertError) throw insertError;
+      console.log('Services seeded successfully');
+    }
+  } catch (error) {
+    console.error('Error seeding services:', error);
+  }
+};
+
+export const seedProjects = async (): Promise<void> => {
+  try {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('id')
+      .limit(1);
+      
+    if (error) throw error;
+    
+    // If no data, seed with default projects
+    if (!data || data.length === 0) {
+      console.log('Seeding projects table...');
+      const { error: insertError } = await supabase
+        .from('projects')
+        .insert(defaultProjects.map(project => ({
+          ...project,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })));
+        
+      if (insertError) throw insertError;
+      console.log('Projects seeded successfully');
+    }
+  } catch (error) {
+    console.error('Error seeding projects:', error);
+  }
+};
+
+export const seedTestimonials = async (): Promise<void> => {
+  try {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('id')
+      .limit(1);
+      
+    if (error) throw error;
+    
+    // If no data, seed with default testimonials
+    if (!data || data.length === 0) {
+      console.log('Seeding testimonials table...');
+      const { error: insertError } = await supabase
+        .from('testimonials')
+        .insert(defaultTestimonials.map(testimonial => ({
+          ...testimonial,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })));
+        
+      if (insertError) throw insertError;
+      console.log('Testimonials seeded successfully');
+    }
+  } catch (error) {
+    console.error('Error seeding testimonials:', error);
+  }
+};
+
+export const seedResources = async (): Promise<void> => {
+  try {
+    const { data, error } = await supabase
+      .from('resources')
+      .select('id')
+      .limit(1);
+      
+    if (error) throw error;
+    
+    // If no data, seed with default resources
+    if (!data || data.length === 0) {
+      console.log('Seeding resources table...');
+      const { error: insertError } = await supabase
+        .from('resources')
+        .insert(defaultResources.map(resource => ({
+          ...resource,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })));
+        
+      if (insertError) throw insertError;
+      console.log('Resources seeded successfully');
+    }
+  } catch (error) {
+    console.error('Error seeding resources:', error);
+  }
+};
+
+export const seedPricing = async (): Promise<void> => {
+  try {
+    const { data, error } = await supabase
+      .from('pricing')
+      .select('id')
+      .limit(1);
+      
+    if (error) throw error;
+    
+    // If no data, seed with default pricing
+    if (!data || data.length === 0) {
+      console.log('Seeding pricing table...');
+      const { error: insertError } = await supabase
+        .from('pricing')
+        .insert(defaultPricing.map(plan => ({
+          ...plan,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })));
+        
+      if (insertError) throw insertError;
+      console.log('Pricing seeded successfully');
+    }
+  } catch (error) {
+    console.error('Error seeding pricing:', error);
+  }
+};
+
+// Seed all data
+export const seedAllData = async (): Promise<void> => {
+  await seedServices();
+  await seedProjects();
+  await seedTestimonials();
+  await seedResources();
+  await seedPricing();
 };
 
 // Export the toast utility

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from "@/components/ui/use-toast";
 import { 
@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockKeyhole, Mail } from 'lucide-react';
-import { checkAdminCredentials } from '@/lib/supabase';
+import { checkAdminCredentials, seedAllData } from '@/lib/supabase';
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide").min(1, "L'email est requis"),
@@ -29,6 +29,14 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  useEffect(() => {
+    // Check if we're already logged in
+    const isLoggedIn = localStorage.getItem("ulpra-admin-auth") === "true";
+    if (isLoggedIn) {
+      navigate("/admin/dashboard");
+    }
+  }, [navigate]);
   
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -52,6 +60,9 @@ const Login = () => {
         localStorage.setItem("ulpra-admin-auth", "true");
         localStorage.setItem("admin-email", data.email);
         localStorage.setItem("admin-password", data.password);
+        
+        // Seed the database with initial data
+        await seedAllData();
         
         toast({
           title: "Connexion réussie",
