@@ -1,13 +1,25 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnimatedText from '@/components/AnimatedText';
-import { ArrowRight } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { CheckCircle, Users, Lightbulb, Target } from 'lucide-react';
 
 const About = () => {
+  // Référence pour l'animation au scroll
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start']
+  });
+  
+  // Valeurs pour les animations parallaxes
+  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0.6]);
+
   useEffect(() => {
-    // Observer for revealing elements on scroll
+    // Observer pour révéler les éléments au scroll
     const setupIntersectionObserver = () => {
       const observer = new IntersectionObserver(
         (entries) => {
@@ -29,9 +41,50 @@ const About = () => {
     
     setupIntersectionObserver();
     
-    // Scroll to top on page load
+    // Remonter en haut de la page lors du chargement
     window.scrollTo(0, 0);
   }, []);
+
+  // Données pour les valeurs
+  const values = [
+    {
+      icon: <Lightbulb className="h-8 w-8 text-ulpra-yellow" />,
+      title: "Innovation",
+      description: "Nous repoussons constamment les limites créatives pour développer des solutions originales qui se démarquent."
+    },
+    {
+      icon: <CheckCircle className="h-8 w-8 text-ulpra-yellow" />,
+      title: "Excellence",
+      description: "Nous nous engageons à fournir un travail de la plus haute qualité, avec une attention méticuleuse aux détails."
+    },
+    {
+      icon: <Users className="h-8 w-8 text-ulpra-yellow" />,
+      title: "Collaboration",
+      description: "Nous croyons en un processus transparent et collaboratif, travaillant main dans la main avec nos clients."
+    },
+    {
+      icon: <Target className="h-8 w-8 text-ulpra-yellow" />,
+      title: "Impact",
+      description: "Nous créons des designs et des stratégies qui génèrent des résultats mesurables pour votre entreprise."
+    }
+  ];
+
+  // Données pour les partenaires
+  const partners = [
+    { name: "Palindrome Studio", role: "Design d'interaction" },
+    { name: "Loulou Studio", role: "Production audiovisuelle" },
+    { name: "Okea Design", role: "Design d'expérience utilisateur" }
+  ];
+
+  // Timeline events
+  const timelineEvents = [
+    { year: "2018", title: "Création d'ULPRA", description: "Naissance du studio avec une vision claire: créer des expériences web mémorables." },
+    { year: "2019", title: "Premiers projets majeurs", description: "Développement de notre portefeuille avec des clients de référence." },
+    { year: "2020", title: "Expansion des services", description: "Ajout de services de stratégie et communication à notre offre." },
+    { year: "2021", title: "Partenariats stratégiques", description: "Développement d'un réseau de collaborateurs experts pour enrichir notre offre." },
+    { year: "2022", title: "Repositionnement premium", description: "Focalisation sur des projets haut de gamme avec une approche sur-mesure." },
+    { year: "2023", title: "Aujourd'hui", description: "Studio créatif de référence pour les marques ambitieuses." }
+  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -40,13 +93,36 @@ const About = () => {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative overflow-hidden">
         <div className="container mx-auto">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="mb-6 relative">
-              <AnimatedText text="À Propos d'ULPRA" className="text-gradient" />
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 reveal-content">
-              Un studio créatif qui transforme les visions en réalités digitales, avec une approche unique et innovante.
-            </p>
+          <div className="flex flex-col md:flex-row gap-12 items-center">
+            <div className="md:w-1/2">
+              <h1 className="mb-6 relative">
+                <AnimatedText text="À Propos d'ULPRA" className="text-gradient" />
+              </h1>
+              <p className="text-xl text-muted-foreground mb-8 reveal-content opacity-0">
+                Un studio créatif premium porté par une vision d'excellence et d'innovation dans le domaine du web et de la communication.
+              </p>
+            </div>
+            <div className="md:w-1/2 reveal-content opacity-0 [animation-delay:300ms]">
+              <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                <motion.div 
+                  ref={ref}
+                  style={{ y, opacity }}
+                  className="absolute inset-0 bg-gradient-to-br from-ulpra-yellow/10 to-ulpra-black rounded-lg"
+                >
+                  {/* Éléments 3D */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="relative w-40 h-40">
+                      <div className="absolute inset-0 border-2 border-ulpra-yellow/20 rounded-full animate-[spin_25s_linear_infinite]"></div>
+                      <div className="absolute inset-2 border border-white/10 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+                      <div className="absolute inset-4 border border-ulpra-yellow/30 rounded-full animate-[spin_20s_linear_infinite]"></div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-5xl font-display font-bold text-white">U<span className="text-ulpra-yellow">.</span></span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -55,114 +131,35 @@ const About = () => {
       </section>
       
       {/* Notre Histoire */}
-      <section className="py-16 px-6 relative">
+      <section className="py-20 px-6 relative bg-black/50">
         <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="reveal-content">
-              <h2 className="mb-6 relative">
-                <AnimatedText text="Notre Histoire" className="text-gradient" delay={200} />
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                ULPRA est né d'une vision simple mais puissante : créer un studio où la créativité et la stratégie se rencontrent pour donner vie à des projets digitaux exceptionnels.
-              </p>
-              <p className="text-muted-foreground mb-6">
-                Fondé par une petite équipe de deux passionnés du digital, nous avons rapidement établi des partenariats stratégiques avec des studios créatifs comme "Palindrome Studio", "Loulou Studio" et "Okea Design" pour offrir une expertise complète à nos clients.
-              </p>
-              <p className="text-muted-foreground mb-6">
-                Aujourd'hui, nous sommes fiers d'accompagner des entreprises de toutes tailles dans leur transformation digitale, en apportant des solutions sur mesure qui font la différence.
-              </p>
-            </div>
-            <div className="glassmorphism p-8 reveal-content">
-              <img 
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80" 
-                alt="L'équipe ULPRA" 
-                className="w-full h-auto rounded-xl object-cover"
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Nos Partenaires */}
-      <section className="py-16 px-6 relative">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="mb-6 relative inline-block">
-              <AnimatedText text="Nos Partenaires Clés" className="text-gradient" />
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <h2 className="mb-8 relative inline-block">
+              <AnimatedText text="Notre Histoire" className="text-gradient" />
             </h2>
-            <p className="max-w-2xl mx-auto text-muted-foreground">
-              Nous collaborons avec des talents exceptionnels pour offrir des résultats exceptionnels
+            <p className="text-lg text-muted-foreground reveal-content opacity-0">
+              ULPRA est né de la passion de deux créatifs pour le design web et la communication. Notre mission est d'aider les marques ambitieuses à se démarquer dans un monde numérique saturé, en créant des expériences mémorables et des stratégies de communication percutantes.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glassmorphism p-8 text-center reveal-content">
-              <div className="h-20 flex items-center justify-center mb-6">
-                <h3 className="text-xl font-semibold text-ulpra-yellow">Palindrome Studio</h3>
+          {/* Timeline */}
+          <div className="relative max-w-3xl mx-auto mt-20 pl-8 border-l border-ulpra-yellow/30">
+            {timelineEvents.map((event, index) => (
+              <div 
+                key={index} 
+                className="mb-12 relative reveal-content opacity-0"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-ulpra-yellow/20 border-2 border-ulpra-yellow flex items-center justify-center">
+                  <div className="w-2 h-2 rounded-full bg-ulpra-yellow"></div>
+                </div>
+                <div className="absolute -left-[110px] top-0 font-display font-bold text-ulpra-yellow">{event.year}</div>
+                <div className="pl-6">
+                  <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
+                  <p className="text-muted-foreground">{event.description}</p>
+                </div>
               </div>
-              <p className="text-muted-foreground">
-                Experts en motion design et animation 3D, apportant vie et mouvement à nos projets digitaux.
-              </p>
-            </div>
-            
-            <div className="glassmorphism p-8 text-center reveal-content" style={{ transitionDelay: "100ms" }}>
-              <div className="h-20 flex items-center justify-center mb-6">
-                <h3 className="text-xl font-semibold text-ulpra-yellow">Loulou Studio</h3>
-              </div>
-              <p className="text-muted-foreground">
-                Spécialistes en photographie et direction artistique, créant des visuels qui captivent et inspirent.
-              </p>
-            </div>
-            
-            <div className="glassmorphism p-8 text-center reveal-content" style={{ transitionDelay: "200ms" }}>
-              <div className="h-20 flex items-center justify-center mb-6">
-                <h3 className="text-xl font-semibold text-ulpra-yellow">Okea Design</h3>
-              </div>
-              <p className="text-muted-foreground">
-                Maîtres de l'identité visuelle et du design d'expérience, transformant les concepts en identités mémorables.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Nos Valeurs */}
-      <section className="py-16 px-6 relative bg-black">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="mb-6 relative inline-block">
-              <AnimatedText text="Nos Valeurs" className="text-gradient" />
-            </h2>
-            <p className="max-w-2xl mx-auto text-muted-foreground">
-              Les principes qui guident chacune de nos décisions et actions
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glassmorphism p-8 reveal-content">
-              <div className="text-ulpra-yellow font-display text-5xl font-bold mb-6">01</div>
-              <h3 className="text-xl font-semibold mb-3">Innovation</h3>
-              <p className="text-muted-foreground">
-                Nous repoussons constamment les limites créatives pour proposer des solutions uniques et avant-gardistes qui démarquent nos clients.
-              </p>
-            </div>
-            
-            <div className="glassmorphism p-8 reveal-content" style={{ transitionDelay: "100ms" }}>
-              <div className="text-ulpra-yellow font-display text-5xl font-bold mb-6">02</div>
-              <h3 className="text-xl font-semibold mb-3">Excellence</h3>
-              <p className="text-muted-foreground">
-                Chaque projet est traité avec le plus grand soin, en visant l'excellence dans les moindres détails pour garantir des résultats exceptionnels.
-              </p>
-            </div>
-            
-            <div className="glassmorphism p-8 reveal-content" style={{ transitionDelay: "200ms" }}>
-              <div className="text-ulpra-yellow font-display text-5xl font-bold mb-6">03</div>
-              <h3 className="text-xl font-semibold mb-3">Engagement</h3>
-              <p className="text-muted-foreground">
-                Nous nous engageons pleinement dans la réussite de chaque client, en créant des relations durables basées sur la confiance et le respect mutuel.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
         
@@ -171,73 +168,144 @@ const About = () => {
       </section>
       
       {/* Notre Équipe */}
-      <section className="py-16 px-6 relative">
+      <section className="py-20 px-6 relative">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="mb-6 relative inline-block">
-              <AnimatedText text="Notre Équipe" className="text-gradient" />
-            </h2>
-            <p className="max-w-2xl mx-auto text-muted-foreground">
-              Des professionnels passionnés qui unissent leurs talents pour donner vie à vos projets
+          <h2 className="mb-12 text-center relative inline-block">
+            <AnimatedText text="Notre Équipe" className="text-gradient" />
+          </h2>
+          
+          <div className="text-center max-w-3xl mx-auto mb-16 reveal-content opacity-0">
+            <p className="text-lg mb-6">
+              ULPRA est porté par une équipe réduite de deux professionnels passionnés, complémentaires dans leurs compétences, avec une vision commune de l'excellence créative.
+            </p>
+            <p className="text-muted-foreground">
+              Notre structure volontairement légère nous permet d'être agiles, réactifs et totalement dédiés à chaque projet que nous entreprenons.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
-            {[
-              {
-                name: "Emma Laurent",
-                role: "Directrice Créative",
-                image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"
-              },
-              {
-                name: "Thomas Martin",
-                role: "Développeur Full Stack",
-                image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"
-              }
-            ].map((member, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            {/* Fondateur 1 */}
+            <div className="glassmorphism p-6 rounded-xl reveal-content opacity-0">
+              <div className="relative w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden border-2 border-ulpra-yellow/30">
+                <div className="absolute inset-0 bg-gradient-to-br from-ulpra-yellow/30 to-ulpra-black"></div>
+                <div className="absolute inset-0 flex items-center justify-center text-3xl font-bold">A</div>
+              </div>
+              <h3 className="text-xl font-semibold text-center mb-1">Alexandre</h3>
+              <p className="text-ulpra-yellow text-sm text-center mb-4">Directeur Créatif & Fondateur</p>
+              <p className="text-muted-foreground text-center text-sm">
+                Expert en UX/UI design et stratégie digitale avec plus de 10 ans d'expérience dans la création d'expériences web premium.
+              </p>
+            </div>
+            
+            {/* Fondateur 2 */}
+            <div className="glassmorphism p-6 rounded-xl reveal-content opacity-0 [animation-delay:200ms]">
+              <div className="relative w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden border-2 border-ulpra-yellow/30">
+                <div className="absolute inset-0 bg-gradient-to-br from-ulpra-yellow/30 to-ulpra-black"></div>
+                <div className="absolute inset-0 flex items-center justify-center text-3xl font-bold">S</div>
+              </div>
+              <h3 className="text-xl font-semibold text-center mb-1">Sophie</h3>
+              <p className="text-ulpra-yellow text-sm text-center mb-4">Directrice de Projet & Co-fondatrice</p>
+              <p className="text-muted-foreground text-center text-sm">
+                Spécialiste en communication et gestion de projet, avec une expertise en marketing digital et stratégie de contenu.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Background elements */}
+        <div className="absolute top-1/3 left-0 w-[400px] h-[400px] rounded-full bg-ulpra-yellow/5 blur-[120px] opacity-30" />
+      </section>
+      
+      {/* Nos Partenaires */}
+      <section className="py-20 px-6 relative bg-black/50">
+        <div className="container mx-auto">
+          <h2 className="mb-12 text-center relative inline-block">
+            <AnimatedText text="Nos Partenaires Clés" className="text-gradient" />
+          </h2>
+          
+          <div className="text-center max-w-3xl mx-auto mb-16 reveal-content opacity-0">
+            <p className="text-lg mb-6">
+              Nous collaborons avec un réseau d'experts pour enrichir notre offre et répondre à tous les besoins de nos clients.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            {partners.map((partner, index) => (
               <div 
                 key={index} 
-                className="glassmorphism overflow-hidden reveal-content"
-                style={{ transitionDelay: `${index * 100}ms` }}
+                className="glassmorphism p-8 rounded-xl text-center reveal-content opacity-0 hover:border hover:border-ulpra-yellow/20 transition-all duration-300"
+                style={{ animationDelay: `${index * 150}ms` }}
               >
-                <img 
-                  src={member.image} 
-                  alt={member.name} 
-                  className="w-full h-80 object-cover"
-                  loading="lazy"
-                />
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
-                  <p className="text-ulpra-yellow">{member.role}</p>
+                <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-ulpra-yellow/20 to-transparent flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full border border-ulpra-yellow/30 flex items-center justify-center">
+                    <span className="text-2xl font-bold">{partner.name.charAt(0)}</span>
+                  </div>
                 </div>
+                <h3 className="text-xl font-semibold mb-2">{partner.name}</h3>
+                <p className="text-ulpra-yellow text-sm">{partner.role}</p>
               </div>
             ))}
+          </div>
+        </div>
+        
+        {/* Background elements */}
+        <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-ulpra-yellow/10 blur-[100px] opacity-20" />
+      </section>
+      
+      {/* Nos Valeurs */}
+      <section className="py-20 px-6 relative">
+        <div className="container mx-auto">
+          <h2 className="mb-12 text-center relative inline-block">
+            <AnimatedText text="Nos Valeurs" className="text-gradient" />
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            {values.map((value, index) => (
+              <div 
+                key={index} 
+                className="glassmorphism p-6 rounded-xl flex flex-col items-center text-center reveal-content opacity-0"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="mb-6 p-3 rounded-full bg-ulpra-black/50 border border-ulpra-yellow/20">
+                  {value.icon}
+                </div>
+                <h3 className="text-xl font-semibold mb-4">{value.title}</h3>
+                <p className="text-muted-foreground text-sm">{value.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Éléments 3D */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full -z-10">
+          <div className="relative w-full h-full">
+            <div className="absolute top-1/4 left-1/4 w-48 h-48 border border-ulpra-yellow/10 rounded-full animate-[spin_40s_linear_infinite] opacity-30"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-64 h-64 border border-white/5 rounded-full animate-[spin_50s_linear_infinite_reverse] opacity-20"></div>
           </div>
         </div>
       </section>
       
       {/* Call to Action */}
-      <section className="py-16 px-6 relative">
+      <section className="py-16 px-6 relative bg-black/50">
         <div className="container mx-auto">
-          <div className="glassmorphism p-12 text-center relative z-10 reveal-content">
+          <div className="max-w-4xl mx-auto text-center glassmorphism p-12 rounded-2xl reveal-content opacity-0">
             <h2 className="mb-6 relative inline-block">
-              <AnimatedText text="Prêt à Collaborer ?" className="text-gradient" />
+              <AnimatedText text="Travaillons Ensemble" className="text-gradient" />
             </h2>
-            <p className="max-w-2xl mx-auto text-muted-foreground mb-8">
-              Rejoignez les entreprises qui font confiance à ULPRA pour transformer leurs idées en expériences digitales exceptionnelles.
+            <p className="text-lg text-muted-foreground mb-8">
+              Vous avez un projet ambitieux ? Nous serions ravis de mettre notre expertise à votre service pour le concrétiser.
             </p>
             <a 
               href="/#contact" 
               className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-ulpra-yellow text-ulpra-black font-medium transition-transform duration-300 hover:scale-105"
             >
               Discuter de votre projet
-              <ArrowRight size={16} className="ml-2" />
             </a>
           </div>
         </div>
         
         {/* Background elements */}
-        <div className="absolute top-1/3 left-0 w-[400px] h-[400px] rounded-full bg-ulpra-yellow/5 blur-[120px] opacity-30" />
+        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-ulpra-black to-transparent opacity-70" />
       </section>
       
       <Footer />

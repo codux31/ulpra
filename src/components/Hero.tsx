@@ -38,6 +38,14 @@ const Hero: React.FC = () => {
       <div className="glow-effect absolute top-[30%] left-[30%] w-64 h-64 rounded-full bg-ulpra-yellow/20 blur-[100px] opacity-50 z-0" />
       <div className="glow-effect absolute bottom-[20%] right-[20%] w-80 h-80 rounded-full bg-ulpra-yellow/10 blur-[120px] opacity-40 z-0" />
       
+      {/* Éléments 3D subtils */}
+      <div className="absolute w-32 h-32 top-1/4 right-1/4 rotate-45 opacity-30">
+        <div className="w-full h-full border border-ulpra-yellow/30 rounded-lg transform rotate-12 transition-transform duration-1000 hover:rotate-45" />
+      </div>
+      <div className="absolute w-48 h-48 bottom-1/3 left-1/5 opacity-20">
+        <div className="w-full h-full border-2 border-white/10 rounded-full transform transition-transform duration-1000" />
+      </div>
+      
       <div className="container mx-auto relative z-10 text-center space-y-8">
         <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-sm font-medium">
           <span className="inline-block animate-pulse bg-ulpra-yellow size-2 rounded-full mr-2" />

@@ -4,138 +4,166 @@ import { useParams, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnimatedText from '@/components/AnimatedText';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowLeft, ArrowRight, ExternalLink, Check, Calendar, Users, Target, Award } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
-// Types pour les projets
-interface ProjectData {
+// Type de données pour les projets
+interface Project {
   id: string;
   title: string;
+  category: string;
   client: string;
   year: string;
-  category: string;
   description: string;
   challenge: string;
   solution: string;
-  results: string;
-  mainImage: string;
-  gallery: string[];
+  results: string[];
   technologies: string[];
+  heroImage: string;
+  gallery: string[];
   testimonial?: {
-    quote: string;
+    content: string;
     author: string;
-    position: string;
+    role: string;
   };
-  nextProject: string;
+  nextProject?: string;
 }
 
-// Base de données simulée de projets
-const projectsData: Record<string, ProjectData> = {
-  '1': {
-    id: '1',
-    title: 'Refonte Site E-commerce',
-    client: 'ModernRetail',
+// Données des projets (en production, ces données viendraient d'une API)
+const projectsData: Record<string, Project> = {
+  'luxury-resort': {
+    id: 'luxury-resort',
+    title: 'Luxury Resort',
+    category: 'Site Web',
+    client: 'Riviera Escape & Spa',
     year: '2023',
-    category: 'Web Design',
-    description: 'Refonte complète avec une expérience utilisateur optimisée et une identité visuelle percutante.',
-    challenge: 'ModernRetail faisait face à un taux d\'abandon de panier élevé et une expérience mobile non optimale. L\'architecture de l\'information était confuse et l\'identité visuelle datée.',
-    solution: 'Nous avons repensé entièrement l\'expérience utilisateur en mettant l\'accent sur la clarté, la vitesse et la facilité d\'utilisation. Un nouveau système de design cohérent a été créé avec une identité visuelle moderne et impactante.',
-    results: 'Augmentation de 45% des conversions mobiles, réduction de 30% du taux d\'abandon de panier, et croissance de 25% du temps moyen passé sur le site. L\'identité de marque renforcée a également amélioré la reconnaissance et la confiance des clients.',
-    mainImage: 'https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop',
-    gallery: [
-      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1541185934-01b600ea069c?w=800&auto=format&fit=crop',
+    description: 'Refonte complète du site web d'un resort de luxe avec réservation en ligne et expérience immersive.',
+    challenge: 'Riviera Escape & Spa cherchait à moderniser son site web vieillissant pour refléter l'expérience haut de gamme offerte par l'établissement. Les principaux défis incluaient la création d'une expérience en ligne immersive, l'optimisation du système de réservation et l'amélioration de la présentation des différentes offres et services.',
+    solution: 'Nous avons conçu une expérience utilisateur centrée sur l'immersion visuelle avec des animations subtiles et élégantes. Le site intègre un système de réservation personnalisé, des visites virtuelles des suites et installations, ainsi qu'une présentation dynamique des offres saisonnières.',
+    results: [
+      'Augmentation de 45% des réservations en ligne',
+      'Temps moyen passé sur le site multiplié par 2,5',
+      'Diminution de 30% du taux de rebond',
+      'Amélioration significative de l'expérience mobile',
     ],
-    technologies: ['React', 'Tailwind CSS', 'Headless CMS', 'Stripe', 'Algolia'],
+    technologies: ['WordPress', 'JavaScript', 'GSAP', 'Stripe', 'API de réservation sur mesure'],
+    heroImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+    ],
     testimonial: {
-      quote: 'L\'équipe d\'ULPRA a transformé notre présence en ligne avec une vision claire et une exécution impeccable. Nos clients adorent la nouvelle expérience et nos ventes ont considérablement augmenté.',
-      author: 'Marie Dufresne',
-      position: 'Directrice Marketing, ModernRetail'
+      content: 'ULPRA a parfaitement saisi l'essence de notre marque de luxe et l'a traduite en une expérience digitale exceptionnelle. Le nouveau site a considérablement amélioré notre image et nos performances commerciales.',
+      author: 'Sophie Renaud',
+      role: 'Directrice Marketing, Riviera Escape & Spa',
     },
-    nextProject: '2'
+    nextProject: 'tech-solutions',
   },
-  '2': {
-    id: '2',
-    title: 'Campagne Marketing Digital',
-    client: 'EcoSolutions',
+  'tech-solutions': {
+    id: 'tech-solutions',
+    title: 'Tech Solutions',
+    category: 'Branding & Web',
+    client: 'Nexus Innovation',
     year: '2023',
-    category: 'Communication',
-    description: 'Stratégie omnicanal avec contenus personnalisés pour augmenter la notoriété et les conversions.',
-    challenge: 'EcoSolutions, une startup proposant des alternatives écologiques aux produits ménagers conventionnels, cherchait à accroître sa notoriété et à convertir un public sensible aux questions environnementales mais peu familier avec leur gamme de produits.',
-    solution: 'Nous avons développé une stratégie de contenu omnicanal axée sur l\'éducation et l\'impact environnemental, avec des formats variés adaptés à chaque plateforme : vidéos explicatives, infographies sur les bénéfices écologiques, témoignages d\'utilisateurs et guides pratiques.',
-    results: 'En six mois, la campagne a généré une augmentation de 300% du trafic web, 15K nouveaux abonnés sur les réseaux sociaux, et une hausse des ventes de 75%. La marque est désormais reconnue comme un leader dans le segment des produits ménagers écologiques.',
-    mainImage: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop',
-    gallery: [
-      'https://images.unsplash.com/photo-1542744094-3a99d07455b1?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1611926653458-09294b3142bf?w=800&auto=format&fit=crop',
+    description: 'Création d'identité de marque et développement web pour une startup technologique innovante.',
+    challenge: 'Nexus Innovation, jeune startup spécialisée en intelligence artificielle, avait besoin d'établir une présence de marque forte et distinctive sur un marché très concurrentiel. L'entreprise souhaitait une identité reflétant à la fois son caractère innovant et sa rigueur scientifique.',
+    solution: 'Nous avons développé une identité de marque complète, incluant logo, charte graphique et guidelines, puis conçu un site web dynamique présentant leurs solutions d'IA de manière claire et engageante, avec des démonstrations interactives de leurs technologies.',
+    results: [
+      'Identité de marque unanimement appréciée par les parties prenantes',
+      'Augmentation de 60% des demandes de démonstration via le site',
+      'Amélioration significative de la crédibilité perçue auprès des investisseurs',
+      'Site web primé dans la catégorie "Meilleur site tech" aux French Web Awards',
     ],
-    technologies: ['Social Media', 'SEO', 'Content Marketing', 'Email Automation', 'Analytics'],
+    technologies: ['React', 'Next.js', 'Three.js', 'Framer Motion', 'Figma', 'Adobe Creative Suite'],
+    heroImage: 'https://images.unsplash.com/photo-1581089781785-603411fa81e5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      'https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      'https://images.unsplash.com/photo-1661956602153-23384936a1d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+    ],
     testimonial: {
-      quote: 'L\'approche stratégique d\'ULPRA a transformé notre communication. Ils ont parfaitement compris notre mission et l\'ont traduite en messages percutants qui résonnent auprès de notre public cible.',
-      author: 'Thomas Leroy',
-      position: 'CEO, EcoSolutions'
+      content: 'L'équipe d'ULPRA a su transformer notre vision technique complexe en une identité de marque claire et impactante. Leur approche créative couplée à une compréhension approfondie de notre secteur a dépassé nos attentes.',
+      author: 'Alexandre Dubois',
+      role: 'CEO, Nexus Innovation',
     },
-    nextProject: '3'
+    nextProject: 'gastro-delight',
   },
-  '3': {
-    id: '3',
-    title: 'Identité Visuelle Startup',
-    client: 'NeoTech',
+  'gastro-delight': {
+    id: 'gastro-delight',
+    title: 'Gastro Delight',
+    category: 'E-commerce',
+    client: 'Maison Gourmande',
     year: '2022',
-    category: 'Branding',
-    description: 'Création d\'une identité de marque distinctive avec logo, charte graphique et supports de communication.',
-    challenge: 'NeoTech, une startup innovante dans le secteur de la fintech, avait besoin d\'une identité visuelle forte pour se démarquer dans un marché saturé, tout en inspirant confiance et innovation auprès des investisseurs et des premiers utilisateurs.',
-    solution: 'Nous avons créé une identité complète basée sur un concept de "simplicité sophistiquée", avec un système visuel dynamique qui s\'adapte aux différents points de contact. La palette de couleurs futuriste combinée à une typographie élégante crée un équilibre parfait entre innovation et professionnalisme.',
-    results: 'L\'identité a été déployée avec succès sur tous les supports, contribuant à sécuriser un financement de 2M€. La marque a été reconnue aux awards du design fintech et a attiré des talents clés séduits par l\'image professionnelle et innovante de l\'entreprise.',
-    mainImage: 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2064&auto=format&fit=crop',
-    gallery: [
-      'https://images.unsplash.com/photo-1634084462412-b54873c0a56d?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1600032842850-29b5301b5390?w=800&auto=format&fit=crop',
+    description: 'Boutique en ligne pour une marque d'épicerie fine avec personnalisation de commandes et abonnements.',
+    challenge: 'Maison Gourmande souhaitait transformer son activité de vente d'épicerie fine traditionnelle en une expérience e-commerce premium, permettant la personnalisation des commandes et un système d'abonnement pour les produits récurrents. Le défi était de retranscrire en ligne l'expérience client exclusive de leurs boutiques physiques.',
+    solution: 'Nous avons développé une plateforme e-commerce sur mesure avec Shopify Plus, intégrant un configurateur de paniers gourmands personnalisés, un système d'abonnement flexible, et une présentation immersive des produits avec storytelling autour des producteurs et des origines.',
+    results: [
+      'Lancement réussi avec 200% des objectifs de vente atteints le premier mois',
+      'Panier moyen 35% plus élevé que dans les boutiques physiques',
+      'Taux de conversion de 4.8%, bien au-dessus de la moyenne du secteur',
+      'Plus de 500 abonnements actifs après 6 mois d'exploitation',
     ],
-    technologies: ['Adobe Creative Suite', 'Brand Strategy', 'Typography', 'Color Theory', 'Motion Design'],
+    technologies: ['Shopify Plus', 'JavaScript', 'Liquid', 'Apps Shopify sur mesure', 'Klaviyo', 'ReCharge'],
+    heroImage: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      'https://images.unsplash.com/photo-1606787366850-de6330128bfc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      'https://images.unsplash.com/photo-1556679343-c7306c1976bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+    ],
     testimonial: {
-      quote: 'Notre identité visuelle est désormais notre meilleur atout commercial. ULPRA a su capturer l\'essence de notre mission et la traduire en un langage visuel qui nous différencie instantanément de nos concurrents.',
-      author: 'Sophie Martin',
-      position: 'Fondatrice, NeoTech'
+      content: 'ULPRA a réussi à capturer l'essence de notre marque et à la transposer parfaitement dans l'univers digital. Notre boutique en ligne est devenue un véritable prolongement de notre expérience en magasin, voire plus.',
+      author: 'Marie Lefevre',
+      role: 'Fondatrice, Maison Gourmande',
     },
-    nextProject: '4'
+    nextProject: 'eco-fashion',
   },
-  '4': {
-    id: '4',
-    title: 'Application Mobile Événementielle',
-    client: 'EventPro',
-    year: '2023',
-    category: 'UX/UI Design',
-    description: 'Conception d\'une application intuitive pour améliorer l\'expérience des participants à un événement majeur.',
-    challenge: 'EventPro organisait un festival tech avec plus de 10 000 participants et avait besoin d\'une application pour faciliter la navigation entre les 100+ conférences, gérer les inscriptions et favoriser le networking, tout en offrant une expérience fluide même avec une connexion internet limitée sur le site.',
-    solution: 'Nous avons conçu une application native avec une interface intuitive, un mode hors ligne robuste et des fonctionnalités de personnalisation avancées. L\'accent a été mis sur la facilité de planification, avec des recommandations basées sur les préférences et une carte interactive du site.',
-    results: 'L\'application a été adoptée par 87% des participants, avec un taux de satisfaction de 4.8/5. Le nombre moyen de sessions suivies par participant a augmenté de 30% par rapport à l\'année précédente, et les connexions networking ont doublé grâce à la fonctionnalité de mise en relation.',
-    mainImage: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1974&auto=format&fit=crop',
-    gallery: [
-      'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1573867639040-6dd25fa5f597?w=800&auto=format&fit=crop',
+  'eco-fashion': {
+    id: 'eco-fashion',
+    title: 'Éco Fashion',
+    category: 'Branding & Communication',
+    client: 'Verde Style',
+    year: '2022',
+    description: 'Stratégie de communication complète pour une marque de mode éthique en pleine expansion.',
+    challenge: 'Verde Style, marque de mode éthique en croissance, cherchait à renforcer sa présence sur le marché français et européen. L'entreprise avait besoin d'une stratégie de communication cohérente pour mettre en avant ses engagements environnementaux tout en consolidant son image fashion et désirable.',
+    solution: 'Nous avons développé une stratégie de communication omnicanale, incluant une refonte de l'identité visuelle, des campagnes sur les réseaux sociaux centrées sur le storytelling, un programme d'influence avec des ambassadeurs partageant les mêmes valeurs, et des supports de communication imprimés eco-responsables.',
+    results: [
+      'Croissance de 78% de la communauté Instagram en 6 mois',
+      'Augmentation de 45% du trafic organique vers le site web',
+      'Campagne d'influence générant un ROI de 350%',
+      'Mention dans 3 grands magazines de mode comme "marque éthique à suivre"',
     ],
-    technologies: ['React Native', 'Firebase', 'UX Research', 'Prototyping', 'Usability Testing'],
+    technologies: ['Adobe Creative Suite', 'Canva Pro', 'Later', 'Mention', 'Sarbacane', 'Google Analytics 4'],
+    heroImage: 'https://images.unsplash.com/photo-1612336307429-8a898d10e223?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1364&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1475180098004-ca77a66827be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2336&q=80',
+      'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
+      'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2201&q=80',
+    ],
     testimonial: {
-      quote: 'L\'application a révolutionné notre événement. La qualité du design et l\'attention aux détails ont fait toute la différence. Nos participants ont adoré l\'expérience et nous avons reçu d\'excellents retours.',
-      author: 'Jean Dubois',
-      position: 'Directeur des Opérations, EventPro'
+      content: 'L'équipe d'ULPRA a compris nos valeurs dès le premier jour et a su créer une stratégie de communication qui respecte notre éthique tout en boostant considérablement notre visibilité et notre image de marque.',
+      author: 'Lucas Martin',
+      role: 'Directeur Marketing, Verde Style',
     },
-    nextProject: '1'
-  }
+    nextProject: 'luxury-resort',
+  },
 };
 
-const ProjectDetail = () => {
+const ProjectDetail: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
-  const projectData = projectId ? projectsData[projectId] : null;
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const project = projectId ? projectsData[projectId] : null;
+  
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.3]);
   
   useEffect(() => {
-    // Observer for revealing elements on scroll
+    // Observer pour révéler les éléments au scroll
     const setupIntersectionObserver = () => {
       const observer = new IntersectionObserver(
         (entries) => {
@@ -157,37 +185,11 @@ const ProjectDetail = () => {
     
     setupIntersectionObserver();
     
-    // Scroll to top on page load
+    // Remonter en haut de la page lors du chargement
     window.scrollTo(0, 0);
   }, [projectId]);
 
-  // Élément 3D flottant - ombre et effet de profondeur
-  const Floating3DElement = () => (
-    <motion.div 
-      className="absolute z-0 opacity-60"
-      animate={{ 
-        y: [0, 15, 0],
-        rotateZ: [0, 5, 0],
-        rotateY: [0, 10, 0]
-      }}
-      transition={{ 
-        duration: 8, 
-        ease: "easeInOut", 
-        repeat: Infinity,
-        repeatType: "reverse"
-      }}
-      style={{
-        width: "30vw",
-        height: "30vw",
-        maxWidth: "400px",
-        maxHeight: "400px",
-        filter: "blur(40px)",
-        background: "radial-gradient(circle, rgba(255,255,0,0.05) 0%, rgba(0,0,0,0) 70%)",
-      }}
-    />
-  );
-
-  if (!projectData) {
+  if (!project) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         <div className="text-center">
@@ -205,241 +207,257 @@ const ProjectDetail = () => {
   }
 
   return (
-    <div ref={scrollRef} className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6 relative overflow-hidden">
-        <Floating3DElement />
+      <section ref={heroRef} className="relative pt-20 h-[80vh] overflow-hidden">
+        <motion.div 
+          style={{ y, opacity }}
+          className="absolute inset-0 z-0"
+        >
+          <img 
+            src={project.heroImage} 
+            alt={project.title} 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ulpra-black to-transparent opacity-80"></div>
+        </motion.div>
         
-        <div className="container mx-auto relative z-10">
-          <div className="mb-8">
+        <div className="absolute inset-0 flex flex-col justify-end z-10 px-6 pb-20">
+          <div className="container mx-auto">
             <Link 
               to="/projects" 
-              className="inline-flex items-center text-ulpra-yellow hover:text-ulpra-yellow/80 transition-colors"
+              className="inline-flex items-center text-ulpra-yellow hover:text-ulpra-yellow/80 transition-colors mb-6"
             >
               <ArrowLeft size={16} className="mr-2" />
               Tous les projets
             </Link>
+            
+            <div className="flex flex-wrap gap-4 mb-6">
+              <span className="px-3 py-1 bg-white/10 rounded-full text-sm font-medium">
+                {project.category}
+              </span>
+              <span className="px-3 py-1 bg-white/10 rounded-full text-sm font-medium">
+                {project.year}
+              </span>
+            </div>
+            
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6 relative">
+              <AnimatedText text={project.title} className="text-gradient" />
+            </h1>
+            
+            <p className="text-xl md:text-2xl max-w-2xl text-muted-foreground mb-8 reveal-content opacity-0">
+              {project.description}
+            </p>
+            
+            <div className="reveal-content opacity-0 [animation-delay:300ms]">
+              <span className="text-ulpra-yellow font-medium">Client: </span>
+              <span className="text-white">{project.client}</span>
+            </div>
           </div>
-          
-          <div className="flex flex-col md:flex-row gap-8 items-start">
-            <div className="md:w-1/2">
-              <div className="text-sm font-medium text-ulpra-yellow mb-2">{projectData.category}</div>
-              <h1 className="mb-6 relative">
-                <AnimatedText text={projectData.title} className="text-gradient" />
-              </h1>
-              <p className="text-xl text-muted-foreground mb-8 reveal-content">
-                {projectData.description}
-              </p>
+        </div>
+        
+        {/* Éléments 3D */}
+        <div className="absolute top-1/3 right-1/4 w-32 h-32 border border-ulpra-yellow/20 rounded-full animate-[spin_40s_linear_infinite] opacity-20 z-10"></div>
+        <div className="absolute bottom-1/3 left-1/4 w-64 h-64 border border-white/5 rounded-full animate-[spin_60s_linear_infinite_reverse] opacity-10 z-10"></div>
+      </section>
+      
+      {/* Contenu du projet */}
+      <section className="py-20 px-6 relative">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {/* Section principale */}
+            <div className="md:col-span-2">
+              <div className="mb-16">
+                <h2 className="text-2xl font-semibold mb-6 relative">
+                  <AnimatedText text="Le Challenge" className="text-gradient" />
+                </h2>
+                <p className="text-muted-foreground reveal-content opacity-0">
+                  {project.challenge}
+                </p>
+              </div>
               
-              <div className="grid grid-cols-2 gap-6 mb-8 reveal-content">
-                <div>
-                  <h3 className="text-sm text-muted-foreground mb-1">Client</h3>
-                  <p className="font-medium">{projectData.client}</p>
+              <div className="mb-16">
+                <h2 className="text-2xl font-semibold mb-6 relative">
+                  <AnimatedText text="Notre Solution" className="text-gradient" />
+                </h2>
+                <p className="text-muted-foreground reveal-content opacity-0">
+                  {project.solution}
+                </p>
+              </div>
+              
+              <div className="mb-16">
+                <h2 className="text-2xl font-semibold mb-6 relative">
+                  <AnimatedText text="Résultats" className="text-gradient" />
+                </h2>
+                <ul className="space-y-3 reveal-content opacity-0">
+                  {project.results.map((result, index) => (
+                    <li key={index} className="flex items-start">
+                      <div className="mr-4 mt-1 bg-ulpra-yellow/20 p-1 rounded-full">
+                        <Check size={16} className="text-ulpra-yellow" />
+                      </div>
+                      <span className="text-muted-foreground">{result}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              {/* Galerie d'images */}
+              <div className="mb-16">
+                <h2 className="text-2xl font-semibold mb-8 relative">
+                  <AnimatedText text="Galerie" className="text-gradient" />
+                </h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 reveal-content opacity-0">
+                  {project.gallery.map((image, index) => (
+                    <div key={index} className="relative overflow-hidden rounded-xl group">
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <img 
+                          src={image} 
+                          alt={`${project.title} - Image ${index + 1}`} 
+                          className="w-full aspect-video object-cover"
+                          loading="lazy"
+                        />
+                      </motion.div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-ulpra-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-4">
+                        <span className="text-sm text-white font-medium">{project.title} - Vue {index + 1}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <h3 className="text-sm text-muted-foreground mb-1">Année</h3>
-                  <p className="font-medium">{projectData.year}</p>
-                </div>
-                <div>
-                  <h3 className="text-sm text-muted-foreground mb-1">Service</h3>
-                  <p className="font-medium">{projectData.category}</p>
-                </div>
-                <div>
-                  <h3 className="text-sm text-muted-foreground mb-1">Technologies</h3>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {projectData.technologies.slice(0, 3).map((tech, index) => (
-                      <span key={index} className="text-xs px-2 py-1 bg-ulpra-yellow/10 text-ulpra-yellow rounded-full">
-                        {tech}
-                      </span>
-                    ))}
-                    {projectData.technologies.length > 3 && (
-                      <span className="text-xs px-2 py-1 bg-white/10 text-white/70 rounded-full">
-                        +{projectData.technologies.length - 3}
-                      </span>
-                    )}
+              </div>
+              
+              {/* Témoignage */}
+              {project.testimonial && (
+                <div className="mb-16 glassmorphism p-8 rounded-xl reveal-content opacity-0">
+                  <div className="text-ulpra-yellow mb-4">
+                    <Quote size={32} />
+                  </div>
+                  <blockquote className="text-xl font-medium mb-6 italic">
+                    "{project.testimonial.content}"
+                  </blockquote>
+                  <div>
+                    <p className="font-semibold">{project.testimonial.author}</p>
+                    <p className="text-ulpra-yellow text-sm">{project.testimonial.role}</p>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
             
-            <motion.div 
-              className="md:w-1/2 glassmorphism p-4 reveal-content rounded-xl overflow-hidden relative"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <img 
-                src={projectData.mainImage} 
-                alt={projectData.title} 
-                className="w-full h-auto rounded-lg object-cover"
-                loading="lazy"
-              />
+            {/* Sidebar avec infos complémentaires */}
+            <div className="md:col-span-1">
+              <div className="glassmorphism p-6 rounded-xl sticky top-32">
+                <h3 className="text-xl font-semibold mb-6 pb-4 border-b border-white/10">Informations du Projet</h3>
+                
+                {/* Détails */}
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex items-center mb-3">
+                      <Calendar size={18} className="mr-2 text-ulpra-yellow" />
+                      <span className="font-medium">Année</span>
+                    </div>
+                    <p className="text-muted-foreground">{project.year}</p>
+                  </div>
+                  
+                  <div>
+                    <div className="flex items-center mb-3">
+                      <Users size={18} className="mr-2 text-ulpra-yellow" />
+                      <span className="font-medium">Client</span>
+                    </div>
+                    <p className="text-muted-foreground">{project.client}</p>
+                  </div>
+                  
+                  <div>
+                    <div className="flex items-center mb-3">
+                      <Target size={18} className="mr-2 text-ulpra-yellow" />
+                      <span className="font-medium">Catégorie</span>
+                    </div>
+                    <p className="text-muted-foreground">{project.category}</p>
+                  </div>
+                  
+                  <div>
+                    <div className="flex items-center mb-3">
+                      <Award size={18} className="mr-2 text-ulpra-yellow" />
+                      <span className="font-medium">Technologies</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.map((tech, index) => (
+                        <span 
+                          key={index} 
+                          className="px-2 py-1 bg-white/5 rounded-md text-xs text-muted-foreground"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* CTA */}
+                <div className="mt-8 pt-6 border-t border-white/10">
+                  <a 
+                    href="/#contact" 
+                    className="inline-flex items-center justify-center w-full px-4 py-3 rounded-full bg-ulpra-yellow text-ulpra-black font-medium transition-transform duration-300 hover:scale-105"
+                  >
+                    Discuter de votre projet
+                    <ArrowRight size={16} className="ml-2" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Éléments 3D */}
+        <div className="absolute top-1/3 right-0 w-64 h-64 rounded-full bg-ulpra-yellow/5 blur-[100px] opacity-30"></div>
+        <div className="absolute bottom-0 left-1/4 w-48 h-48 rounded-full bg-ulpra-yellow/10 blur-[80px] opacity-20"></div>
+      </section>
+      
+      {/* Projet suivant */}
+      {project.nextProject && (
+        <section className="py-16 px-6 relative bg-black/50">
+          <div className="container mx-auto">
+            <div className="text-center mb-10">
+              <span className="text-muted-foreground">Découvrez également</span>
+              <h2 className="text-2xl md:text-3xl font-semibold mt-2">Projet Suivant</h2>
+            </div>
+            
+            <div className="relative max-w-4xl mx-auto overflow-hidden rounded-xl group">
+              <div className="absolute inset-0 bg-gradient-to-t from-ulpra-black/70 to-transparent z-10"></div>
               
-              {/* Effet de surbrillance 3D */}
-              <motion.div 
-                className="absolute inset-0 bg-gradient-to-tr from-transparent via-ulpra-yellow/10 to-transparent pointer-events-none"
-                animate={{ 
-                  opacity: [0, 0.5, 0],
-                  left: ["0%", "100%"],
-                  top: ["0%", "100%"]
-                }}
-                transition={{ 
-                  duration: 3,
-                  ease: "easeInOut",
-                  repeat: Infinity,
-                  repeatDelay: 5
-                }}
-              />
-            </motion.div>
-          </div>
-        </div>
-        
-        {/* Background elements */}
-        <div className="absolute top-1/3 right-0 w-[400px] h-[400px] rounded-full bg-ulpra-yellow/5 blur-[120px] opacity-50" />
-      </section>
-      
-      {/* Le Projet */}
-      <section className="py-16 px-6 relative">
-        <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-16">
-              <h2 className="mb-8 relative">
-                <AnimatedText text="Le Défi" className="text-gradient" />
-              </h2>
-              <div className="text-lg text-muted-foreground reveal-content">
-                <p>{projectData.challenge}</p>
-              </div>
-            </div>
-            
-            <div className="mb-16">
-              <h2 className="mb-8 relative">
-                <AnimatedText text="Notre Solution" className="text-gradient" />
-              </h2>
-              <div className="text-lg text-muted-foreground reveal-content">
-                <p>{projectData.solution}</p>
-              </div>
-            </div>
-            
-            <div>
-              <h2 className="mb-8 relative">
-                <AnimatedText text="Résultats" className="text-gradient" />
-              </h2>
-              <div className="text-lg text-muted-foreground reveal-content">
-                <p>{projectData.results}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Galerie */}
-      <section className="py-16 px-6 relative bg-black">
-        <div className="absolute left-1/4 top-1/4 opacity-40 z-0">
-          <Floating3DElement />
-        </div>
-        
-        <div className="container mx-auto relative z-10">
-          <h2 className="mb-12 relative text-center">
-            <AnimatedText text="Galerie" className="text-gradient" />
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {projectData.gallery.map((image, index) => (
-              <motion.div 
-                key={index} 
-                className="glassmorphism p-4 rounded-xl overflow-hidden reveal-content"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.5 }}
+                className="relative z-0"
               >
                 <img 
-                  src={image} 
-                  alt={`${projectData.title} - Image ${index + 1}`} 
-                  className="w-full h-60 object-cover rounded-lg"
+                  src={projectsData[project.nextProject].heroImage} 
+                  alt={projectsData[project.nextProject].title} 
+                  className="w-full aspect-video object-cover"
                   loading="lazy"
                 />
               </motion.div>
-            ))}
-          </div>
-        </div>
-        
-        {/* Background elements */}
-        <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] rounded-full bg-ulpra-yellow/10 blur-[100px] opacity-20" />
-      </section>
-      
-      {/* Technologies */}
-      <section className="py-16 px-6 relative">
-        <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="mb-12 relative text-center">
-              <AnimatedText text="Technologies Utilisées" className="text-gradient" />
-            </h2>
-            
-            <div className="flex flex-wrap justify-center gap-4 reveal-content">
-              {projectData.technologies.map((tech, index) => (
-                <motion.div 
-                  key={index}
-                  className="px-5 py-3 bg-white/5 border border-white/10 rounded-full text-center"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                >
-                  {tech}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Témoignage */}
-      {projectData.testimonial && (
-        <section className="py-16 px-6 relative">
-          <div className="container mx-auto">
-            <div className="max-w-3xl mx-auto glassmorphism p-10 rounded-2xl reveal-content relative overflow-hidden">
-              <div className="absolute top-0 right-0 text-9xl text-ulpra-yellow/10 font-serif leading-none">
-                "
-              </div>
               
-              <div className="relative z-10">
-                <p className="text-xl mb-8 italic">"{projectData.testimonial.quote}"</p>
-                <div>
-                  <p className="font-semibold">{projectData.testimonial.author}</p>
-                  <p className="text-sm text-muted-foreground">{projectData.testimonial.position}</p>
-                </div>
+              <div className="absolute inset-0 flex flex-col justify-end p-8 z-20">
+                <span className="text-ulpra-yellow mb-2">{projectsData[project.nextProject].category}</span>
+                <h3 className="text-2xl md:text-3xl font-semibold mb-4">{projectsData[project.nextProject].title}</h3>
+                <p className="text-muted-foreground mb-6 max-w-xl">{projectsData[project.nextProject].description}</p>
+                <Link 
+                  to={`/projects/${project.nextProject}`}
+                  className="inline-flex items-center px-6 py-3 bg-ulpra-yellow text-ulpra-black rounded-full font-medium max-w-max transform hover:scale-105 transition-transform duration-300"
+                >
+                  Voir ce projet
+                  <ArrowRight size={16} className="ml-2" />
+                </Link>
               </div>
             </div>
           </div>
         </section>
       )}
-      
-      {/* Projet Suivant */}
-      <section className="py-16 px-6 relative">
-        <div className="container mx-auto">
-          <div className="text-center max-w-2xl mx-auto">
-            <h3 className="text-muted-foreground mb-3">Projet suivant</h3>
-            <h2 className="text-3xl font-semibold mb-8 hover:text-ulpra-yellow transition-colors">
-              <Link to={`/projects/${projectData.nextProject}`}>
-                {projectsData[projectData.nextProject].title}
-              </Link>
-            </h2>
-            <Link 
-              to={`/projects/${projectData.nextProject}`}
-              className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-ulpra-yellow text-black font-medium transition-transform duration-300 hover:scale-105"
-            >
-              Voir le projet
-              <ExternalLink size={16} className="ml-2" />
-            </Link>
-          </div>
-        </div>
-        
-        {/* Background elements */}
-        <div className="absolute top-1/3 left-0 w-[400px] h-[400px] rounded-full bg-ulpra-yellow/5 blur-[120px] opacity-30" />
-      </section>
       
       <Footer />
     </div>

@@ -1,169 +1,191 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import AnimatedText from './AnimatedText';
 import { ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import AnimatedText from './AnimatedText';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
+// Type de projet
 interface Project {
-  id: number;
+  id: string;
   title: string;
   category: string;
   description: string;
   image: string;
+  color: string;
 }
 
-const projects: Project[] = [
+// Données de projets (dans un projet réel, ces données pourraient venir d'une API)
+const projectsData: Project[] = [
   {
-    id: 1,
-    title: "Refonte Site E-commerce",
-    category: "Web Design",
-    description: "Refonte complète avec une expérience utilisateur optimisée et une identité visuelle percutante.",
-    image: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop",
+    id: "luxury-resort",
+    title: "Luxury Resort",
+    category: "Site Web",
+    description: "Refonte complète du site web d'un resort de luxe avec réservation en ligne et expérience immersive.",
+    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+    color: "from-blue-500/30 to-purple-500/30",
   },
   {
-    id: 2,
-    title: "Campagne Marketing Digital",
-    category: "Communication",
-    description: "Stratégie omnicanal avec contenus personnalisés pour augmenter la notoriété et les conversions.",
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
+    id: "tech-solutions",
+    title: "Tech Solutions",
+    category: "Branding & Web",
+    description: "Création d'identité de marque et développement web pour une startup technologique innovante.",
+    image: "https://images.unsplash.com/photo-1581089781785-603411fa81e5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+    color: "from-emerald-500/30 to-cyan-500/30",
   },
   {
-    id: 3,
-    title: "Identité Visuelle Startup",
-    category: "Branding",
-    description: "Création d'une identité de marque distinctive avec logo, charte graphique et supports de communication.",
-    image: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2064&auto=format&fit=crop",
+    id: "gastro-delight",
+    title: "Gastro Delight",
+    category: "E-commerce",
+    description: "Boutique en ligne pour une marque d'épicerie fine avec personnalisation de commandes et abonnements.",
+    image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
+    color: "from-red-500/30 to-amber-500/30",
   },
   {
-    id: 4,
-    title: "Application Mobile Événementielle",
-    category: "UX/UI Design",
-    description: "Conception d'une application intuitive pour améliorer l'expérience des participants à un événement majeur.",
-    image: "https://images.unsplash.com/photo-1556761175-4b46a572b786?q=80&w=1974&auto=format&fit=crop",
+    id: "eco-fashion",
+    title: "Éco Fashion",
+    category: "Branding & Communication",
+    description: "Stratégie de communication complète pour une marque de mode éthique en pleine expansion.",
+    image: "https://images.unsplash.com/photo-1612336307429-8a898d10e223?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1364&q=80",
+    color: "from-violet-500/30 to-indigo-500/30",
   },
 ];
 
 const Projects: React.FC = () => {
-  const [activeProject, setActiveProject] = useState<number | null>(null);
-  const projectsRef = useRef<HTMLDivElement>(null);
-  
-  const handleMouseEnter = (id: number) => {
-    setActiveProject(id);
-  };
-  
-  const handleMouseLeave = () => {
-    setActiveProject(null);
-  };
+  // Référence pour les animations au scroll
+  const containerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const elements = entry.target.querySelectorAll('.reveal-content');
-            elements.forEach((el, index) => {
-              setTimeout(() => {
-                el.classList.add('is-revealed');
-              }, 200 * index);
-            });
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    
-    if (projectsRef.current) {
-      observer.observe(projectsRef.current);
-    }
-    
-    return () => {
-      if (projectsRef.current) {
-        observer.unobserve(projectsRef.current);
-      }
+    // Observer pour révéler les éléments au scroll
+    const setupIntersectionObserver = () => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      
+      const revealElements = document.querySelectorAll('.project-reveal');
+      revealElements.forEach((el) => {
+        observer.observe(el);
+      });
     };
+    
+    setupIntersectionObserver();
   }, []);
 
   return (
-    <div id="projects" className="py-24 px-6 relative overflow-hidden bg-black">
-      <div className="container mx-auto">
-        <div className="text-center mb-16 relative z-10">
-          <h2 className="mb-4 inline-block">
-            <AnimatedText text="PROJETS SÉLECTIONNÉS" className="text-gradient" />
+    <section id="projects" className="py-24 px-6 relative overflow-hidden bg-black/30">
+      <div className="container mx-auto" ref={containerRef}>
+        <div className="text-center mb-16">
+          <h2 className="relative inline-block">
+            <AnimatedText 
+              text="Nos Réalisations"
+              className="text-gradient"
+            />
           </h2>
-          <p className="max-w-2xl mx-auto text-muted-foreground">
-            Découvrez nos réalisations les plus significatives, reflétant notre expertise et notre créativité.
+          <p className="text-muted-foreground max-w-2xl mx-auto mt-6 opacity-0 animate-fade-in [animation-delay:300ms]">
+            Découvrez quelques-uns des projets sur lesquels nous avons eu le plaisir de travailler. Chaque réalisation est le fruit d'une collaboration étroite avec nos clients.
           </p>
         </div>
         
-        <div 
-          ref={projectsRef} 
-          className="flex flex-col space-y-16 relative z-10"
-        >
-          {projects.map((project, index) => (
-            <motion.div 
-              key={project.id}
-              className="reveal-content group relative overflow-hidden rounded-2xl cursor-pointer"
-              style={{ transitionDelay: `${index * 100}ms` }}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <Link to={`/projects/${project.id}`} className="block">
-                <div className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 items-center`}>
-                  <div className="md:w-2/3 relative overflow-hidden rounded-xl">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 transition-opacity duration-500 ease-out opacity-70 group-hover:opacity-85" />
-                    <img 
-                      src={project.image} 
-                      alt={project.title}
-                      className="w-full h-[400px] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  </div>
-                  
-                  <div 
-                    className="md:w-1/3 p-6 md:p-0"
-                    onMouseEnter={() => handleMouseEnter(project.id)}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <div className="text-sm font-medium text-ulpra-yellow mb-2">{project.category}</div>
-                    <h3 className="text-2xl font-semibold mb-3 transition-transform duration-500 ease-out group-hover:translate-x-2">
-                      {project.title}
-                    </h3>
-                    <p 
-                      className="text-white/70 mb-4 transition-all duration-500 ease-out max-w-md"
+        {/* Projets */}
+        <div className="space-y-32 mt-20">
+          {projectsData.map((project, index) => {
+            // Alternance de mise en page gauche/droite
+            const isEven = index % 2 === 0;
+            
+            return (
+              <div 
+                key={project.id}
+                className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-12 items-center project-reveal opacity-0`}
+              >
+                {/* Image */}
+                <div className="md:w-1/2 relative">
+                  <div className="relative group overflow-hidden rounded-xl">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10`}></div>
+                    
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.5 }}
+                      className="relative z-0"
                     >
-                      {project.description}
-                    </p>
-                    <div 
-                      className="inline-flex items-center text-ulpra-yellow hover:text-ulpra-yellow-light transition-all duration-500 ease-out"
-                    >
-                      Voir le projet
-                      <ArrowRight size={14} className="ml-2" />
+                      <img 
+                        src={project.image} 
+                        alt={project.title} 
+                        className="w-full aspect-video object-cover rounded-xl"
+                        loading="lazy"
+                      />
+                    </motion.div>
+                    
+                    {/* Overlay avec lien */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                      <Link 
+                        to={`/projects/${project.id}`}
+                        className="inline-flex items-center px-6 py-3 bg-ulpra-yellow text-ulpra-black rounded-full font-medium transform hover:scale-105 transition-transform duration-300"
+                      >
+                        Voir le projet
+                        <ArrowRight size={16} className="ml-2" />
+                      </Link>
                     </div>
                   </div>
+                  
+                  {/* Éléments 3D */}
+                  <div className={`absolute -z-10 ${isEven ? '-right-8 -bottom-8' : '-left-8 -bottom-8'} w-full h-full border-2 border-ulpra-yellow/20 rounded-xl transform rotate-6 opacity-40`}></div>
                 </div>
-              </Link>
-            </motion.div>
-          ))}
+                
+                {/* Contenu */}
+                <div className="md:w-1/2">
+                  <div className="mb-3 inline-block px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-ulpra-yellow font-medium">
+                    {project.category}
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-display font-bold mb-4">{project.title}</h3>
+                  <p className="text-muted-foreground mb-6">{project.description}</p>
+                  <Link 
+                    to={`/projects/${project.id}`}
+                    className="inline-flex items-center text-ulpra-yellow hover:text-white transition-colors duration-300"
+                  >
+                    Découvrir ce projet
+                    <ArrowRight size={16} className="ml-2" />
+                  </Link>
+                </div>
+              </div>
+            );
+          })}
         </div>
         
-        <div className="text-center mt-16 relative z-10">
+        {/* CTA */}
+        <div className="text-center mt-20">
           <Link 
-            to="/projects" 
-            className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-transparent border border-ulpra-yellow text-ulpra-yellow hover:bg-ulpra-yellow hover:text-black font-medium transition-all duration-300"
+            to="/projects"
+            className="inline-flex items-center px-8 py-3 bg-transparent border border-ulpra-yellow text-ulpra-yellow hover:bg-ulpra-yellow/10 transition-colors duration-300 rounded-full"
           >
-            Voir tous les projets
+            Voir tous nos projets
             <ArrowRight size={16} className="ml-2" />
           </Link>
         </div>
       </div>
       
-      {/* Background elements */}
-      <div className="absolute top-1/3 right-0 w-[400px] h-[400px] rounded-full bg-ulpra-yellow/5 blur-[120px] opacity-30" />
-      <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] rounded-full bg-ulpra-yellow/10 blur-[100px] opacity-20" />
-    </div>
+      {/* Effets 3D subtils */}
+      <div className="absolute top-1/4 right-0 w-64 h-64 -z-10">
+        <div className="relative w-full h-full">
+          <div className="absolute inset-0 border border-white/10 rounded-full animate-[spin_40s_linear_infinite] opacity-10"></div>
+          <div className="absolute inset-4 border border-ulpra-yellow/10 rounded-full animate-[spin_30s_linear_infinite_reverse] opacity-20"></div>
+        </div>
+      </div>
+      
+      <div className="absolute bottom-1/4 left-0 w-80 h-80 -z-10">
+        <div className="relative w-full h-full">
+          <div className="absolute inset-0 border border-white/10 rounded-full animate-[spin_50s_linear_infinite_reverse] opacity-10"></div>
+          <div className="absolute inset-4 border border-ulpra-yellow/10 rounded-full animate-[spin_35s_linear_infinite] opacity-20"></div>
+        </div>
+      </div>
+    </section>
   );
 };
 

@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 const navItems = [
   { name: 'Services', href: '/services' },
   { name: 'Projets', href: '/projects' },
+  { name: 'Ressources', href: '/resources' },
   { name: 'Tarifs', href: '/#pricing' },
   { name: 'À propos', href: '/about' },
   { name: 'Contact', href: '/#contact' },
@@ -83,7 +84,10 @@ const Navbar = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-muted-foreground hover:text-white transition-colors duration-300 text-sm font-medium"
+                className={cn(
+                  "text-muted-foreground hover:text-white transition-colors duration-300 text-sm font-medium",
+                  location.pathname === item.href && "text-white"
+                )}
               >
                 {item.name}
               </Link>
@@ -104,7 +108,7 @@ const Navbar = () => {
         <button
           className="md:hidden text-white"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
+          aria-label="Ouvrir le menu"
           aria-expanded={isMenuOpen}
         >
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -138,7 +142,10 @@ const Navbar = () => {
               key={item.name}
               to={item.href}
               onClick={() => setIsMenuOpen(false)}
-              className="text-white hover:text-ulpra-yellow transition-colors duration-300 text-2xl font-medium"
+              className={cn(
+                "text-white hover:text-ulpra-yellow transition-colors duration-300 text-2xl font-medium",
+                location.pathname === item.href && "text-ulpra-yellow"
+              )}
             >
               {item.name}
             </Link>
