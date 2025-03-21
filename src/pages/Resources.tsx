@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -48,22 +47,15 @@ const Resources: React.FC = () => {
         );
         
         if (publishedResources.length > 0) {
-          // Process resources to ensure they have the correct format
-          const processedResources = publishedResources.map(resource => ({
-            ...resource,
-            tags: Array.isArray(resource.tags) ? resource.tags : (resource.tags ? JSON.parse(resource.tags as any) : []),
-            type: resource.type || 'article',
-          }));
-          
           // Extract unique categories
-          const uniqueCategories = ['Tous', ...Array.from(new Set(processedResources.map(r => r.category)))];
+          const uniqueCategories = ['Tous', ...Array.from(new Set(publishedResources.map(r => r.category)))];
           
-          setResources(processedResources);
-          setFilteredResources(processedResources);
+          setResources(publishedResources);
+          setFilteredResources(publishedResources);
           setCategories(uniqueCategories);
         } else {
           // Fallback to static data if no resources in database
-          const staticResources = [
+          const staticResources: Resource[] = [
             {
               id: 'tendances-design-2023',
               title: 'Tendances de Design Web pour 2023',

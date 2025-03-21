@@ -74,5 +74,33 @@ export const fetchResources = async () => {
     return [];
   }
   
-  return data || [];
+  // Process the resources to ensure type compatibility
+  const processedData = (data || []).map(resource => {
+    // Ensure 'type' is one of the allowed values
+    let validType: 'article' | 'tutorial' | 'download' = 'article'; // Default to article
+    
+    if (resource.type === 'tutorial' || resource.type === 'download') {
+      validType = resource.type as 'tutorial' | 'download';
+    }
+    
+    // Process tags if they're a string
+    let tags = resource.tags;
+    if (typeof tags === 'string') {
+      try {
+        tags = JSON.parse(tags);
+      } catch (e) {
+        tags = [];
+      }
+    } else if (!Array.isArray(tags)) {
+      tags = [];
+    }
+    
+    return {
+      ...resource,
+      type: validType,
+      tags: tags,
+    };
+  });
+  
+  return processedData;
 };
