@@ -120,7 +120,7 @@ const Navbar = () => {
         initial={{ y: '-100%' }}
         animate={{ y: isMenuOpen ? 0 : '-100%' }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
-        className="fixed inset-0 bg-ulpra-black flex flex-col justify-center items-center space-y-8 z-40 px-6"
+        className="fixed inset-0 bg-ulpra-black flex flex-col justify-center items-center space-y-8 z-40 px-6 md:hidden"
       >
         {navItems.map((item) => {
           const isAnchorLink = item.href.startsWith('/#');
