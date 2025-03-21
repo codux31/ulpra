@@ -80,7 +80,7 @@ const Projects: React.FC = () => {
   }, []);
 
   return (
-    <section id="projects" className="py-24 px-6 relative overflow-hidden">
+    <section id="projects" className="py-24 px-6 relative overflow-hidden bg-gradient-to-b from-black/60 to-black">
       <div className="container mx-auto" ref={containerRef}>
         <div className="text-center mb-16">
           <h2 className="relative inline-block">
@@ -103,7 +103,7 @@ const Projects: React.FC = () => {
             return (
               <div 
                 key={project.id}
-                className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-12 items-center project-reveal opacity-0`}
+                className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-12 items-center project-reveal opacity-0 z-10`}
               >
                 {/* Image */}
                 <div className="md:w-1/2 relative">

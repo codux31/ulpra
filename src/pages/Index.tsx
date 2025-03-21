@@ -82,9 +82,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       <Services />
-      <div className="bg-gradient-to-b from-background to-black/60">
-        <Projects />
-      </div>
+      <Projects />
       <Testimonials />
       <Pricing />
       <Contact />

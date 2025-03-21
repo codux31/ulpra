@@ -21,14 +21,11 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    // Set initial opacity to 0
-    container.style.opacity = '0';
+    // Fix: Set initial opacity to visible to ensure text is always displayed
+    container.style.opacity = '1';
     
     // Use requestAnimationFrame to ensure DOM is ready
     const timeoutId = setTimeout(() => {
-      // Set container to visible
-      container.style.opacity = '1';
-      
       // Animate each letter
       const elements = container.querySelectorAll('.animated-letter');
       elements.forEach((el, index) => {
@@ -48,7 +45,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
     <Component className={cn('inline-block overflow-hidden', className)}>
       <div 
         ref={containerRef} 
-        className="inline-flex opacity-0 transition-opacity duration-500"
+        className="inline-flex transition-opacity duration-500"
         aria-label={text}
       >
         {text.split('').map((char, index) => (

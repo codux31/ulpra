@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -73,6 +72,7 @@ const Projects = () => {
   const [filteredProjects, setFilteredProjects] = useState<Project[]>(projects);
   const [activeProject, setActiveProject] = useState<string | null>(null);
   
+  // Fix: Use useEffect with the correct dependency array
   useEffect(() => {
     if (activeCategory === 'Tous') {
       setFilteredProjects(projects);
