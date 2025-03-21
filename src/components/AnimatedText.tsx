@@ -21,31 +21,26 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            container.style.opacity = '1';
-            
-            const elements = container.querySelectorAll('.animated-letter');
-            elements.forEach((el, index) => {
-              setTimeout(() => {
-                (el as HTMLElement).style.transform = 'translateY(0)';
-                (el as HTMLElement).style.opacity = '1';
-              }, delay + index * 30); 
-            });
-            
-            observer.disconnect();
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
+    // Set initial opacity to 0
+    container.style.opacity = '0';
     
-    observer.observe(container);
+    // Use requestAnimationFrame to ensure DOM is ready
+    const timeoutId = setTimeout(() => {
+      // Set container to visible
+      container.style.opacity = '1';
+      
+      // Animate each letter
+      const elements = container.querySelectorAll('.animated-letter');
+      elements.forEach((el, index) => {
+        setTimeout(() => {
+          (el as HTMLElement).style.transform = 'translateY(0)';
+          (el as HTMLElement).style.opacity = '1';
+        }, delay + index * 30);
+      });
+    }, 100); // Small delay to ensure everything is ready
     
     return () => {
-      observer.disconnect();
+      clearTimeout(timeoutId);
     };
   }, [delay, text]);
 
@@ -60,7 +55,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
           <span
             aria-hidden="true"
             key={index}
-            className="animated-letter inline-block opacity-0 transform translate-y-full transition-transform duration-500 ease-out font-display"
+            className="animated-letter inline-block opacity-0 transform translate-y-full transition-transform duration-500 ease-out"
             style={{ transitionDelay: `${index * 30}ms` }}
           >
             {char === ' ' ? '\u00A0' : char}

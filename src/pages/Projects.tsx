@@ -116,6 +116,10 @@ const Projects = () => {
     setActiveProject(null);
   };
 
+  const handleCategoryClick = (category: string) => {
+    setActiveCategory(category);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -125,7 +129,7 @@ const Projects = () => {
         <div className="container mx-auto">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="mb-6 relative">
-              <AnimatedText text="Nos Projets" className="text-gradient" />
+              <AnimatedText text="Nos Projets" className="text-5xl font-bold" />
             </h1>
             <p className="text-xl text-muted-foreground mb-8 reveal-content">
               Découvrez notre sélection de projets récents qui illustrent notre approche créative et notre expertise.
@@ -144,7 +148,7 @@ const Projects = () => {
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => handleCategoryClick(category)}
                 className={`px-6 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeCategory === category 
                     ? 'bg-ulpra-yellow text-ulpra-black' 
@@ -228,7 +232,7 @@ const Projects = () => {
         <div className="container mx-auto">
           <div className="glassmorphism p-12 text-center relative z-10 reveal-content">
             <h2 className="mb-6 relative inline-block">
-              <AnimatedText text="Vous avez un projet en tête ?" className="text-gradient" />
+              <AnimatedText text="Vous avez un projet en tête ?" className="text-3xl font-bold" />
             </h2>
             <p className="max-w-2xl mx-auto text-muted-foreground mb-8">
               Contactez-nous pour discuter de votre idée et découvrir comment nous pouvons donner vie à votre vision.

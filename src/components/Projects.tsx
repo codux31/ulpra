@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import AnimatedText from './AnimatedText';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 // Type de projet
 interface Project {
@@ -80,13 +80,13 @@ const Projects: React.FC = () => {
   }, []);
 
   return (
-    <section id="projects" className="py-24 px-6 relative overflow-hidden bg-black/30">
+    <section id="projects" className="py-24 px-6 relative overflow-hidden">
       <div className="container mx-auto" ref={containerRef}>
         <div className="text-center mb-16">
           <h2 className="relative inline-block">
             <AnimatedText 
               text="Nos Réalisations"
-              className="text-gradient"
+              className="text-4xl md:text-5xl font-bold"
             />
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mt-6 opacity-0 animate-fade-in [animation-delay:300ms]">

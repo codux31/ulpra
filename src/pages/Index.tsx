@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import Services from '@/components/Services';
@@ -8,9 +8,17 @@ import Pricing from '@/components/Pricing';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import Testimonials from '@/components/Testimonials';
+import { Loader2 } from 'lucide-react';
 
 const Index = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
+    // Add a small delay to ensure components have time to initialize
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
     // Observer for revealing elements on scroll
     const setupIntersectionObserver = () => {
       const observer = new IntersectionObserver(
@@ -31,7 +39,9 @@ const Index = () => {
       });
     };
     
-    setupIntersectionObserver();
+    if (!isLoading) {
+      setupIntersectionObserver();
+    }
 
     // Add smooth scroll behavior for anchor links
     const handleAnchorClick = (e: MouseEvent) => {
@@ -55,15 +65,26 @@ const Index = () => {
     
     return () => {
       document.removeEventListener('click', handleAnchorClick);
+      clearTimeout(timer);
     };
-  }, []);
+  }, [isLoading]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-ulpra-yellow" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <Hero />
       <Services />
-      <Projects />
+      <div className="bg-gradient-to-b from-background to-black/60">
+        <Projects />
+      </div>
       <Testimonials />
       <Pricing />
       <Contact />
