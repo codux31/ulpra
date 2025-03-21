@@ -35,10 +35,11 @@ const Services = () => {
         );
         
         if (activeServices.length > 0) {
+          console.log("Services page data:", activeServices); // Debug log
           setServices(activeServices);
         } else {
           // Fallback to static data if no services in database
-          setServices([
+          const staticServices = [
             {
               id: "web-design",
               title: "Design Digital",
@@ -71,7 +72,10 @@ const Services = () => {
               longDescription: "Le succès repose sur une stratégie solide basée sur des données concrètes. Notre équipe analyse votre marché, identifie les opportunités et élabore des stratégies personnalisées pour atteindre vos objectifs.",
               imageUrl: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
             },
-          ]);
+          ];
+          
+          console.log("Using static services data on Services page");
+          setServices(staticServices);
         }
       } catch (error) {
         console.error('Error loading services:', error);
@@ -80,6 +84,28 @@ const Services = () => {
           description: "Impossible de charger les services",
           variant: "destructive",
         });
+        
+        // Ajouter des données statiques en cas d'erreur
+        const fallbackServices = [
+          {
+            id: "web-design",
+            title: "Design Digital",
+            description: "Création de sites web, d'applications et d'interfaces utilisateur intuitives et esthétiques.",
+            icon: "01",
+            longDescription: "Notre approche de conception web combine esthétique soignée et fonctionnalité optimale. Nous créons des sites responsifs, intuitifs et engageants qui reflètent parfaitement l'identité de votre marque.",
+            imageUrl: "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+          },
+          {
+            id: "branding",
+            title: "Branding",
+            description: "Développement d'identités de marque distinctives, logos, et chartes graphiques complètes.",
+            icon: "02",
+            longDescription: "Une identité de marque forte est essentielle pour se démarquer. Nous créons des identités visuelles mémorables qui captent l'essence de votre entreprise et établissent une connexion avec votre audience.",
+            imageUrl: "https://images.unsplash.com/photo-1634084462412-b54873c0a56d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+          },
+        ];
+        
+        setServices(fallbackServices);
       } finally {
         setIsLoading(false);
       }
@@ -124,7 +150,7 @@ const Services = () => {
             <h1 className="mb-6 relative">
               <AnimatedText text="Nos Services" className="text-gradient" />
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 reveal-content">
+            <p className="text-xl text-muted-foreground mb-8 reveal-content opacity-100">
               Découvrez comment nous pouvons transformer votre vision en réalité digitale avec nos services sur mesure.
             </p>
           </div>
@@ -141,12 +167,12 @@ const Services = () => {
             <div className="flex justify-center items-center h-40">
               <span className="animate-spin h-8 w-8 border-t-2 border-ulpra-yellow rounded-full"></span>
             </div>
-          ) : (
+          ) : services && services.length > 0 ? (
             <div className="grid grid-cols-1 gap-16">
               {services.map((service, index) => (
                 <div 
                   key={service.id} 
-                  className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center reveal-content ${
+                  className={`grid grid-cols-1 md:grid-cols-2 gap-8 items-center reveal-content opacity-100 ${
                     index % 2 === 1 ? 'md:flex-row-reverse' : ''
                   }`}
                 >
@@ -156,7 +182,7 @@ const Services = () => {
                     </div>
                     <h2 className="text-3xl font-semibold mb-4">{service.title}</h2>
                     <p className="text-muted-foreground mb-6">
-                      {service.longDescription}
+                      {service.longDescription || service.description}
                     </p>
                     <Link 
                       to={`/services/${service.id}`} 
@@ -176,6 +202,20 @@ const Services = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="text-center py-10">
+              <h3 className="text-2xl font-bold mb-4">Aucun service disponible pour le moment</h3>
+              <p className="text-lg text-muted-foreground mb-8">
+                Nos équipes sont en train de mettre à jour notre catalogue de services.
+              </p>
+              <Link 
+                to="/contact"
+                className="inline-flex items-center px-6 py-3 bg-ulpra-yellow text-ulpra-black rounded-full font-medium"
+              >
+                Contactez-nous
+                <ArrowRight size={16} className="ml-2" />
+              </Link>
             </div>
           )}
         </div>
@@ -221,7 +261,7 @@ const Services = () => {
             ].map((step, index) => (
               <div 
                 key={index} 
-                className="glassmorphism p-8 reveal-content"
+                className="glassmorphism p-8 reveal-content opacity-100"
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="text-ulpra-yellow font-display text-5xl font-bold mb-6">
@@ -243,7 +283,7 @@ const Services = () => {
       {/* Call to Action */}
       <section className="py-16 px-6 relative">
         <div className="container mx-auto">
-          <div className="glassmorphism p-12 text-center relative z-10 reveal-content">
+          <div className="glassmorphism p-12 text-center relative z-10 reveal-content opacity-100">
             <h2 className="mb-6 relative inline-block">
               <AnimatedText text="Prêt à Transformer Votre Vision ?" className="text-gradient" />
             </h2>

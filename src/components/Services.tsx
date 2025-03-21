@@ -33,6 +33,7 @@ const Services: React.FC = () => {
         
         // Limit to 6 services for the homepage
         setServices(activeServices.slice(0, 6));
+        console.log("Services loaded:", activeServices); // Debug log
       } catch (error) {
         console.error('Error loading services:', error);
         toast({
@@ -48,6 +49,7 @@ const Services: React.FC = () => {
     
     loadServices();
     
+    // Observer pour révéler les éléments au scroll
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -91,7 +93,7 @@ const Services: React.FC = () => {
           <div className="flex justify-center items-center h-40">
             <span className="animate-spin h-8 w-8 border-t-2 border-ulpra-yellow rounded-full"></span>
           </div>
-        ) : services.length > 0 ? (
+        ) : services && services.length > 0 ? (
           <div 
             ref={servicesRef} 
             className={`grid gap-6 relative z-10 ${
@@ -104,7 +106,7 @@ const Services: React.FC = () => {
             {services.map((service) => (
               <div 
                 key={service.id} 
-                className="reveal-content glassmorphism p-6 transition-all duration-500 hover:translate-y-[-10px]"
+                className="reveal-content glassmorphism p-6 transition-all duration-500 hover:translate-y-[-10px] opacity-100"
               >
                 <div className="text-ulpra-yellow font-display text-5xl font-bold mb-6">
                   {service.icon}

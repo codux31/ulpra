@@ -68,6 +68,7 @@ const AdminResources = () => {
     setIsLoading(true);
     try {
       const data = await fetchResources();
+      console.log("Resources data loaded:", data); // Debug log
       setResources(data);
     } catch (error) {
       console.error('Error loading resources:', error);
@@ -76,6 +77,36 @@ const AdminResources = () => {
         description: "Impossible de charger les ressources",
         variant: "destructive",
       });
+      
+      // Utiliser des ressources fictives en cas d'erreur
+      const dummyResources = [
+        {
+          id: "tendances-design-2023",
+          title: "Tendances de Design Web pour 2023",
+          excerpt: "Découvrez les tendances émergentes qui façonneront le design web cette année.",
+          category: "Design",
+          date: new Date().toISOString(),
+          author: "Sophie Martin",
+          readTime: "8 min",
+          type: "article" as const,
+          status: "published",
+          created_at: new Date().toISOString()
+        },
+        {
+          id: "guide-seo-debutants",
+          title: "Guide SEO pour Débutants",
+          excerpt: "Tous les fondamentaux du référencement pour améliorer la visibilité de votre site.",
+          category: "Marketing",
+          date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          author: "Alexandre Durand",
+          readTime: "15 min",
+          type: "tutorial" as const,
+          status: "published",
+          created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+        }
+      ];
+      
+      setResources(dummyResources);
     } finally {
       setIsLoading(false);
     }
@@ -105,6 +136,14 @@ const AdminResources = () => {
         title: "Erreur",
         description: "Impossible de supprimer la ressource",
         variant: "destructive",
+      });
+      
+      // Simuler la suppression pour la démo
+      setResources(prevResources => prevResources.filter(resource => resource.id !== resourceToDelete));
+      
+      toast({
+        title: "Simulation de suppression",
+        description: "La ressource a été supprimée (mode simulation)",
       });
     } finally {
       setResourceToDelete(null);

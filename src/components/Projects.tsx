@@ -47,6 +47,7 @@ const Projects: React.FC = () => {
           }));
         
         setProjects(limitedProjects);
+        console.log("Projects loaded:", limitedProjects); // Debug log
       } catch (error) {
         console.error('Error loading projects:', error);
         toast({
@@ -111,7 +112,7 @@ const Projects: React.FC = () => {
               className="text-4xl md:text-5xl font-bold"
             />
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto mt-6 opacity-0 animate-fade-in [animation-delay:300ms]">
+          <p className="text-muted-foreground max-w-2xl mx-auto mt-6 opacity-100 animate-fade-in [animation-delay:300ms]">
             Découvrez quelques-uns des projets sur lesquels nous avons eu le plaisir de travailler. Chaque réalisation est le fruit d'une collaboration étroite avec nos clients.
           </p>
         </div>
@@ -121,7 +122,7 @@ const Projects: React.FC = () => {
           <div className="flex justify-center items-center h-40">
             <span className="animate-spin h-8 w-8 border-t-2 border-ulpra-yellow rounded-full"></span>
           </div>
-        ) : projects.length > 0 ? (
+        ) : projects && projects.length > 0 ? (
           <div className={`space-y-32 mt-20 ${projects.length <= 2 ? 'max-w-3xl mx-auto' : ''}`}>
             {projects.map((project, index) => {
               // Alternance de mise en page gauche/droite
@@ -130,7 +131,7 @@ const Projects: React.FC = () => {
               return (
                 <div 
                   key={project.id}
-                  className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-12 items-center project-reveal opacity-0 z-10`}
+                  className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 md:gap-12 items-center project-reveal opacity-100 z-10`}
                 >
                   {/* Image */}
                   <div className="md:w-1/2 relative">

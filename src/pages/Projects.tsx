@@ -39,6 +39,8 @@ const Projects = () => {
           project => project.status === "published" || !project.status
         );
         
+        console.log("Projects page data:", publishedProjects); // Debug log
+        
         if (publishedProjects.length > 0) {
           // Extract unique categories
           const uniqueCategories = ['Tous', ...Array.from(new Set(publishedProjects.map(p => p.category)))];
@@ -83,6 +85,7 @@ const Projects = () => {
             },
           ];
           
+          console.log("Using static projects data");
           setProjects(staticProjects);
           
           // Extract unique categories
@@ -97,6 +100,31 @@ const Projects = () => {
           description: "Impossible de charger les projets",
           variant: "destructive",
         });
+        
+        // Utiliser des données de démonstration en cas d'erreur
+        const fallbackProjects = [
+          {
+            id: "ecommerce-redesign",
+            title: "Refonte Site E-commerce",
+            category: "Web Design",
+            description: "Refonte complète avec une expérience utilisateur optimisée et une identité visuelle percutante.",
+            image_url: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop",
+            client: "ModernRetail"
+          },
+          {
+            id: "marketing-campaign",
+            title: "Campagne Marketing Digital",
+            category: "Communication",
+            description: "Stratégie omnicanal avec contenus personnalisés pour augmenter la notoriété et les conversions.",
+            image_url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
+            client: "EcoSolutions"
+          },
+        ];
+        
+        setProjects(fallbackProjects);
+        const uniqueCategories = ['Tous', ...Array.from(new Set(fallbackProjects.map(p => p.category)))];
+        setCategories(uniqueCategories);
+        setFilteredProjects(fallbackProjects);
       } finally {
         setIsLoading(false);
       }
@@ -162,7 +190,7 @@ const Projects = () => {
             <h1 className="mb-6 relative">
               <AnimatedText text="Nos Projets" className="text-5xl font-bold" />
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 reveal-content">
+            <p className="text-xl text-muted-foreground mb-8 reveal-content opacity-100">
               Découvrez notre sélection de projets récents qui illustrent notre approche créative et notre expertise.
             </p>
           </div>
@@ -200,13 +228,13 @@ const Projects = () => {
             <div className="flex justify-center items-center h-40">
               <span className="animate-spin h-8 w-8 border-t-2 border-ulpra-yellow rounded-full"></span>
             </div>
-          ) : filteredProjects.length > 0 ? (
+          ) : filteredProjects && filteredProjects.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {filteredProjects.map((project, index) => (
                 <Link 
                   key={project.id}
                   to={`/projects/${project.id}`}
-                  className="reveal-content group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-500 ease-out"
+                  className="reveal-content group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-500 ease-out opacity-100"
                   style={{ transitionDelay: `${index * 100}ms` }}
                   onMouseEnter={() => handleMouseEnter(project.id)}
                   onMouseLeave={handleMouseLeave}
@@ -265,7 +293,7 @@ const Projects = () => {
       {/* Call to Action */}
       <section className="py-16 px-6 relative">
         <div className="container mx-auto">
-          <div className="glassmorphism p-12 text-center relative z-10 reveal-content">
+          <div className="glassmorphism p-12 text-center relative z-10 reveal-content opacity-100">
             <h2 className="mb-6 relative inline-block">
               <AnimatedText text="Vous avez un projet en tête ?" className="text-3xl font-bold" />
             </h2>

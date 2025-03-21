@@ -42,7 +42,7 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Utiliser la fonction checkAdminCredentials directement
+      console.log("Tentative de connexion avec:", data.email); // Debug log
       const { valid } = await checkAdminCredentials(data.email, data.password);
       
       if (valid) {
@@ -55,19 +55,42 @@ const Login = () => {
         });
         navigate("/admin/dashboard");
       } else {
-        toast({
-          title: "Échec de la connexion",
-          description: "Email ou mot de passe incorrect",
-          variant: "destructive",
-        });
+        // Vérifier les identifiants de démonstration comme fallback
+        if (data.email === "admin@ulpra.com" && data.password === "Admin123!") {
+          localStorage.setItem("ulpra-admin-auth", "true");
+          toast({
+            title: "Connexion réussie (démo)",
+            description: "Bienvenue dans le panneau d'administration en mode démo",
+            variant: "default",
+          });
+          navigate("/admin/dashboard");
+        } else {
+          toast({
+            title: "Échec de la connexion",
+            description: "Email ou mot de passe incorrect",
+            variant: "destructive",
+          });
+        }
       }
     } catch (error) {
       console.error("Erreur de connexion:", error);
-      toast({
-        title: "Erreur",
-        description: "Une erreur s'est produite. Veuillez réessayer.",
-        variant: "destructive",
-      });
+      
+      // Vérifier les identifiants de démonstration en cas d'erreur
+      if (data.email === "admin@ulpra.com" && data.password === "Admin123!") {
+        localStorage.setItem("ulpra-admin-auth", "true");
+        toast({
+          title: "Connexion réussie (démo)",
+          description: "Bienvenue dans le panneau d'administration en mode démo",
+          variant: "default",
+        });
+        navigate("/admin/dashboard");
+      } else {
+        toast({
+          title: "Erreur",
+          description: "Une erreur s'est produite. Veuillez réessayer.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -138,6 +161,20 @@ const Login = () => {
               </Button>
             </form>
           </Form>
+          
+          <div className="mt-6 pt-6 border-t border-white/10">
+            <p className="text-sm text-muted-foreground mb-2">
+              Identifiants de démonstration:
+            </p>
+            <div className="text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 mb-1">
+                <Mail className="w-3 h-3" /> admin@ulpra.com
+              </div>
+              <div className="flex items-center gap-2">
+                <LockKeyhole className="w-3 h-3" /> Admin123!
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="mt-8 text-center">

@@ -360,7 +360,7 @@ export const fetchResources = async () => {
     // Process the resources to ensure type compatibility
     const processedData = (data || []).map(resource => {
       // Ensure 'type' is one of the allowed values
-      let validType: 'article' | 'tutorial' | 'download' = 'article'; // Default to article
+      let validType: 'article' | 'tutorial' | 'download' = 'article';
       
       if (resource.type === 'tutorial' || resource.type === 'download') {
         validType = resource.type as 'tutorial' | 'download';
@@ -395,39 +395,62 @@ export const fetchResources = async () => {
 // Vérifier les informations d'identification d'administration
 export const checkAdminCredentials = async (email: string, password: string) => {
   try {
-    // Essayer d'abord de vérifier dans Supabase
-    const { data, error } = await supabase
-      .from('admin_users')
-      .select('*')
-      .eq('email', email)
-      .single();
-      
-    if (error) {
-      console.error('Error checking admin credentials:', error);
-      
-      // Si la table n'existe pas ou en cas d'erreur, utiliser les identifiants de démonstration
-      if (email === 'admin@ulpra.com' && password === 'Admin123!') {
-        return { valid: true, user: { email, id: '1' } };
-      }
-      return { valid: false, user: null };
-    }
+    console.log("Checking admin credentials for:", email);
     
-    // Si on a trouvé un utilisateur, vérifier le mot de passe
-    if (data && data.password === password) {
-      return { valid: true, user: data };
-    }
-    
-    // Vérifier aussi les identifiants de démonstration (toujours acceptés)
+    // Vérifier d'abord les identifiants de démonstration (toujours valides pour la démo)
     if (email === 'admin@ulpra.com' && password === 'Admin123!') {
+      console.log("Demo credentials accepted");
+      
+      // Stocker l'e-mail d'administration (à des fins de démo uniquement)
+      localStorage.setItem('admin-email', email);
+      localStorage.setItem('admin-password', password);
+      
       return { valid: true, user: { email, id: '1' } };
     }
     
-    return { valid: false, user: null };
+    // Essayer de vérifier dans Supabase
+    try {
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('email', email)
+        .single();
+        
+      if (error) {
+        console.error('Error checking admin credentials:', error);
+        
+        // En cas d'erreur ou si la table n'existe pas, vérifier encore les identifiants de demo
+        if (email === 'admin@ulpra.com' && password === 'Admin123!') {
+          console.log("Demo credentials accepted after Supabase error");
+          return { valid: true, user: { email, id: '1' } };
+        }
+        return { valid: false, user: null };
+      }
+      
+      // Si on a trouvé un utilisateur, vérifier le mot de passe
+      if (data && data.password === password) {
+        console.log("Database credentials accepted");
+        return { valid: true, user: data };
+      }
+      
+      return { valid: false, user: null };
+    } catch (error) {
+      console.error('Error in Supabase admin check:', error);
+      
+      // Si l'erreur est liée à la table inexistante, accepter les identifiants de démo
+      if (email === 'admin@ulpra.com' && password === 'Admin123!') {
+        console.log("Demo credentials accepted after error");
+        return { valid: true, user: { email, id: '1' } };
+      }
+      
+      return { valid: false, user: null };
+    }
   } catch (error) {
-    console.error('Error checking admin credentials:', error);
+    console.error('Unexpected error in checkAdminCredentials:', error);
     
-    // En cas d'erreur, toujours permettre la connexion avec les identifiants de démonstration
+    // En cas d'erreur inattendue, vérifier une dernière fois les identifiants de démo
     if (email === 'admin@ulpra.com' && password === 'Admin123!') {
+      console.log("Demo credentials accepted as last resort");
       return { valid: true, user: { email, id: '1' } };
     }
     
