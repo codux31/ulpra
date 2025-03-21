@@ -2,14 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const navItems = [
-  { name: 'Services', href: '#services' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Pricing', href: '#pricing' },
-  { name: 'About', href: '#about' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'Services', href: '/services' },
+  { name: 'Projects', href: '/projects' },
+  { name: 'Pricing', href: '/#pricing' },
+  { name: 'About', href: '/about' },
+  { name: 'Contact', href: '/#contact' },
 ];
 
 const Navbar = () => {
@@ -25,6 +26,27 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Handle anchor navigation when on index page
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const target = e.currentTarget;
+    const href = target.getAttribute('href');
+    
+    if (href && href.startsWith('/#')) {
+      e.preventDefault();
+      const element = document.querySelector(href.substring(1));
+      if (element && window.location.pathname === '/') {
+        window.scrollTo({
+          top: element.getBoundingClientRect().top + window.scrollY - 100,
+          behavior: 'smooth',
+        });
+        setIsMenuOpen(false);
+      } else if (window.location.pathname !== '/') {
+        // Navigate to the homepage with the hash
+        window.location.href = href;
+      }
+    }
+  };
+
   return (
     <nav 
       className={cn(
@@ -33,26 +55,41 @@ const Navbar = () => {
       )}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
-        <a href="#" className="text-white text-2xl font-display font-bold tracking-tight">
+        <Link to="/" className="text-white text-2xl font-display font-bold tracking-tight">
           ULPRA<span className="text-ulpra-yellow">.</span>
-        </a>
+        </Link>
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-8">
-          {navItems.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              className="text-muted-foreground hover:text-white transition-colors duration-300 text-sm font-medium"
-            >
-              {item.name}
-            </a>
-          ))}
+          {navItems.map((item) => {
+            // Determine if this is an anchor link on the homepage or a regular route
+            const isAnchorLink = item.href.startsWith('/#');
+            
+            return isAnchorLink ? (
+              <a
+                key={item.name}
+                href={item.href}
+                onClick={handleNavClick}
+                className="text-muted-foreground hover:text-white transition-colors duration-300 text-sm font-medium"
+              >
+                {item.name}
+              </a>
+            ) : (
+              <Link
+                key={item.name}
+                to={item.href}
+                className="text-muted-foreground hover:text-white transition-colors duration-300 text-sm font-medium"
+              >
+                {item.name}
+              </Link>
+            );
+          })}
         </div>
         
         {/* CTA Button */}
         <a
-          href="#contact"
+          href="/#contact"
+          onClick={handleNavClick}
           className="hidden md:inline-flex items-center px-4 py-2 border border-ulpra-yellow text-ulpra-yellow hover:bg-ulpra-yellow hover:text-ulpra-black transition-all duration-300 text-sm font-medium rounded-full"
         >
           Request a quote
@@ -63,36 +100,56 @@ const Navbar = () => {
           className="md:hidden text-white"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
+          aria-expanded={isMenuOpen}
         >
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
       
       {/* Mobile Navigation */}
-      <div
-        className={cn(
-          'fixed inset-0 bg-ulpra-black flex flex-col justify-center items-center space-y-8 transition-transform duration-300 ease-in-out z-40 px-6',
-          isMenuOpen ? 'transform translate-y-0' : 'transform -translate-y-full'
-        )}
+      <motion.div
+        initial={{ y: '-100%' }}
+        animate={{ y: isMenuOpen ? 0 : '-100%' }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="fixed inset-0 bg-ulpra-black flex flex-col justify-center items-center space-y-8 z-40 px-6"
       >
-        {navItems.map((item) => (
-          <a
-            key={item.name}
-            href={item.href}
-            onClick={() => setIsMenuOpen(false)}
-            className="text-white hover:text-ulpra-yellow transition-colors duration-300 text-2xl font-medium"
-          >
-            {item.name}
-          </a>
-        ))}
+        {navItems.map((item) => {
+          const isAnchorLink = item.href.startsWith('/#');
+          
+          return isAnchorLink ? (
+            <a
+              key={item.name}
+              href={item.href}
+              onClick={(e) => {
+                handleNavClick(e);
+                setIsMenuOpen(false);
+              }}
+              className="text-white hover:text-ulpra-yellow transition-colors duration-300 text-2xl font-medium"
+            >
+              {item.name}
+            </a>
+          ) : (
+            <Link
+              key={item.name}
+              to={item.href}
+              onClick={() => setIsMenuOpen(false)}
+              className="text-white hover:text-ulpra-yellow transition-colors duration-300 text-2xl font-medium"
+            >
+              {item.name}
+            </Link>
+          );
+        })}
         <a
-          href="#contact"
-          onClick={() => setIsMenuOpen(false)}
+          href="/#contact"
+          onClick={(e) => {
+            handleNavClick(e);
+            setIsMenuOpen(false);
+          }}
           className="mt-8 inline-flex items-center px-6 py-3 border border-ulpra-yellow text-ulpra-yellow hover:bg-ulpra-yellow hover:text-ulpra-black transition-all duration-300 text-base font-medium rounded-full"
         >
           Request a quote
         </a>
-      </div>
+      </motion.div>
     </nav>
   );
 };
