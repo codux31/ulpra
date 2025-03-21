@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const navItems = [
   { name: 'Services', href: '#services' },
@@ -28,12 +29,12 @@ const Navbar = () => {
     <nav 
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out',
-        scrolled ? 'py-4 bg-background/90 backdrop-blur-lg border-b border-white/10' : 'py-6'
+        scrolled ? 'py-4 bg-ulpra-black/90 backdrop-blur-lg border-b border-white/10' : 'py-6'
       )}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
         <a href="#" className="text-white text-2xl font-display font-bold tracking-tight">
-          ULPRA<span className="text-gold">.</span>
+          ULPRA<span className="text-ulpra-yellow">.</span>
         </a>
         
         {/* Desktop Navigation */}
@@ -52,7 +53,7 @@ const Navbar = () => {
         {/* CTA Button */}
         <a
           href="#contact"
-          className="hidden md:inline-flex items-center px-4 py-2 border border-gold text-gold hover:bg-gold hover:text-black transition-all duration-300 text-sm font-medium rounded-full"
+          className="hidden md:inline-flex items-center px-4 py-2 border border-ulpra-yellow text-ulpra-yellow hover:bg-ulpra-yellow hover:text-ulpra-black transition-all duration-300 text-sm font-medium rounded-full"
         >
           Request a quote
         </a>
@@ -70,7 +71,7 @@ const Navbar = () => {
       {/* Mobile Navigation */}
       <div
         className={cn(
-          'fixed inset-0 bg-background flex flex-col justify-center items-center space-y-8 transition-transform duration-300 ease-in-out z-40 px-6',
+          'fixed inset-0 bg-ulpra-black flex flex-col justify-center items-center space-y-8 transition-transform duration-300 ease-in-out z-40 px-6',
           isMenuOpen ? 'transform translate-y-0' : 'transform -translate-y-full'
         )}
       >
@@ -79,7 +80,7 @@ const Navbar = () => {
             key={item.name}
             href={item.href}
             onClick={() => setIsMenuOpen(false)}
-            className="text-white hover:text-gold transition-colors duration-300 text-2xl font-medium"
+            className="text-white hover:text-ulpra-yellow transition-colors duration-300 text-2xl font-medium"
           >
             {item.name}
           </a>
@@ -87,7 +88,7 @@ const Navbar = () => {
         <a
           href="#contact"
           onClick={() => setIsMenuOpen(false)}
-          className="mt-8 inline-flex items-center px-6 py-3 border border-gold text-gold hover:bg-gold hover:text-black transition-all duration-300 text-base font-medium rounded-full"
+          className="mt-8 inline-flex items-center px-6 py-3 border border-ulpra-yellow text-ulpra-yellow hover:bg-ulpra-yellow hover:text-ulpra-black transition-all duration-300 text-base font-medium rounded-full"
         >
           Request a quote
         </a>

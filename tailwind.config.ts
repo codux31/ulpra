@@ -20,8 +20,8 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-				display: ['Space Grotesk', 'sans-serif'],
+				sans: ['Satoshi', 'sans-serif'],
+				display: ['Outfit', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -57,10 +57,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				gold: {
-					DEFAULT: '#D4AF37',
-					light: '#F5E7A9',
-					dark: '#A67C00',
+				// Nouvelles couleurs Ulpra
+				ulpra: {
+					black: '#121212',
+					yellow: '#EEF235',
+					light: '#FFFFFF',
+					gray: '#E5E5E5',
 				},
 			},
 			borderRadius: {

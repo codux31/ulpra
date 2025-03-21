@@ -32,15 +32,15 @@ const Hero: React.FC = () => {
   return (
     <div ref={heroRef} className="relative min-h-screen flex flex-col justify-center items-center px-6 pt-20 overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-radial from-background via-background to-black z-0" />
+      <div className="absolute inset-0 bg-gradient-radial from-ulpra-black via-ulpra-black to-black z-0" />
       
       {/* Glow effects */}
-      <div className="glow-effect absolute top-[30%] left-[30%] w-64 h-64 rounded-full bg-gold/20 blur-[100px] opacity-50 z-0" />
-      <div className="glow-effect absolute bottom-[20%] right-[20%] w-80 h-80 rounded-full bg-gold/10 blur-[120px] opacity-40 z-0" />
+      <div className="glow-effect absolute top-[30%] left-[30%] w-64 h-64 rounded-full bg-ulpra-yellow/20 blur-[100px] opacity-50 z-0" />
+      <div className="glow-effect absolute bottom-[20%] right-[20%] w-80 h-80 rounded-full bg-ulpra-yellow/10 blur-[120px] opacity-40 z-0" />
       
       <div className="container mx-auto relative z-10 text-center space-y-8">
         <div className="inline-block mb-4 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-sm font-medium">
-          <span className="inline-block animate-pulse bg-gold size-2 rounded-full mr-2" />
+          <span className="inline-block animate-pulse bg-ulpra-yellow size-2 rounded-full mr-2" />
           Studio créatif premium
         </div>
         
@@ -65,7 +65,7 @@ const Hero: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12 opacity-0 animate-fade-in [animation-delay:800ms]">
           <a 
             href="#services" 
-            className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-gold text-black font-medium transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(212,175,55,0.3)]"
+            className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-ulpra-yellow text-ulpra-black font-medium transition-transform duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(238,242,53,0.3)]"
           >
             Découvrir nos services
             <ArrowRight size={16} className="ml-2" />

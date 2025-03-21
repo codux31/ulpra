@@ -60,7 +60,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
           <span
             aria-hidden="true"
             key={index}
-            className="animated-letter inline-block opacity-0 transform translate-y-full transition-transform duration-500 ease-out"
+            className="animated-letter inline-block opacity-0 transform translate-y-full transition-transform duration-500 ease-out font-display"
             style={{ transitionDelay: `${index * 30}ms` }}
           >
             {char === ' ' ? '\u00A0' : char}

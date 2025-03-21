@@ -117,7 +117,7 @@ const Pricing: React.FC = () => {
                 onClick={() => setIsAnnual(false)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   !isAnnual 
-                    ? 'bg-gold text-black' 
+                    ? 'bg-ulpra-yellow text-ulpra-black' 
                     : 'text-white/70 hover:text-white'
                 }`}
               >
@@ -127,7 +127,7 @@ const Pricing: React.FC = () => {
                 onClick={() => setIsAnnual(true)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   isAnnual 
-                    ? 'bg-gold text-black' 
+                    ? 'bg-ulpra-yellow text-ulpra-black' 
                     : 'text-white/70 hover:text-white'
                 }`}
               >
@@ -145,11 +145,11 @@ const Pricing: React.FC = () => {
             <div 
               key={plan.id}
               className={`reveal-content glassmorphism p-8 rounded-2xl transition-all duration-500 ${
-                plan.popular ? 'border-gold/50 relative mt-0 md:-mt-4' : 'border-white/10'
+                plan.popular ? 'border-ulpra-yellow/50 relative mt-0 md:-mt-4' : 'border-white/10'
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gold text-black text-xs font-bold uppercase tracking-wider px-4 py-1 rounded-full">
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-ulpra-yellow text-ulpra-black text-xs font-bold uppercase tracking-wider px-4 py-1 rounded-full">
                   Recommandé
                 </div>
               )}
@@ -164,14 +164,14 @@ const Pricing: React.FC = () => {
                   </span>
                 </div>
                 {isAnnual && (
-                  <p className="text-gold text-sm mt-1">2 mois offerts</p>
+                  <p className="text-ulpra-yellow text-sm mt-1">2 mois offerts</p>
                 )}
               </div>
               
               <ul className="space-y-4 mb-8">
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start">
-                    <Check size={18} className="text-gold shrink-0 mt-0.5 mr-3" />
+                    <Check size={18} className="text-ulpra-yellow shrink-0 mt-0.5 mr-3" />
                     <span className="text-sm">{feature}</span>
                   </li>
                 ))}
@@ -182,7 +182,7 @@ const Pricing: React.FC = () => {
                   href="#contact"
                   className={`inline-flex items-center justify-center w-full px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                     plan.popular
-                      ? 'bg-gold text-black hover:shadow-[0_0_25px_rgba(212,175,55,0.3)] hover:scale-105'
+                      ? 'bg-ulpra-yellow text-ulpra-black hover:shadow-[0_0_25px_rgba(238,242,53,0.3)] hover:scale-105'
                       : 'bg-white/10 text-white hover:bg-white/20'
                   }`}
                 >
@@ -203,7 +203,7 @@ const Pricing: React.FC = () => {
           </p>
           <a 
             href="#contact" 
-            className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-transparent border border-gold text-gold hover:bg-gold hover:text-black font-medium transition-all duration-300"
+            className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-transparent border border-ulpra-yellow text-ulpra-yellow hover:bg-ulpra-yellow hover:text-ulpra-black font-medium transition-all duration-300"
           >
             Discuter de votre projet
             <ArrowRight size={16} className="ml-2" />
@@ -212,8 +212,8 @@ const Pricing: React.FC = () => {
       </div>
       
       {/* Background elements */}
-      <div className="absolute top-1/4 left-0 w-[400px] h-[400px] rounded-full bg-gold/5 blur-[120px] opacity-30" />
-      <div className="absolute bottom-1/4 right-0 w-[300px] h-[300px] rounded-full bg-gold/10 blur-[100px] opacity-20" />
+      <div className="absolute top-1/4 left-0 w-[400px] h-[400px] rounded-full bg-ulpra-yellow/5 blur-[120px] opacity-30" />
+      <div className="absolute bottom-1/4 right-0 w-[300px] h-[300px] rounded-full bg-ulpra-yellow/10 blur-[100px] opacity-20" />
     </div>
   );
 };

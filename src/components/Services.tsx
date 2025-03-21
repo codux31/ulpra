@@ -86,14 +86,14 @@ const Services: React.FC = () => {
               key={service.id} 
               className="reveal-content glassmorphism p-6 transition-all duration-500 hover:translate-y-[-10px]"
             >
-              <div className="text-gold font-display text-5xl font-bold mb-6">
+              <div className="text-ulpra-yellow font-display text-5xl font-bold mb-6">
                 {service.icon}
               </div>
               <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
               <p className="text-muted-foreground mb-6">{service.description}</p>
               <a 
                 href="#contact" 
-                className="inline-flex items-center text-gold hover:text-gold-light transition-colors text-sm font-medium"
+                className="inline-flex items-center text-ulpra-yellow hover:text-ulpra-yellow/80 transition-colors text-sm font-medium"
               >
                 En savoir plus
                 <ArrowRight size={14} className="ml-1" />
@@ -115,7 +115,7 @@ const Services: React.FC = () => {
             <div className="md:w-1/3 flex justify-center md:justify-end">
               <a 
                 href="#contact" 
-                className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-gold text-black font-medium transition-transform duration-300 hover:scale-105"
+                className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-ulpra-yellow text-ulpra-black font-medium transition-transform duration-300 hover:scale-105"
               >
                 Discuter de votre projet
                 <ArrowRight size={16} className="ml-2" />
@@ -126,8 +126,8 @@ const Services: React.FC = () => {
       </div>
       
       {/* Background elements */}
-      <div className="absolute top-1/3 left-0 w-[400px] h-[400px] rounded-full bg-gold/5 blur-[120px] opacity-50" />
-      <div className="absolute bottom-1/4 right-0 w-[300px] h-[300px] rounded-full bg-gold/10 blur-[100px] opacity-40" />
+      <div className="absolute top-1/3 left-0 w-[400px] h-[400px] rounded-full bg-ulpra-yellow/5 blur-[120px] opacity-50" />
+      <div className="absolute bottom-1/4 right-0 w-[300px] h-[300px] rounded-full bg-ulpra-yellow/10 blur-[100px] opacity-40" />
     </div>
   );
 };
