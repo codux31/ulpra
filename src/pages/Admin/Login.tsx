@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockKeyhole, Mail } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { checkAdminCredentials } from '@/lib/supabase';
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide").min(1, "L'email est requis"),
@@ -42,25 +42,10 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      // Vérifier les informations d'identification depuis Supabase
-      const { data: admins, error: fetchError } = await supabase
-        .from('admin_users')
-        .select('email, password')
-        .eq('email', data.email)
-        .single();
+      // Utiliser la fonction checkAdminCredentials directement
+      const { valid } = await checkAdminCredentials(data.email, data.password);
       
-      if (fetchError || !admins) {
-        toast({
-          title: "Échec de la connexion",
-          description: "Email ou mot de passe incorrect",
-          variant: "destructive",
-        });
-        setIsLoading(false);
-        return;
-      }
-      
-      // Simple password check - in a real app, you'd use a secure hash
-      if (admins.password === data.password) {
+      if (valid) {
         // Stocker l'état d'authentification dans le localStorage
         localStorage.setItem("ulpra-admin-auth", "true");
         toast({

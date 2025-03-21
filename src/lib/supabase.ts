@@ -1,4 +1,3 @@
-
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://ijzekbgeczxecochannf.supabase.co';
@@ -251,145 +250,187 @@ const dummyResources = [
 
 // Helper functions for data operations
 export const fetchProjects = async () => {
-  const { data, error } = await supabase
-    .from('projects')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error('Error fetching projects:', error);
+      return dummyProjects; // Retourner les données fictives en cas d'erreur
+    }
     
-  if (error) {
+    if (!data || data.length === 0) {
+      return dummyProjects; // Retourner les données fictives si aucune donnée n'est trouvée
+    }
+    
+    return data;
+  } catch (error) {
     console.error('Error fetching projects:', error);
-    return dummyProjects; // Retourner les données fictives en cas d'erreur
+    return dummyProjects; // Assurer qu'on retourne toujours les données fictives en cas d'erreur
   }
-  
-  if (!data || data.length === 0) {
-    return dummyProjects; // Retourner les données fictives si aucune donnée n'est trouvée
-  }
-  
-  return data;
 };
 
 export const fetchServices = async () => {
-  const { data, error } = await supabase
-    .from('services')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('services')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error('Error fetching services:', error);
+      return dummyServices; // Retourner les données fictives en cas d'erreur
+    }
     
-  if (error) {
+    if (!data || data.length === 0) {
+      return dummyServices; // Retourner les données fictives si aucune donnée n'est trouvée
+    }
+    
+    return data;
+  } catch (error) {
     console.error('Error fetching services:', error);
-    return dummyServices; // Retourner les données fictives en cas d'erreur
+    return dummyServices; // Assurer qu'on retourne toujours les données fictives en cas d'erreur
   }
-  
-  if (!data || data.length === 0) {
-    return dummyServices; // Retourner les données fictives si aucune donnée n'est trouvée
-  }
-  
-  return data;
 };
 
 export const fetchTestimonials = async () => {
-  const { data, error } = await supabase
-    .from('testimonials')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error('Error fetching testimonials:', error);
+      return dummyTestimonials; // Retourner les données fictives en cas d'erreur
+    }
     
-  if (error) {
+    if (!data || data.length === 0) {
+      return dummyTestimonials; // Retourner les données fictives si aucune donnée n'est trouvée
+    }
+    
+    return data;
+  } catch (error) {
     console.error('Error fetching testimonials:', error);
-    return dummyTestimonials; // Retourner les données fictives en cas d'erreur
+    return dummyTestimonials; // Assurer qu'on retourne toujours les données fictives en cas d'erreur
   }
-  
-  if (!data || data.length === 0) {
-    return dummyTestimonials; // Retourner les données fictives si aucune donnée n'est trouvée
-  }
-  
-  return data;
 };
 
 export const fetchPricing = async () => {
-  const { data, error } = await supabase
-    .from('pricing')
-    .select('*')
-    .order('price', { ascending: true });
+  try {
+    const { data, error } = await supabase
+      .from('pricing')
+      .select('*')
+      .order('price', { ascending: true });
+      
+    if (error) {
+      console.error('Error fetching pricing plans:', error);
+      return dummyPricing; // Retourner les données fictives en cas d'erreur
+    }
     
-  if (error) {
+    if (!data || data.length === 0) {
+      return dummyPricing; // Retourner les données fictives si aucune donnée n'est trouvée
+    }
+    
+    return data;
+  } catch (error) {
     console.error('Error fetching pricing plans:', error);
-    return dummyPricing; // Retourner les données fictives en cas d'erreur
+    return dummyPricing; // Assurer qu'on retourne toujours les données fictives en cas d'erreur
   }
-  
-  if (!data || data.length === 0) {
-    return dummyPricing; // Retourner les données fictives si aucune donnée n'est trouvée
-  }
-  
-  return data;
 };
 
 export const fetchResources = async () => {
-  const { data, error } = await supabase
-    .from('resources')
-    .select('*')
-    .order('created_at', { ascending: false });
-    
-  if (error) {
-    console.error('Error fetching resources:', error);
-    return dummyResources; // Retourner les données fictives en cas d'erreur
-  }
-  
-  if (!data || data.length === 0) {
-    return dummyResources; // Retourner les données fictives si aucune donnée n'est trouvée
-  }
-  
-  // Process the resources to ensure type compatibility
-  const processedData = (data || []).map(resource => {
-    // Ensure 'type' is one of the allowed values
-    let validType: 'article' | 'tutorial' | 'download' = 'article'; // Default to article
-    
-    if (resource.type === 'tutorial' || resource.type === 'download') {
-      validType = resource.type as 'tutorial' | 'download';
+  try {
+    const { data, error } = await supabase
+      .from('resources')
+      .select('*')
+      .order('created_at', { ascending: false });
+      
+    if (error) {
+      console.error('Error fetching resources:', error);
+      return dummyResources; // Retourner les données fictives en cas d'erreur
     }
     
-    // Process tags if they're a string
-    let tags = resource.tags;
-    if (typeof tags === 'string') {
-      try {
-        tags = JSON.parse(tags);
-      } catch (e) {
+    if (!data || data.length === 0) {
+      return dummyResources; // Retourner les données fictives si aucune donnée n'est trouvée
+    }
+    
+    // Process the resources to ensure type compatibility
+    const processedData = (data || []).map(resource => {
+      // Ensure 'type' is one of the allowed values
+      let validType: 'article' | 'tutorial' | 'download' = 'article'; // Default to article
+      
+      if (resource.type === 'tutorial' || resource.type === 'download') {
+        validType = resource.type as 'tutorial' | 'download';
+      }
+      
+      // Process tags if they're a string
+      let tags = resource.tags;
+      if (typeof tags === 'string') {
+        try {
+          tags = JSON.parse(tags);
+        } catch (e) {
+          tags = [];
+        }
+      } else if (!Array.isArray(tags)) {
         tags = [];
       }
-    } else if (!Array.isArray(tags)) {
-      tags = [];
-    }
+      
+      return {
+        ...resource,
+        type: validType,
+        tags: tags,
+      };
+    });
     
-    return {
-      ...resource,
-      type: validType,
-      tags: tags,
-    };
-  });
-  
-  return processedData;
+    return processedData;
+  } catch (error) {
+    console.error('Error fetching resources:', error);
+    return dummyResources; // Assurer qu'on retourne toujours les données fictives en cas d'erreur
+  }
 };
 
-// Ajouter une fonction pour vérifier les informations d'identification d'administration
+// Vérifier les informations d'identification d'administration
 export const checkAdminCredentials = async (email: string, password: string) => {
-  const { data, error } = await supabase
-    .from('admin_users')
-    .select('*')
-    .eq('email', email)
-    .eq('password', password)
-    .single();
+  try {
+    // Essayer d'abord de vérifier dans Supabase
+    const { data, error } = await supabase
+      .from('admin_users')
+      .select('*')
+      .eq('email', email)
+      .single();
+      
+    if (error) {
+      console.error('Error checking admin credentials:', error);
+      
+      // Si la table n'existe pas ou en cas d'erreur, utiliser les identifiants de démonstration
+      if (email === 'admin@ulpra.com' && password === 'Admin123!') {
+        return { valid: true, user: { email, id: '1' } };
+      }
+      return { valid: false, user: null };
+    }
     
-  if (error) {
-    console.error('Error checking admin credentials:', error);
-    // Retourner true temporairement si la table n'existe pas ou en cas d'erreur
-    // Pour permettre l'accès avec les identifiants de démonstration
+    // Si on a trouvé un utilisateur, vérifier le mot de passe
+    if (data && data.password === password) {
+      return { valid: true, user: data };
+    }
+    
+    // Vérifier aussi les identifiants de démonstration (toujours acceptés)
     if (email === 'admin@ulpra.com' && password === 'Admin123!') {
       return { valid: true, user: { email, id: '1' } };
     }
+    
     return { valid: false, user: null };
-  }
-  
-  if (data) {
-    return { valid: true, user: data };
-  } else {
+  } catch (error) {
+    console.error('Error checking admin credentials:', error);
+    
+    // En cas d'erreur, toujours permettre la connexion avec les identifiants de démonstration
+    if (email === 'admin@ulpra.com' && password === 'Admin123!') {
+      return { valid: true, user: { email, id: '1' } };
+    }
+    
     return { valid: false, user: null };
   }
 };
