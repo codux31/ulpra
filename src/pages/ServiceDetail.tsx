@@ -10,12 +10,12 @@ import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 const servicesData = {
   'web-design': {
     title: 'Design Digital',
-    description: 'Création de sites web, d'applications et d'interfaces utilisateur intuitives et esthétiques.',
-    longDescription: 'Notre approche de conception web combine esthétique soignée et fonctionnalité optimale. Nous créons des sites responsifs, intuitifs et engageants qui reflètent parfaitement l'identité de votre marque tout en offrant une expérience utilisateur exceptionnelle.',
+    description: 'Création de sites web, d\'applications et d\'interfaces utilisateur intuitives et esthétiques.',
+    longDescription: 'Notre approche de conception web combine esthétique soignée et fonctionnalité optimale. Nous créons des sites responsifs, intuitifs et engageants qui reflètent parfaitement l\'identité de votre marque tout en offrant une expérience utilisateur exceptionnelle.',
     features: [
       'Sites web responsifs adaptés à tous les appareils',
       'Interfaces utilisateur intuitives et ergonomiques',
-      'Design sur mesure reflétant l'identité de votre marque',
+      'Design sur mesure reflétant l\'identité de votre marque',
       'Optimisation pour les performances et la conversion',
       'Expérience utilisateur (UX) recherchée et testée',
       'Intégration avec vos systèmes existants',
@@ -31,12 +31,12 @@ const servicesData = {
   },
   'branding': {
     title: 'Branding',
-    description: 'Développement d'identités de marque distinctives, logos, et chartes graphiques complètes.',
-    longDescription: 'Une identité de marque forte est essentielle pour se démarquer dans un marché concurrentiel. Nous créons des identités visuelles mémorables qui captent l'essence de votre entreprise et établissent une connexion émotionnelle avec votre public cible.',
+    description: 'Développement d\'identités de marque distinctives, logos, et chartes graphiques complètes.',
+    longDescription: 'Une identité de marque forte est essentielle pour se démarquer dans un marché concurrentiel. Nous créons des identités visuelles mémorables qui captent l\'essence de votre entreprise et établissent une connexion émotionnelle avec votre public cible.',
     features: [
       'Création de logos distinctifs et mémorables',
       'Développement de chartes graphiques complètes',
-      'Conception d'identités visuelles cohérentes',
+      'Conception d\'identités visuelles cohérentes',
       'Stratégies de positionnement de marque',
       'Design de supports marketing et communication',
       'Guidelines de marque détaillées',
@@ -63,7 +63,7 @@ const servicesData = {
       'Mesure et analyse des performances',
     ],
     applications: [
-      'Communication d'entreprise',
+      'Communication d\'entreprise',
       'Campagnes promotionnelles',
       'Lancement de produits ou services',
       'Communication de crise',
@@ -74,21 +74,21 @@ const servicesData = {
   'strategy': {
     title: 'Recherche Stratégique',
     description: 'Analyse de marché, étude de la concurrence et élaboration de stratégies marketing efficaces.',
-    longDescription: 'Le succès de votre entreprise repose sur une stratégie solide et basée sur des données concrètes. Notre équipe d'experts analyse votre marché, identifie les opportunités et élabore des stratégies personnalisées pour vous aider à atteindre vos objectifs commerciaux.',
+    longDescription: 'Le succès de votre entreprise repose sur une stratégie solide et basée sur des données concrètes. Notre équipe d\'experts analyse votre marché, identifie les opportunités et élabore des stratégies personnalisées pour vous aider à atteindre vos objectifs commerciaux.',
     features: [
       'Études de marché approfondies',
       'Analyse concurrentielle détaillée',
-      'Segmentation et ciblage d'audience',
+      'Segmentation et ciblage d\'audience',
       'Planification stratégique marketing',
       'Développement de positionnement unique',
-      'Stratégies d'acquisition et de fidélisation',
+      'Stratégies d\'acquisition et de fidélisation',
     ],
     applications: [
       'Lancement de nouveaux produits ou services',
       'Expansion sur de nouveaux marchés',
       'Repositionnement stratégique',
       'Optimisation de la performance marketing',
-      'Élaboration de plans d'affaires',
+      'Élaboration de plans d\'affaires',
     ],
     image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80',
   },
