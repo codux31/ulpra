@@ -1,24 +1,36 @@
 
-import React from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { Sphere, Box, Torus } from '@react-three/drei';
 
-// A simple 3D object that uses proper position typing
-const SimpleObject = ({ 
+// A component for animated 3D objects
+const AnimatedObject = ({ 
   position, 
   color = "#F2FF49", 
   scale = 1, 
-  shape = "sphere" 
+  shape = "sphere",
+  speed = 0.001
 }: {
   position: [number, number, number];
   color?: string;
   scale?: number;
   shape?: "sphere" | "box" | "torus";
+  speed?: number;
 }) => {
-  // Use correct typing for position
+  const ref = useRef<THREE.Mesh>(null);
+  
+  // Use useFrame for animation
+  useFrame(() => {
+    if (ref.current) {
+      ref.current.rotation.x += speed;
+      ref.current.rotation.y += speed;
+    }
+  });
+  
   if (shape === "box") {
     return (
       <Box 
+        ref={ref}
         args={[1, 1, 1]} 
         position={position} 
         scale={scale}
@@ -29,6 +41,7 @@ const SimpleObject = ({
   } else if (shape === "torus") {
     return (
       <Torus 
+        ref={ref}
         args={[1, 0.4, 16, 32]} 
         position={position} 
         scale={scale}
@@ -40,6 +53,7 @@ const SimpleObject = ({
     // Default to sphere
     return (
       <Sphere 
+        ref={ref}
         args={[1, 16, 16]} 
         position={position} 
         scale={scale}
@@ -63,52 +77,62 @@ const Scene3D = () => {
       zIndex: 0
     }}>
       <Canvas
-        style={{ background: 'transparent' }}
         camera={{ position: [0, 0, 15], fov: 50 }}
-        gl={{ alpha: true, antialias: true }}
+        gl={{ 
+          alpha: true, 
+          antialias: true,
+          powerPreference: 'high-performance',
+          stencil: false,
+          depth: false
+        }}
       >
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
         <pointLight position={[-10, -10, -10]} intensity={0.5} color="#F2FF49" />
         
         {/* Yellow sphere - top right */}
-        <SimpleObject 
+        <AnimatedObject 
           position={[5, 3, -5]} 
           color="#F2FF49" 
           scale={2.5}
           shape="sphere"
+          speed={0.0005}
         />
         
         {/* Box - bottom left */}
-        <SimpleObject 
+        <AnimatedObject 
           position={[-6, -4, -3]} 
           color="#F2FF49" 
           scale={1.5}
           shape="box"
+          speed={0.001}
         />
         
         {/* Torus - middle right */}
-        <SimpleObject 
+        <AnimatedObject 
           position={[7, -1, -2]} 
           color="#F2FF49" 
           scale={1.8}
           shape="torus"
+          speed={0.0008}
         />
         
         {/* White sphere - top left */}
-        <SimpleObject 
+        <AnimatedObject 
           position={[-4, 5, -4]} 
           color="#FFFFFF" 
           scale={1.2}
           shape="sphere"
+          speed={0.0007}
         />
         
         {/* Small yellow box - bottom right */}
-        <SimpleObject 
+        <AnimatedObject 
           position={[3, -6, -3]} 
           color="#F2FF49" 
           scale={0.8}
           shape="box"
+          speed={0.0012}
         />
       </Canvas>
     </div>
