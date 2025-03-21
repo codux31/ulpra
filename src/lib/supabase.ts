@@ -341,18 +341,32 @@ export const fetchResources = async (): Promise<Resource[]> => {
     
     // If we got data from Supabase, transform it to match our model
     if (data && data.length > 0) {
-      return data.map(item => ({
-        ...item,
-        status: (item.status as "published" | "draft" | "archived") || "published",
-        readTime: item.readtime,
-        excerpt: item.excerpt || item.description || "",
-        download_url: item.download_url,
-        downloadUrl: item.download_url, // For compatibility with Resources.tsx
-        image: item.image_url, // For compatibility with Resources.tsx
-        tags: item.tags || [], // Ensure tags is always an array, even if it doesn't exist in DB
-        created_at: item.created_at || new Date().toISOString(), // Ensure created_at always exists
-        description: item.description || "" // Ensure description always exists
-      }));
+      return data.map(item => {
+        // Create a properly typed resource object with all required fields
+        const resource: Resource = {
+          id: item.id,
+          title: item.title,
+          description: item.description || "",
+          content: item.content,
+          excerpt: item.excerpt || item.description || "",
+          image_url: item.image_url,
+          category: item.category || "",
+          type: item.type,
+          download_url: item.download_url,
+          downloadUrl: item.download_url, // For compatibility with Resources.tsx
+          image: item.image_url, // For compatibility with Resources.tsx
+          author: item.author,
+          date: item.date,
+          readTime: item.readtime,
+          readtime: item.readtime,
+          status: (item.status as "published" | "draft" | "archived") || "published",
+          tags: [], // Ensure tags is always an array
+          created_at: item.created_at || new Date().toISOString(),
+          updated_at: item.updated_at
+        };
+        
+        return resource;
+      });
     }
     
     // Otherwise use default data
