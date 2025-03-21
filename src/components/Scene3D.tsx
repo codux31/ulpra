@@ -1,11 +1,12 @@
 
-import React, { useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Sphere, Box, Torus } from '@react-three/drei';
+import React, { useRef, useState, useEffect } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 
-// A component for animated 3D objects
-const AnimatedObject = ({ 
+// Simple animated object component with proper typing
+const AnimatedShape = ({ 
   position, 
   color = "#F2FF49", 
   scale = 1, 
@@ -18,55 +19,36 @@ const AnimatedObject = ({
   shape?: "sphere" | "box" | "torus";
   speed?: number;
 }) => {
-  const ref = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
   
-  // Use useFrame for animation
   useFrame(() => {
-    if (ref.current) {
-      ref.current.rotation.x += speed;
-      ref.current.rotation.y += speed;
+    if (meshRef.current) {
+      meshRef.current.rotation.x += speed;
+      meshRef.current.rotation.y += speed;
     }
   });
   
-  if (shape === "box") {
-    return (
-      <Box 
-        ref={ref}
-        args={[1, 1, 1]} 
-        position={position} 
-        scale={scale}
-      >
-        <meshStandardMaterial color={color} transparent opacity={0.7} />
-      </Box>
-    );
-  } else if (shape === "torus") {
-    return (
-      <Torus 
-        ref={ref}
-        args={[1, 0.4, 16, 32]} 
-        position={position} 
-        scale={scale}
-      >
-        <meshStandardMaterial color={color} transparent opacity={0.6} />
-      </Torus>
-    );
-  } else {
-    // Default to sphere
-    return (
-      <Sphere 
-        ref={ref}
-        args={[1, 16, 16]} 
-        position={position} 
-        scale={scale}
-      >
-        <meshStandardMaterial color={color} transparent opacity={0.5} />
-      </Sphere>
-    );
-  }
+  return (
+    <mesh ref={meshRef} position={position} scale={scale}>
+      {shape === "sphere" && <sphereGeometry args={[1, 32, 32]} />}
+      {shape === "box" && <boxGeometry args={[1, 1, 1]} />}
+      {shape === "torus" && <torusGeometry args={[1, 0.4, 16, 32]} />}
+      <meshStandardMaterial color={color} transparent opacity={0.7} />
+    </mesh>
+  );
 };
 
-// Main scene component with simplified structure
-const Scene3D = () => {
+// Main scene component
+const Scene3D: React.FC = () => {
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+  
+  if (!mounted) return null;
+  
   return (
     <div style={{ 
       position: 'absolute', 
@@ -80,19 +62,17 @@ const Scene3D = () => {
       <Canvas
         camera={{ position: [0, 0, 15], fov: 50 }}
         gl={{ 
-          alpha: true, 
           antialias: true,
-          powerPreference: 'high-performance',
-          stencil: false,
-          depth: false
+          alpha: true
         }}
+        style={{ background: 'transparent' }}
       >
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
         <pointLight position={[-10, -10, -10]} intensity={0.5} color="#F2FF49" />
         
         {/* Yellow sphere - top right */}
-        <AnimatedObject 
+        <AnimatedShape 
           position={[5, 3, -5]} 
           color="#F2FF49" 
           scale={2.5}
@@ -101,7 +81,7 @@ const Scene3D = () => {
         />
         
         {/* Box - bottom left */}
-        <AnimatedObject 
+        <AnimatedShape 
           position={[-6, -4, -3]} 
           color="#F2FF49" 
           scale={1.5}
@@ -110,7 +90,7 @@ const Scene3D = () => {
         />
         
         {/* Torus - middle right */}
-        <AnimatedObject 
+        <AnimatedShape 
           position={[7, -1, -2]} 
           color="#F2FF49" 
           scale={1.8}
@@ -119,7 +99,7 @@ const Scene3D = () => {
         />
         
         {/* White sphere - top left */}
-        <AnimatedObject 
+        <AnimatedShape 
           position={[-4, 5, -4]} 
           color="#FFFFFF" 
           scale={1.2}
@@ -128,7 +108,7 @@ const Scene3D = () => {
         />
         
         {/* Small yellow box - bottom right */}
-        <AnimatedObject 
+        <AnimatedShape 
           position={[3, -6, -3]} 
           color="#F2FF49" 
           scale={0.8}
