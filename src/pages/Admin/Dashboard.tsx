@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Card, 
@@ -17,7 +16,7 @@ import {
   Layers, 
   Mail
 } from 'lucide-react';
-import { BarChart } from '@/components/ui/chart';
+import { BarChart } from '@/components/ui/bar-chart';
 
 interface StatCardProps {
   title: string;
@@ -59,7 +58,6 @@ const StatCard: React.FC<StatCardProps> = ({
 };
 
 const Dashboard = () => {
-  // Données d'exemple pour les statistiques
   const stats = [
     {
       title: "Projets Totaux",
@@ -90,7 +88,6 @@ const Dashboard = () => {
     }
   ];
 
-  // Données d'exemple pour le graphique de visites
   const visitData = [
     { name: "Lun", value: 120 },
     { name: "Mar", value: 160 },
@@ -101,7 +98,6 @@ const Dashboard = () => {
     { name: "Dim", value: 75 }
   ];
 
-  // Données d'exemple pour le graphique de conversions
   const conversionData = [
     { name: "Lun", value: 8 },
     { name: "Mar", value: 12 },
