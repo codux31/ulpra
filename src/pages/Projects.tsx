@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnimatedText from '@/components/AnimatedText';
 import { ArrowRight } from 'lucide-react';
-import { fetchProjects } from '@/lib/supabase';
+import { fetchProjects, supabase } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
 import { Project as ProjectType } from '@/types/models';
 
@@ -27,27 +26,37 @@ const Projects = () => {
     const loadProjects = async () => {
       try {
         setIsLoading(true);
-        const data = await fetchProjects();
         
-        // Only use projects with status "published" or null (for backward compatibility)
-        const publishedProjects = data.filter(
-          project => project.status === "published" || !project.status
-        ).map(project => ({
-          ...project,
-          category: project.category || 'Non catégorisé' // Ensure category is not undefined
-        }));
+        // Obtenir directement les données de Supabase sans passer par fetchProjects
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*');
         
-        console.log("Projects page data:", publishedProjects); // Debug log
+        if (error) {
+          throw error;
+        }
         
-        if (publishedProjects.length > 0) {
-          // Extract unique categories
-          const uniqueCategories = ['Tous', ...Array.from(new Set(publishedProjects.map(p => p.category)))];
+        console.log("Projects direct from Supabase:", data);
+        
+        if (data && data.length > 0) {
+          // Only use projects with status "published" or null (for backward compatibility)
+          const publishedProjects = data
+            .filter(project => project.status === "published" || !project.status)
+            .map(project => ({
+              ...project,
+              category: project.category || 'Non catégorisé' // Ensure category is not undefined
+            }));
+          
+          console.log("Projects page data:", publishedProjects); // Debug log
           
           setProjects(publishedProjects);
+          
+          // Extract unique categories
+          const uniqueCategories = ['Tous', ...Array.from(new Set(publishedProjects.map(p => p.category)))];
           setCategories(uniqueCategories);
           setFilteredProjects(publishedProjects);
         } else {
-          // Fallback to static data if no projects in database
+          // Si aucun projet n'est trouvé, créer des projets de test et les insérer
           const staticProjects: Project[] = [
             {
               id: "ecommerce-redesign",
@@ -88,6 +97,18 @@ const Projects = () => {
           ];
           
           console.log("Using static projects data");
+          
+          // Insérer les projets de test dans Supabase
+          for (const project of staticProjects) {
+            const { error: insertError } = await supabase
+              .from('projects')
+              .upsert(project, { onConflict: 'id' });
+            
+            if (insertError) {
+              console.error("Error inserting static project:", insertError);
+            }
+          }
+          
           setProjects(staticProjects);
           
           // Extract unique categories

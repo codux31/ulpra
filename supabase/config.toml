@@ -1,1 +1,18 @@
+
 project_id = "ijzekbgeczxecochannf"
+
+[api]
+# Permettre des formats d'identifiants autres que UUID
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[api.cors]
+enabled = true
+
+[db]
+# Autoriser des valeurs de colonnes personnalisées lors de l'initialisation
+port = 5432
+major_version = 15

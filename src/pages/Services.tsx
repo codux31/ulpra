@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnimatedText from '@/components/AnimatedText';
 import { ArrowRight } from 'lucide-react';
-import { fetchServices } from '@/lib/supabase';
+import { fetchServices, supabase } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
 import { Service as ServiceType } from '@/types/models';
 
@@ -22,19 +22,30 @@ const Services = () => {
     const loadServices = async () => {
       try {
         setIsLoading(true);
-        const data = await fetchServices();
         
-        const activeServices = data.filter(
-          service => service.status === "active" || !service.status
-        ).map(service => ({
-          ...service,
-          longDescription: service.longDescription || service.description
-        }));
+        // Obtenir directement les services depuis Supabase
+        const { data, error } = await supabase
+          .from('services')
+          .select('*');
         
-        if (activeServices.length > 0) {
+        if (error) {
+          throw error;
+        }
+        
+        console.log("Services direct from Supabase:", data);
+        
+        if (data && data.length > 0) {
+          const activeServices = data
+            .filter(service => service.status === "active" || !service.status)
+            .map(service => ({
+              ...service,
+              longDescription: service.longDescription || service.description
+            }));
+          
           console.log("Services page data:", activeServices);
           setServices(activeServices as Service[]);
         } else {
+          // Créer et insérer des services de test
           const staticServices: Service[] = [
             {
               id: "web-design",
@@ -75,6 +86,18 @@ const Services = () => {
           ];
           
           console.log("Using static services data on Services page");
+          
+          // Insérer les services de test dans Supabase
+          for (const service of staticServices) {
+            const { error: insertError } = await supabase
+              .from('services')
+              .upsert(service, { onConflict: 'id' });
+            
+            if (insertError) {
+              console.error("Error inserting static service:", insertError);
+            }
+          }
+          
           setServices(staticServices);
         }
       } catch (error) {
