@@ -16,6 +16,9 @@ import Resources from "./pages/Resources";
 // Admin routes
 import Login from "./pages/Admin/Login";
 import Dashboard from "./pages/Admin/Dashboard";
+import AdminProjects from "./pages/Admin/Projects";
+import ProjectForm from "./pages/Admin/ProjectForm";
+import ProjectCategories from "./pages/Admin/ProjectCategories";
 import EmailSettings from "./pages/Admin/EmailSettings";
 import AdminLayout from "./components/AdminLayout";
 import AdminRoute from "./components/AdminRoute";
@@ -44,6 +47,35 @@ const App = () => (
             <AdminRoute>
               <AdminLayout>
                 <Dashboard />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          {/* Project Routes */}
+          <Route path="/admin/projects" element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminProjects />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/projects/add" element={
+            <AdminRoute>
+              <AdminLayout>
+                <ProjectForm />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/projects/edit/:projectId" element={
+            <AdminRoute>
+              <AdminLayout>
+                <ProjectForm />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/projects/categories" element={
+            <AdminRoute>
+              <AdminLayout>
+                <ProjectCategories />
               </AdminLayout>
             </AdminRoute>
           } />
