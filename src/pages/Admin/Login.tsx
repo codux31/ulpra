@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockKeyhole, Mail } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide").min(1, "L'email est requis"),
@@ -23,11 +24,6 @@ const loginSchema = z.object({
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
-
-// Dans un vrai projet, ces identifiants seraient stockés de manière sécurisée
-// et non pas codés en dur dans le front-end
-const ADMIN_EMAIL = "admin@ulpra.com";
-const ADMIN_PASSWORD = "Admin123!";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -45,9 +41,26 @@ const Login = () => {
   const onSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
     
-    // Simuler une vérification d'authentification
-    setTimeout(() => {
-      if (data.email === ADMIN_EMAIL && data.password === ADMIN_PASSWORD) {
+    try {
+      // Vérifier les informations d'identification depuis Supabase
+      const { data: admins, error: fetchError } = await supabase
+        .from('admin_users')
+        .select('email, password')
+        .eq('email', data.email)
+        .single();
+      
+      if (fetchError || !admins) {
+        toast({
+          title: "Échec de la connexion",
+          description: "Email ou mot de passe incorrect",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
+      // Simple password check - in a real app, you'd use a secure hash
+      if (admins.password === data.password) {
         // Stocker l'état d'authentification dans le localStorage
         localStorage.setItem("ulpra-admin-auth", "true");
         toast({
@@ -63,8 +76,16 @@ const Login = () => {
           variant: "destructive",
         });
       }
+    } catch (error) {
+      console.error("Erreur de connexion:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -132,12 +153,6 @@ const Login = () => {
               </Button>
             </form>
           </Form>
-          
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Pour accéder au back-office de démonstration</p>
-            <p className="mt-1">Email : admin@ulpra.com</p>
-            <p>Mot de passe : Admin123!</p>
-          </div>
         </div>
         
         <div className="mt-8 text-center">

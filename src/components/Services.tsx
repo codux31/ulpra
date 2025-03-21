@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import AnimatedText from './AnimatedText';
 import { fetchServices } from '@/lib/supabase';
+import { Link } from 'react-router-dom';
+import { useToast } from "@/components/ui/use-toast";
 
 interface Service {
   id: string;
@@ -15,6 +17,7 @@ const Services: React.FC = () => {
   const servicesRef = useRef<HTMLDivElement>(null);
   const [services, setServices] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
   
   useEffect(() => {
     // Load services from Supabase
@@ -28,67 +31,16 @@ const Services: React.FC = () => {
           service => service.status === "active" || !service.status
         );
         
-        if (activeServices.length > 0) {
-          // Limit to 4 services for the homepage
-          setServices(activeServices.slice(0, 4));
-        } else {
-          // Fallback to static data if no services in database
-          setServices([
-            {
-              id: "1",
-              title: "Design Digital",
-              description: "Création de sites web, d'applications et d'interfaces utilisateur intuitives et esthétiques.",
-              icon: "01",
-            },
-            {
-              id: "2",
-              title: "Branding",
-              description: "Développement d'identités de marque distinctives, logos, et chartes graphiques complètes.",
-              icon: "02",
-            },
-            {
-              id: "3",
-              title: "Communication",
-              description: "Stratégies de communication omnicanal, gestion des réseaux sociaux et création de contenu.",
-              icon: "03",
-            },
-            {
-              id: "4",
-              title: "Recherche Stratégique",
-              description: "Analyse de marché, étude de la concurrence et élaboration de stratégies marketing efficaces.",
-              icon: "04",
-            },
-          ]);
-        }
+        // Limit to 6 services for the homepage
+        setServices(activeServices.slice(0, 6));
       } catch (error) {
         console.error('Error loading services:', error);
-        // Fallback to static data in case of error
-        setServices([
-          {
-            id: "1",
-            title: "Design Digital",
-            description: "Création de sites web, d'applications et d'interfaces utilisateur intuitives et esthétiques.",
-            icon: "01",
-          },
-          {
-            id: "2",
-            title: "Branding",
-            description: "Développement d'identités de marque distinctives, logos, et chartes graphiques complètes.",
-            icon: "02",
-          },
-          {
-            id: "3",
-            title: "Communication",
-            description: "Stratégies de communication omnicanal, gestion des réseaux sociaux et création de contenu.",
-            icon: "03",
-          },
-          {
-            id: "4",
-            title: "Recherche Stratégique",
-            description: "Analyse de marché, étude de la concurrence et élaboration de stratégies marketing efficaces.",
-            icon: "04",
-          },
-        ]);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les services",
+          variant: "destructive",
+        });
+        setServices([]);
       } finally {
         setIsLoading(false);
       }
@@ -121,7 +73,7 @@ const Services: React.FC = () => {
         observer.unobserve(servicesRef.current);
       }
     };
-  }, []);
+  }, [toast]);
 
   return (
     <div id="services" className="py-24 px-6 relative overflow-hidden">
@@ -139,8 +91,16 @@ const Services: React.FC = () => {
           <div className="flex justify-center items-center h-40">
             <span className="animate-spin h-8 w-8 border-t-2 border-ulpra-yellow rounded-full"></span>
           </div>
-        ) : (
-          <div ref={servicesRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+        ) : services.length > 0 ? (
+          <div 
+            ref={servicesRef} 
+            className={`grid gap-6 relative z-10 ${
+              services.length === 1 ? 'grid-cols-1 max-w-md mx-auto' : 
+              services.length === 2 ? 'grid-cols-1 md:grid-cols-2 max-w-2xl mx-auto' :
+              services.length === 3 ? 'grid-cols-1 md:grid-cols-3 max-w-4xl mx-auto' :
+              'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+            }`}
+          >
             {services.map((service) => (
               <div 
                 key={service.id} 
@@ -151,39 +111,55 @@ const Services: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-semibold mb-3">{service.title}</h3>
                 <p className="text-muted-foreground mb-6">{service.description}</p>
-                <a 
-                  href={`/services/${service.id}`}
+                <Link 
+                  to={`/services/${service.id}`}
                   className="inline-flex items-center text-ulpra-yellow hover:text-ulpra-yellow/80 transition-colors text-sm font-medium"
                 >
                   En savoir plus
                   <ArrowRight size={14} className="ml-1" />
-                </a>
+                </Link>
               </div>
             ))}
           </div>
+        ) : (
+          <div className="glassmorphism p-12 text-center max-w-3xl mx-auto">
+            <h3 className="text-2xl font-bold mb-4">Nos services sont en cours de configuration</h3>
+            <p className="text-muted-foreground mb-6">
+              Nous sommes en train de mettre à jour notre offre de services. Revenez bientôt pour découvrir notre gamme complète de prestations.
+            </p>
+            <Link 
+              to="/contact"
+              className="inline-flex items-center px-6 py-3 bg-ulpra-yellow text-ulpra-black rounded-full font-medium transform hover:scale-105 transition-transform duration-300"
+            >
+              Contactez-nous pour discuter de vos besoins
+              <ArrowRight size={16} className="ml-2" />
+            </Link>
+          </div>
         )}
         
-        <div className="relative z-10 mt-20 text-center md:text-left glassmorphism p-8 md:p-12 overflow-hidden">
-          <div className="md:flex items-center justify-between">
-            <div className="md:w-2/3 md:pr-8 mb-8 md:mb-0">
-              <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                Nous sommes le studio qui transforme les visions créatives
-              </h3>
-              <p className="text-muted-foreground max-w-xl">
-                Notre approche combine esthétique et stratégie pour créer des expériences numériques qui captent l'attention et génèrent des résultats concrets.
-              </p>
-            </div>
-            <div className="md:w-1/3 flex justify-center md:justify-end">
-              <a 
-                href="/services" 
-                className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-ulpra-yellow text-ulpra-black font-medium transition-transform duration-300 hover:scale-105"
-              >
-                Tous nos services
-                <ArrowRight size={16} className="ml-2" />
-              </a>
+        {services.length > 0 && (
+          <div className="relative z-10 mt-20 text-center md:text-left glassmorphism p-8 md:p-12 overflow-hidden">
+            <div className="md:flex items-center justify-between">
+              <div className="md:w-2/3 md:pr-8 mb-8 md:mb-0">
+                <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                  Nous sommes le studio qui transforme les visions créatives
+                </h3>
+                <p className="text-muted-foreground max-w-xl">
+                  Notre approche combine esthétique et stratégie pour créer des expériences numériques qui captent l'attention et génèrent des résultats concrets.
+                </p>
+              </div>
+              <div className="md:w-1/3 flex justify-center md:justify-end">
+                <Link 
+                  to="/services" 
+                  className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-ulpra-yellow text-ulpra-black font-medium transition-transform duration-300 hover:scale-105"
+                >
+                  Tous nos services
+                  <ArrowRight size={16} className="ml-2" />
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       
       {/* Background elements */}
