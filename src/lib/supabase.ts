@@ -1,7 +1,203 @@
-
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '@/integrations/supabase/types';
 import { toast } from '@/hooks/use-toast';
+
+// Default data for use when Supabase tables haven't been created yet
+export const defaultServices = [
+  {
+    id: '1',
+    title: "Site web responsive",
+    icon: "01",
+    description: "Sites web optimisés pour tous les appareils et écrans, offrant une expérience utilisateur optimale.",
+    longDescription: "Nous créons des sites web qui s'adaptent parfaitement à tous les appareils, des smartphones aux grands écrans de bureau. Notre approche responsive garantit une expérience utilisateur optimale, quelle que soit la manière dont vos clients accèdent à votre site.",
+    imageUrl: "https://picsum.photos/800/600?random=1",
+    status: "active",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '2',
+    title: "Identité visuelle",
+    icon: "02",
+    description: "Création d'identités de marque mémorables qui communiquent vos valeurs et votre mission.",
+    longDescription: "Notre équipe de designers travaille à créer une identité visuelle unique qui reflète l'essence de votre marque. Du logo aux couleurs, en passant par la typographie et les éléments graphiques, nous définissons un langage visuel cohérent qui vous distingue de vos concurrents.",
+    imageUrl: "https://picsum.photos/800/600?random=2",
+    status: "active",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '3',
+    title: "Marketing digital",
+    icon: "03",
+    description: "Stratégies marketing qui augmentent votre visibilité en ligne et génèrent des prospects qualifiés.",
+    longDescription: "Nous élaborons des stratégies marketing digitales complètes pour accroître votre présence en ligne et attirer un public qualifié. Notre approche comprend le SEO, les réseaux sociaux, le marketing de contenu et les campagnes publicitaires ciblées pour maximiser votre ROI.",
+    imageUrl: "https://picsum.photos/800/600?random=3",
+    status: "active", 
+    created_at: new Date().toISOString()
+  }
+];
+
+export const defaultProjects = [
+  {
+    id: '1',
+    title: "Refonte du site e-commerce Luxxus",
+    category: "Web Design",
+    client: "Luxxus Inc.",
+    description: "Refonte complète de la plateforme e-commerce avec un focus sur l'expérience utilisateur et l'optimisation du tunnel de conversion.",
+    image_url: "https://picsum.photos/800/600?random=4",
+    status: "published",
+    date: "2023-05-15",
+    link: "https://example.com",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '2',
+    title: "Campagne digitale Eco-Responsable",
+    category: "Marketing Digital",
+    client: "GreenPath",
+    description: "Stratégie et déploiement d'une campagne multi-canal axée sur l'engagement écologique de la marque GreenPath.",
+    image_url: "https://picsum.photos/800/600?random=5",
+    status: "published",
+    date: "2023-07-22",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '3',
+    title: "Application mobile FitCoach",
+    category: "Développement",
+    client: "FitCoach SAS",
+    description: "Conception et développement d'une application mobile de coaching sportif avec fonctionnalités de suivi personnalisé.",
+    image_url: "https://picsum.photos/800/600?random=6",
+    status: "published",
+    date: "2023-09-10",
+    link: "https://apps.example.com/fitcoach",
+    created_at: new Date().toISOString()
+  }
+];
+
+export const defaultTestimonials = [
+  {
+    id: '1',
+    name: "Sophie Martin",
+    company: "Luxxus Inc.",
+    role: "Directrice Marketing",
+    quote: "L'équipe d'ULPRA a transformé notre présence en ligne. Notre site e-commerce a vu une augmentation de 45% des conversions dès le premier mois après la refonte.",
+    avatar_url: "https://picsum.photos/100/100?random=7",
+    rating: 5,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '2',
+    name: "Thomas Dubois",
+    company: "GreenPath",
+    role: "Fondateur",
+    quote: "La campagne digitale conçue par ULPRA a dépassé toutes nos attentes. Nous avons touché une audience plus large et plus engagée, ce qui s'est traduit par une croissance significative de notre communauté.",
+    avatar_url: "https://picsum.photos/100/100?random=8",
+    rating: 5,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '3',
+    name: "Julie Leroux",
+    company: "FitCoach",
+    role: "Product Manager",
+    quote: "Le professionnalisme et la créativité d'ULPRA ont fait toute la différence dans le développement de notre application. Ils ont vraiment compris nos besoins et ont livré bien au-delà de nos attentes.",
+    avatar_url: "https://picsum.photos/100/100?random=9",
+    rating: 5,
+    created_at: new Date().toISOString()
+  }
+];
+
+export const defaultResources = [
+  {
+    id: '1',
+    title: "Guide de l'UX Design en 2023",
+    description: "Découvrez les dernières tendances et meilleures pratiques pour créer des expériences utilisateur exceptionnelles.",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    image_url: "https://picsum.photos/800/600?random=10",
+    category: "UX Design",
+    type: "guide",
+    download_url: "https://example.com/ux-guide-2023.pdf",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '2',
+    title: "Les fondamentaux du SEO",
+    description: "Un guide complet pour comprendre et optimiser votre référencement naturel sur les moteurs de recherche.",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    image_url: "https://picsum.photos/800/600?random=11",
+    category: "Marketing Digital",
+    type: "ebook",
+    download_url: "https://example.com/seo-fundamentals.pdf",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: '3',
+    title: "Template de plan marketing digital",
+    description: "Un modèle prêt à l'emploi pour planifier et exécuter vos campagnes marketing digitales avec succès.",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    image_url: "https://picsum.photos/800/600?random=12",
+    category: "Marketing",
+    type: "template",
+    download_url: "https://example.com/marketing-template.xlsx",
+    created_at: new Date().toISOString()
+  }
+];
+
+export const defaultPricing = [
+  {
+    id: '1',
+    name: "Essentiel",
+    price: 1490,
+    description: "La solution idéale pour les petites entreprises qui souhaitent établir leur présence en ligne.",
+    features: [
+      "Site vitrine jusqu'à 5 pages",
+      "Design responsive",
+      "Référencement de base",
+      "Formulaire de contact",
+      "Intégration réseaux sociaux"
+    ],
+    popular: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '2',
+    name: "Business",
+    price: 2990,
+    description: "Une solution complète pour les entreprises qui cherchent à se développer et à convertir plus de clients.",
+    features: [
+      "Site jusqu'à 10 pages",
+      "Design personnalisé",
+      "SEO avancé",
+      "Blog intégré",
+      "Tableau de bord statistiques",
+      "Maintenance 6 mois incluse",
+      "Formation à l'administration"
+    ],
+    popular: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  },
+  {
+    id: '3',
+    name: "Premium",
+    price: 5990,
+    description: "La solution sur mesure pour les entreprises qui exigent excellence et fonctionnalités avancées.",
+    features: [
+      "Site illimité en pages",
+      "Design sur mesure",
+      "Stratégie SEO complète",
+      "Système de réservation/paiement",
+      "Espace membres",
+      "Applications métier sur mesure",
+      "Maintenance 12 mois incluse",
+      "Support prioritaire 7j/7"
+    ],
+    popular: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  }
+];
 
 // Supabase client for data fetching
 export const supabase = createClient<Database>(
@@ -9,116 +205,161 @@ export const supabase = createClient<Database>(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlqemVrYmdlY3p4ZWNvY2hhbm5mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1ODQzMDEsImV4cCI6MjA1ODE2MDMwMX0.MRonbTE5wtOP9tiCAttV_Oz-nh3MJw4Su7NLJqj877g"
 );
 
-// Fonction pour vérifier les identifiants admin
+// Function to check admin credentials
 export const checkAdminCredentials = (email: string, password: string) => {
   const validCredentials = { email: 'admin@ulpra.com', password: 'Admin123!' };
   return email === validCredentials.email && password === validCredentials.password;
 };
 
-// Fonction pour récupérer les services depuis Supabase
+// Function to fetch services from Supabase, with fallback to local data
 export const fetchServices = async () => {
   try {
+    // Try to fetch data from Supabase first
     const { data, error } = await supabase
       .from('services')
       .select('*')
       .order('created_at', { ascending: false });
       
     if (error) {
-      console.error('Erreur lors de la récupération des services:', error);
-      throw error;
+      console.error('Error fetching services from Supabase:', error);
+      console.log('Using default services data as fallback');
+      return defaultServices;
     }
     
-    return data || [];
+    // If we got data from Supabase, use it
+    if (data && data.length > 0) {
+      return data;
+    }
+    
+    // Otherwise use default data
+    console.log('No services found in Supabase, using default data');
+    return defaultServices;
   } catch (error) {
-    console.error('Erreur lors de la récupération des services:', error);
-    // Fallback pour garantir que l'UI ne casse pas en cas d'erreur
-    return [];
+    console.error('Error in fetchServices():', error);
+    // Fallback to local data in case of errors
+    return defaultServices;
   }
 };
 
-// Fonction pour récupérer les projets depuis Supabase
+// Function to fetch projects from Supabase, with fallback to local data
 export const fetchProjects = async () => {
   try {
+    // Try to fetch data from Supabase first
     const { data, error } = await supabase
       .from('projects')
       .select('*')
       .order('created_at', { ascending: false });
       
     if (error) {
-      console.error('Erreur lors de la récupération des projets:', error);
-      throw error;
+      console.error('Error fetching projects from Supabase:', error);
+      console.log('Using default projects data as fallback');
+      return defaultProjects;
     }
     
-    return data || [];
+    // If we got data from Supabase, use it
+    if (data && data.length > 0) {
+      return data;
+    }
+    
+    // Otherwise use default data
+    console.log('No projects found in Supabase, using default data');
+    return defaultProjects;
   } catch (error) {
-    console.error('Erreur lors de la récupération des projets:', error);
-    // Fallback pour garantir que l'UI ne casse pas en cas d'erreur
-    return [];
+    console.error('Error in fetchProjects():', error);
+    // Fallback to local data in case of errors
+    return defaultProjects;
   }
 };
 
-// Fonction pour récupérer les témoignages depuis Supabase
+// Function to fetch testimonials from Supabase, with fallback to local data
 export const fetchTestimonials = async () => {
   try {
+    // Try to fetch data from Supabase first
     const { data, error } = await supabase
       .from('testimonials')
       .select('*')
       .order('created_at', { ascending: false });
       
     if (error) {
-      console.error('Erreur lors de la récupération des témoignages:', error);
-      throw error;
+      console.error('Error fetching testimonials from Supabase:', error);
+      console.log('Using default testimonials data as fallback');
+      return defaultTestimonials;
     }
     
-    return data || [];
+    // If we got data from Supabase, use it
+    if (data && data.length > 0) {
+      return data;
+    }
+    
+    // Otherwise use default data
+    console.log('No testimonials found in Supabase, using default data');
+    return defaultTestimonials;
   } catch (error) {
-    console.error('Erreur lors de la récupération des témoignages:', error);
-    // Fallback pour garantir que l'UI ne casse pas en cas d'erreur
-    return [];
+    console.error('Error in fetchTestimonials():', error);
+    // Fallback to local data in case of errors
+    return defaultTestimonials;
   }
 };
 
-// Fonction pour récupérer les ressources depuis Supabase
+// Function to fetch resources from Supabase, with fallback to local data
 export const fetchResources = async () => {
   try {
+    // Try to fetch data from Supabase first
     const { data, error } = await supabase
       .from('resources')
       .select('*')
       .order('created_at', { ascending: false });
       
     if (error) {
-      console.error('Erreur lors de la récupération des ressources:', error);
-      throw error;
+      console.error('Error fetching resources from Supabase:', error);
+      console.log('Using default resources data as fallback');
+      return defaultResources;
     }
     
-    return data || [];
+    // If we got data from Supabase, use it
+    if (data && data.length > 0) {
+      return data;
+    }
+    
+    // Otherwise use default data
+    console.log('No resources found in Supabase, using default data');
+    return defaultResources;
   } catch (error) {
-    console.error('Erreur lors de la récupération des ressources:', error);
-    // Fallback pour garantir que l'UI ne casse pas en cas d'erreur
-    return [];
+    console.error('Error in fetchResources():', error);
+    // Fallback to local data in case of errors
+    return defaultResources;
   }
 };
 
-// Fonction pour récupérer les tarifs depuis Supabase
+// Function to fetch pricing from Supabase, with fallback to local data
 export const fetchPricing = async () => {
   try {
+    // Try to fetch data from Supabase first
     const { data, error } = await supabase
       .from('pricing')
       .select('*')
       .order('created_at', { ascending: false });
       
     if (error) {
-      console.error('Erreur lors de la récupération des tarifs:', error);
-      throw error;
+      console.error('Error fetching pricing from Supabase:', error);
+      console.log('Using default pricing data as fallback');
+      return defaultPricing;
     }
     
-    return data || [];
+    // If we got data from Supabase, use it
+    if (data && data.length > 0) {
+      return data;
+    }
+    
+    // Otherwise use default data
+    console.log('No pricing found in Supabase, using default data');
+    return defaultPricing;
   } catch (error) {
-    console.error('Erreur lors de la récupération des tarifs:', error);
-    // Fallback pour garantir que l'UI ne casse pas en cas d'erreur
-    return [];
+    console.error('Error in fetchPricing():', error);
+    // Fallback to local data in case of errors
+    return defaultPricing;
   }
 };
 
-// Exporter le client Supabase pour être utilisé dans l'application
+// Export the toast utility
 export { toast };

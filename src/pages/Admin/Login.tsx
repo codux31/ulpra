@@ -43,46 +43,45 @@ const Login = () => {
     
     try {
       console.log("Tentative de connexion avec:", data.email); // Debug log
-      const { valid } = await checkAdminCredentials(data.email, data.password);
       
-      if (valid) {
-        // Stocker l'état d'authentification dans le localStorage
+      // Check against hardcoded demo credentials
+      const isValidCredentials = checkAdminCredentials(data.email, data.password);
+      
+      if (isValidCredentials) {
+        // Store authentication state and credentials in localStorage
         localStorage.setItem("ulpra-admin-auth", "true");
+        localStorage.setItem("admin-email", data.email);
+        localStorage.setItem("admin-password", data.password);
+        
         toast({
           title: "Connexion réussie",
           description: "Bienvenue dans le panneau d'administration",
           variant: "default",
         });
+        
         navigate("/admin/dashboard");
       } else {
-        // Vérifier les identifiants de démonstration comme fallback
-        if (data.email === "admin@ulpra.com" && data.password === "Admin123!") {
-          localStorage.setItem("ulpra-admin-auth", "true");
-          toast({
-            title: "Connexion réussie (démo)",
-            description: "Bienvenue dans le panneau d'administration en mode démo",
-            variant: "default",
-          });
-          navigate("/admin/dashboard");
-        } else {
-          toast({
-            title: "Échec de la connexion",
-            description: "Email ou mot de passe incorrect",
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Échec de la connexion",
+          description: "Email ou mot de passe incorrect",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error("Erreur de connexion:", error);
       
-      // Vérifier les identifiants de démonstration en cas d'erreur
+      // Fallback: Check for demo credentials again
       if (data.email === "admin@ulpra.com" && data.password === "Admin123!") {
         localStorage.setItem("ulpra-admin-auth", "true");
+        localStorage.setItem("admin-email", data.email);
+        localStorage.setItem("admin-password", data.password);
+        
         toast({
           title: "Connexion réussie (démo)",
           description: "Bienvenue dans le panneau d'administration en mode démo",
           variant: "default",
         });
+        
         navigate("/admin/dashboard");
       } else {
         toast({
