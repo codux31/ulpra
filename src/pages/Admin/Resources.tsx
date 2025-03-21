@@ -74,7 +74,8 @@ const AdminResources = () => {
         variant: "destructive",
       });
       
-      const dummyResources = [
+      // Create dummy resources with proper typing for status
+      const dummyResources: Resource[] = [
         {
           id: "tendances-design-2023",
           title: "Tendances de Design Web pour 2023",
@@ -84,8 +85,8 @@ const AdminResources = () => {
           date: new Date().toISOString(),
           author: "Sophie Martin",
           readTime: "8 min",
-          type: "article" as const,
-          status: "published",
+          type: "article",
+          status: "published", // Explicitly typed as "published"
           created_at: new Date().toISOString()
         },
         {
@@ -97,8 +98,8 @@ const AdminResources = () => {
           date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
           author: "Alexandre Durand",
           readTime: "15 min",
-          type: "tutorial" as const,
-          status: "published",
+          type: "tutorial",
+          status: "published", // Explicitly typed as "published"
           created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
         }
       ];

@@ -343,13 +343,13 @@ export const fetchResources = async (): Promise<Resource[]> => {
     if (data && data.length > 0) {
       return data.map(item => ({
         ...item,
-        status: item.status as "published" | "draft" | "archived",
+        status: (item.status as "published" | "draft" | "archived") || "published",
         readTime: item.readtime,
         excerpt: item.excerpt || item.description || "",
         download_url: item.download_url,
         downloadUrl: item.download_url, // For compatibility with Resources.tsx
         image: item.image_url, // For compatibility with Resources.tsx
-        tags: item.tags || [], // Ensure tags is always an array
+        tags: item.tags || [], // Ensure tags is always an array, even if it doesn't exist in DB
         created_at: item.created_at || new Date().toISOString(), // Ensure created_at always exists
         description: item.description || "" // Ensure description always exists
       }));

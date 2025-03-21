@@ -62,8 +62,9 @@ export interface Resource {
   author?: string;
   date?: string;
   readTime?: string;
+  readtime?: string; // Added for compatibility with DB field naming
   tags?: string[]; // For compatibility with Resources.tsx
-  status?: "published" | "draft" | "archived";
+  status?: "published" | "draft" | "archived"; // Make sure status is strictly typed
   created_at: string;
   updated_at?: string;
 }
