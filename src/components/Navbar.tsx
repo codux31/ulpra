@@ -2,20 +2,21 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Menu, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const navItems = [
   { name: 'Services', href: '/services' },
-  { name: 'Projects', href: '/projects' },
-  { name: 'Pricing', href: '/#pricing' },
-  { name: 'About', href: '/about' },
+  { name: 'Projets', href: '/projects' },
+  { name: 'Tarifs', href: '/#pricing' },
+  { name: 'À propos', href: '/about' },
   { name: 'Contact', href: '/#contact' },
 ];
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,15 +34,19 @@ const Navbar = () => {
     
     if (href && href.startsWith('/#')) {
       e.preventDefault();
-      const element = document.querySelector(href.substring(1));
-      if (element && window.location.pathname === '/') {
-        window.scrollTo({
-          top: element.getBoundingClientRect().top + window.scrollY - 100,
-          behavior: 'smooth',
-        });
-        setIsMenuOpen(false);
-      } else if (window.location.pathname !== '/') {
-        // Navigate to the homepage with the hash
+      const elementId = href.substring(2); // Remove '/#'
+      
+      if (location.pathname === '/') {
+        const element = document.getElementById(elementId);
+        if (element) {
+          window.scrollTo({
+            top: element.getBoundingClientRect().top + window.scrollY - 100,
+            behavior: 'smooth',
+          });
+          setIsMenuOpen(false);
+        }
+      } else {
+        // Navigate to homepage with the hash
         window.location.href = href;
       }
     }
@@ -92,7 +97,7 @@ const Navbar = () => {
           onClick={handleNavClick}
           className="hidden md:inline-flex items-center px-4 py-2 border border-ulpra-yellow text-ulpra-yellow hover:bg-ulpra-yellow hover:text-ulpra-black transition-all duration-300 text-sm font-medium rounded-full"
         >
-          Request a quote
+          Demander un devis
         </a>
         
         {/* Mobile menu button */}
@@ -147,7 +152,7 @@ const Navbar = () => {
           }}
           className="mt-8 inline-flex items-center px-6 py-3 border border-ulpra-yellow text-ulpra-yellow hover:bg-ulpra-yellow hover:text-ulpra-black transition-all duration-300 text-base font-medium rounded-full"
         >
-          Request a quote
+          Demander un devis
         </a>
       </motion.div>
     </nav>

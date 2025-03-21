@@ -51,7 +51,7 @@ const Hero: React.FC = () => {
             as="span"
           />
           <AnimatedText 
-            text="projets web & com'"
+            text="projets web & com"
             className="inline-block text-gradient"
             delay={300}
             as="span"

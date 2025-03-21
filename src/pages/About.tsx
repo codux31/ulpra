@@ -66,7 +66,7 @@ const About = () => {
                 ULPRA est né d'une vision simple mais puissante : créer un studio où la créativité et la stratégie se rencontrent pour donner vie à des projets digitaux exceptionnels.
               </p>
               <p className="text-muted-foreground mb-6">
-                Fondé par une équipe de passionnés du digital, nous avons rapidement grandi en restant fidèles à nos valeurs fondamentales : l'innovation, l'excellence créative et un engagement total envers la satisfaction client.
+                Fondé par une petite équipe de deux passionnés du digital, nous avons rapidement établi des partenariats stratégiques avec des studios créatifs comme "Palindrome Studio", "Loulou Studio" et "Okea Design" pour offrir une expertise complète à nos clients.
               </p>
               <p className="text-muted-foreground mb-6">
                 Aujourd'hui, nous sommes fiers d'accompagner des entreprises de toutes tailles dans leur transformation digitale, en apportant des solutions sur mesure qui font la différence.
@@ -79,6 +79,49 @@ const About = () => {
                 className="w-full h-auto rounded-xl object-cover"
                 loading="lazy"
               />
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Nos Partenaires */}
+      <section className="py-16 px-6 relative">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="mb-6 relative inline-block">
+              <AnimatedText text="Nos Partenaires Clés" className="text-gradient" />
+            </h2>
+            <p className="max-w-2xl mx-auto text-muted-foreground">
+              Nous collaborons avec des talents exceptionnels pour offrir des résultats exceptionnels
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="glassmorphism p-8 text-center reveal-content">
+              <div className="h-20 flex items-center justify-center mb-6">
+                <h3 className="text-xl font-semibold text-ulpra-yellow">Palindrome Studio</h3>
+              </div>
+              <p className="text-muted-foreground">
+                Experts en motion design et animation 3D, apportant vie et mouvement à nos projets digitaux.
+              </p>
+            </div>
+            
+            <div className="glassmorphism p-8 text-center reveal-content" style={{ transitionDelay: "100ms" }}>
+              <div className="h-20 flex items-center justify-center mb-6">
+                <h3 className="text-xl font-semibold text-ulpra-yellow">Loulou Studio</h3>
+              </div>
+              <p className="text-muted-foreground">
+                Spécialistes en photographie et direction artistique, créant des visuels qui captivent et inspirent.
+              </p>
+            </div>
+            
+            <div className="glassmorphism p-8 text-center reveal-content" style={{ transitionDelay: "200ms" }}>
+              <div className="h-20 flex items-center justify-center mb-6">
+                <h3 className="text-xl font-semibold text-ulpra-yellow">Okea Design</h3>
+              </div>
+              <p className="text-muted-foreground">
+                Maîtres de l'identité visuelle et du design d'expérience, transformant les concepts en identités mémorables.
+              </p>
             </div>
           </div>
         </div>
@@ -139,7 +182,7 @@ const About = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
             {[
               {
                 name: "Emma Laurent",
@@ -150,16 +193,6 @@ const About = () => {
                 name: "Thomas Martin",
                 role: "Développeur Full Stack",
                 image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"
-              },
-              {
-                name: "Sophie Dubois",
-                role: "UX/UI Designer",
-                image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1061&q=80"
-              },
-              {
-                name: "Alexandre Petit",
-                role: "Strategic Marketing",
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=987&q=80"
               }
             ].map((member, index) => (
               <div 
@@ -194,7 +227,7 @@ const About = () => {
               Rejoignez les entreprises qui font confiance à ULPRA pour transformer leurs idées en expériences digitales exceptionnelles.
             </p>
             <a 
-              href="#contact" 
+              href="/#contact" 
               className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-ulpra-yellow text-ulpra-black font-medium transition-transform duration-300 hover:scale-105"
             >
               Discuter de votre projet
