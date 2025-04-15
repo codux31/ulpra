@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -9,26 +8,20 @@ import { fetchProjects, supabase } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
 import { Project as ProjectType } from '@/types/models';
 
-interface Project extends ProjectType {
-  category: string;
-}
-
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState('Tous');
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectType[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<ProjectType[]>([]);
   const [activeProject, setActiveProject] = useState<string | null>(null);
   const [categories, setCategories] = useState<string[]>(['Tous']);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   
   useEffect(() => {
-    // Load projects from Supabase
     const loadProjects = async () => {
       try {
         setIsLoading(true);
         
-        // Obtenir directement les données de Supabase sans passer par fetchProjects
         const { data, error } = await supabase
           .from('projects')
           .select('*');
@@ -37,29 +30,23 @@ const Projects = () => {
           throw error;
         }
         
-        console.log("Projects direct from Supabase:", data);
-        
         if (data && data.length > 0) {
-          // Only use projects with status "published" or null (for backward compatibility)
-          const publishedProjects = data
+          const publishedProjects: ProjectType[] = data
             .filter(project => project.status === "published" || !project.status)
             .map(project => ({
               ...project,
-              category: project.category || 'Non catégorisé', // Ensure category is not undefined
-              status: (project.status as "published" | "draft" | "archived") || "published" // Cast status to the expected type
+              category: project.category || 'Non catégorisé',
+              status: (project.status as "published" | "draft" | "archived") || "published"
             }));
           
-          console.log("Projects page data:", publishedProjects); // Debug log
+          setProjects(publishedProjects);
           
-          setProjects(publishedProjects as Project[]);
-          
-          // Extract unique categories
-          const uniqueCategories = ['Tous', ...Array.from(new Set(publishedProjects.map(p => p.category)))];
+          const uniqueCategories = ['Tous', ...Array.from(new Set(publishedProjects.map(p => p.category || '')))];
           setCategories(uniqueCategories);
-          setFilteredProjects(publishedProjects as Project[]);
+          setFilteredProjects(publishedProjects);
         } else {
-          // Si aucun projet n'est trouvé, créer des projets de test et les insérer
-          const staticProjects: Project[] = [
+          // Static projects with correct type
+          const staticProjects: ProjectType[] = [
             {
               id: "ecommerce-redesign",
               title: "Refonte Site E-commerce",
@@ -102,23 +89,9 @@ const Projects = () => {
             },
           ];
           
-          console.log("Using static projects data");
-          
-          // Insérer les projets de test dans Supabase
-          for (const project of staticProjects) {
-            const { error: insertError } = await supabase
-              .from('projects')
-              .upsert(project, { onConflict: 'id' });
-            
-            if (insertError) {
-              console.error("Error inserting static project:", insertError);
-            }
-          }
-          
           setProjects(staticProjects);
           
-          // Extract unique categories
-          const uniqueCategories = ['Tous', ...Array.from(new Set(staticProjects.map(p => p.category)))];
+          const uniqueCategories = ['Tous', ...Array.from(new Set(staticProjects.map(p => p.category || '')))];
           setCategories(uniqueCategories);
           setFilteredProjects(staticProjects);
         }
@@ -129,35 +102,6 @@ const Projects = () => {
           description: "Impossible de charger les projets",
           variant: "destructive",
         });
-        
-        // Utiliser des données de démonstration en cas d'erreur
-        const fallbackProjects: Project[] = [
-          {
-            id: "ecommerce-redesign",
-            title: "Refonte Site E-commerce",
-            category: "Web Design",
-            description: "Refonte complète avec une expérience utilisateur optimisée et une identité visuelle percutante.",
-            image_url: "https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop",
-            client: "ModernRetail",
-            status: "published",
-            created_at: new Date().toISOString()
-          },
-          {
-            id: "marketing-campaign",
-            title: "Campagne Marketing Digital",
-            category: "Communication",
-            description: "Stratégie omnicanal avec contenus personnalisés pour augmenter la notoriété et les conversions.",
-            image_url: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
-            client: "EcoSolutions",
-            status: "published",
-            created_at: new Date().toISOString()
-          },
-        ];
-        
-        setProjects(fallbackProjects);
-        const uniqueCategories = ['Tous', ...Array.from(new Set(fallbackProjects.map(p => p.category)))];
-        setCategories(uniqueCategories);
-        setFilteredProjects(fallbackProjects);
       } finally {
         setIsLoading(false);
       }

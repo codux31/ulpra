@@ -1,4 +1,3 @@
-
 import { Database } from "@/integrations/supabase/types";
 
 // Service model
@@ -18,16 +17,16 @@ export interface Service {
 export interface Project {
   id: string;
   title: string;
-  category: string;
-  client?: string;
-  description: string;
-  image_url?: string;
-  color?: string;
-  status?: "published" | "draft" | "archived";
-  date?: string;
-  link?: string;
-  created_at: string;
-  updated_at?: string;
+  category?: string;
+  client?: string | null;
+  description?: string | null;
+  image_url?: string | null;
+  color?: string | null;
+  status?: "published" | "draft" | "archived" | null;
+  date?: string | null;
+  link?: string | null;
+  created_at: string | null;
+  updated_at?: string | null;
 }
 
 // Testimonial model
