@@ -4,6 +4,7 @@ import React from 'react';
 interface AnimatedTextProps {
   text: string;
   className?: string;
+  delay?: number;
 }
 
 const AnimatedText: React.FC<AnimatedTextProps> = ({
