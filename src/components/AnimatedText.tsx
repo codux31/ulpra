@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 interface AnimatedTextProps {
   text: string;
@@ -12,28 +12,11 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
   className = "",
   delay = 50
 }) => {
-  const [displayedText, setDisplayedText] = useState("");
-  const formattedText = text.replace(/\s+/g, ' ');
-  
-  useEffect(() => {
-    let currentIndex = 0;
-    setDisplayedText("");
-    
-    const intervalId = setInterval(() => {
-      if (currentIndex < formattedText.length) {
-        setDisplayedText(prev => prev + formattedText[currentIndex]);
-        currentIndex++;
-      } else {
-        clearInterval(intervalId);
-      }
-    }, delay);
-    
-    return () => clearInterval(intervalId);
-  }, [formattedText, delay]);
-  
+  // Nous supprimons la partie animation qui cause le problème
+  // et rendons simplement le texte directement
   return (
     <span className={className}>
-      {displayedText}
+      {text}
     </span>
   );
 };
