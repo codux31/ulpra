@@ -35,7 +35,7 @@ const ServiceDetail = () => {
         if (data) {
           console.log("Service details:", data);
           
-          // Transformer les données pour correspondre au type Service
+          // Transform data to match Service type
           const serviceData: Service = {
             id: data.id,
             title: data.title,
@@ -63,7 +63,7 @@ const ServiceDetail = () => {
           if (relatedData) {
             console.log("Related services:", relatedData);
             
-            // Transformer les données pour correspondre au type Service[]
+            // Transform data to match Service[] type
             const relatedServicesData: Service[] = relatedData.map(item => ({
               id: item.id,
               title: item.title,
