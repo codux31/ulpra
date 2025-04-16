@@ -34,7 +34,21 @@ const ServiceDetail = () => {
         
         if (data) {
           console.log("Service details:", data);
-          setService(data);
+          
+          // Transformer les données pour correspondre au type Service
+          const serviceData: Service = {
+            id: data.id,
+            title: data.title,
+            icon: data.icon || "",
+            description: data.description || "",
+            longDescription: data.longdescription || "",
+            imageUrl: data.imageurl || "",
+            status: (data.status as "active" | "draft" | "archived") || "active",
+            created_at: data.created_at || new Date().toISOString(),
+            updated_at: data.updated_at
+          };
+          
+          setService(serviceData);
           
           // Fetch related services (excluding current one)
           const { data: relatedData, error: relatedError } = await supabase
@@ -48,7 +62,21 @@ const ServiceDetail = () => {
           
           if (relatedData) {
             console.log("Related services:", relatedData);
-            setRelatedServices(relatedData);
+            
+            // Transformer les données pour correspondre au type Service[]
+            const relatedServicesData: Service[] = relatedData.map(item => ({
+              id: item.id,
+              title: item.title,
+              icon: item.icon || "",
+              description: item.description || "",
+              longDescription: item.longdescription || "",
+              imageUrl: item.imageurl || "",
+              status: (item.status as "active" | "draft" | "archived") || "active",
+              created_at: item.created_at || new Date().toISOString(),
+              updated_at: item.updated_at
+            }));
+            
+            setRelatedServices(relatedServicesData);
           }
         } else {
           // If no service found, try to get it from our database function
@@ -146,10 +174,10 @@ const ServiceDetail = () => {
               </h1>
             </div>
             
-            {service.imageurl && (
+            {service.imageUrl && (
               <div className="glassmorphism p-4 mb-12 rounded-xl overflow-hidden">
                 <img 
-                  src={service.imageurl} 
+                  src={service.imageUrl} 
                   alt={service.title} 
                   className="w-full h-auto rounded-lg"
                 />
@@ -160,7 +188,7 @@ const ServiceDetail = () => {
               <div className="prose prose-invert max-w-none">
                 <h2 className="text-3xl font-bold mb-4">Description</h2>
                 <p className="text-lg text-muted-foreground mb-8">
-                  {service.longdescription || service.description}
+                  {service.longDescription || service.description}
                 </p>
                 
                 <div className="my-12 glassmorphism p-8 rounded-xl">

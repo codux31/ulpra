@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, ChevronRight, ExternalLink, Grid, Layers, Share2, Zap } from 'lucide-react';
@@ -46,6 +45,18 @@ const ProjectDetail = () => {
           // Extend with additional mock data for the details page
           const extendedProject: ExtendedProject = {
             ...data,
+            id: data.id,
+            title: data.title,
+            category: data.category || "",
+            client: data.client || "",
+            description: data.description || "",
+            image_url: data.image_url || "",
+            color: data.color || "",
+            status: (data.status as "published" | "draft" | "archived") || "published",
+            date: data.date || "",
+            link: data.link || "",
+            created_at: data.created_at || new Date().toISOString(),
+            updated_at: data.updated_at || "",
             gallery: [
               data.image_url || "https://images.unsplash.com/photo-1581089781785-603411fa81e5?auto=format&fit=crop&w=2340&q=80",
               "https://images.unsplash.com/photo-1560415755-bd80d06eda60?auto=format&fit=crop&w=2340&q=80",
@@ -72,7 +83,24 @@ const ProjectDetail = () => {
           
           if (relatedData && relatedData.length > 0) {
             console.log("Related projects:", relatedData);
-            setRelatedProjects(relatedData);
+            
+            // Transformer les données pour correspondre au type Project[]
+            const relatedProjectsData: Project[] = relatedData.map(item => ({
+              id: item.id,
+              title: item.title,
+              category: item.category || "",
+              client: item.client || "",
+              description: item.description || "",
+              image_url: item.image_url || "",
+              color: item.color || "",
+              status: (item.status as "published" | "draft" | "archived") || "published",
+              date: item.date || "",
+              link: item.link || "",
+              created_at: item.created_at || new Date().toISOString(),
+              updated_at: item.updated_at || ""
+            }));
+            
+            setRelatedProjects(relatedProjectsData);
           } else {
             // If no related projects in same category, get any 3 other published projects
             const { data: anyProjects, error: anyError } = await supabase
@@ -86,7 +114,24 @@ const ProjectDetail = () => {
             
             if (anyProjects) {
               console.log("Any projects as related:", anyProjects);
-              setRelatedProjects(anyProjects);
+              
+              // Transformer les données pour correspondre au type Project[]
+              const anyProjectsData: Project[] = anyProjects.map(item => ({
+                id: item.id,
+                title: item.title,
+                category: item.category || "",
+                client: item.client || "",
+                description: item.description || "",
+                image_url: item.image_url || "",
+                color: item.color || "",
+                status: (item.status as "published" | "draft" | "archived") || "published",
+                date: item.date || "",
+                link: item.link || "",
+                created_at: item.created_at || new Date().toISOString(),
+                updated_at: item.updated_at || ""
+              }));
+              
+              setRelatedProjects(anyProjectsData);
             }
           }
         } else {

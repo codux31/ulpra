@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, ChevronRight, Clock, Download, Eye, FileText, Share2, User } from 'lucide-react';
@@ -34,7 +33,31 @@ const ResourceDetail = () => {
         
         if (data) {
           console.log("Resource details:", data);
-          setResource(data);
+          
+          // Transformer les données pour correspondre au type Resource
+          const resourceData: Resource = {
+            id: data.id,
+            title: data.title,
+            description: data.description || "",
+            content: data.content || "",
+            excerpt: data.excerpt || data.description || "",
+            image_url: data.image_url || "",
+            image: data.image_url, // For compatibility
+            category: data.category || "",
+            type: data.type || "",
+            download_url: data.download_url || "",
+            downloadUrl: data.download_url || "", // For compatibility
+            author: data.author || "",
+            date: data.date || "",
+            readTime: data.readtime || "",
+            readtime: data.readtime || "",
+            tags: [],
+            status: (data.status as "published" | "draft" | "archived") || "published",
+            created_at: data.created_at || new Date().toISOString(),
+            updated_at: data.updated_at || ""
+          };
+          
+          setResource(resourceData);
           
           // Fetch related resources (same category, excluding current one)
           const { data: relatedData, error: relatedError } = await supabase
@@ -49,7 +72,31 @@ const ResourceDetail = () => {
           
           if (relatedData && relatedData.length > 0) {
             console.log("Related resources:", relatedData);
-            setRelatedResources(relatedData);
+            
+            // Transformer les données pour correspondre au type Resource[]
+            const relatedResourcesData: Resource[] = relatedData.map(item => ({
+              id: item.id,
+              title: item.title,
+              description: item.description || "",
+              content: item.content || "",
+              excerpt: item.excerpt || item.description || "",
+              image_url: item.image_url || "",
+              image: item.image_url, // For compatibility
+              category: item.category || "",
+              type: item.type || "",
+              download_url: item.download_url || "",
+              downloadUrl: item.download_url || "", // For compatibility
+              author: item.author || "",
+              date: item.date || "",
+              readTime: item.readtime || "",
+              readtime: item.readtime || "",
+              tags: [],
+              status: (item.status as "published" | "draft" | "archived") || "published",
+              created_at: item.created_at || new Date().toISOString(),
+              updated_at: item.updated_at || ""
+            }));
+            
+            setRelatedResources(relatedResourcesData);
           } else {
             // If no related resources in same category, get any 3 other published resources
             const { data: anyResources, error: anyError } = await supabase
@@ -63,7 +110,31 @@ const ResourceDetail = () => {
             
             if (anyResources) {
               console.log("Any resources as related:", anyResources);
-              setRelatedResources(anyResources);
+              
+              // Transformer les données pour correspondre au type Resource[]
+              const anyResourcesData: Resource[] = anyResources.map(item => ({
+                id: item.id,
+                title: item.title,
+                description: item.description || "",
+                content: item.content || "",
+                excerpt: item.excerpt || item.description || "",
+                image_url: item.image_url || "",
+                image: item.image_url, // For compatibility
+                category: item.category || "",
+                type: item.type || "",
+                download_url: item.download_url || "",
+                downloadUrl: item.download_url || "", // For compatibility
+                author: item.author || "",
+                date: item.date || "",
+                readTime: item.readtime || "",
+                readtime: item.readtime || "",
+                tags: [],
+                status: (item.status as "published" | "draft" | "archived") || "published",
+                created_at: item.created_at || new Date().toISOString(),
+                updated_at: item.updated_at || ""
+              }));
+              
+              setRelatedResources(anyResourcesData);
             }
           }
         } else {
@@ -86,13 +157,19 @@ const ResourceDetail = () => {
           id: id || "default",
           title: "Guide d'optimisation SEO",
           description: "Un guide complet pour améliorer le référencement de votre site web dans les moteurs de recherche.",
+          excerpt: "Un guide complet pour améliorer le référencement de votre site web.",
           content: "<p>Le SEO (Search Engine Optimization) est un ensemble de techniques visant à améliorer la visibilité d'un site web dans les résultats des moteurs de recherche.</p><p>Ce guide couvre les fondamentaux du SEO, y compris le choix des mots-clés, l'optimisation on-page, la création de liens, et l'analyse des performances.</p><h2>1. Recherche de mots-clés</h2><p>La recherche de mots-clés est une étape cruciale de toute stratégie SEO réussie. Elle consiste à identifier les termes et expressions que votre public cible utilise pour rechercher des produits ou services similaires aux vôtres.</p><h2>2. Optimisation on-page</h2><p>L'optimisation on-page comprend tous les éléments que vous pouvez contrôler directement sur votre site web pour améliorer son référencement.</p><h2>3. Création de liens</h2><p>La création de liens, ou link building, est le processus d'acquisition de liens provenant d'autres sites web vers le vôtre.</p>",
           image_url: "https://images.unsplash.com/photo-1432888622747-4eb9a8f5a07d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
+          image: "https://images.unsplash.com/photo-1432888622747-4eb9a8f5a07d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80",
           category: "Marketing",
           type: "article",
+          download_url: "",
+          downloadUrl: "",
           author: "Sophie Martin",
           date: new Date().toISOString(),
+          readTime: "10 min",
           readtime: "10 min",
+          tags: [],
           status: "published",
           created_at: new Date().toISOString()
         };
@@ -104,11 +181,18 @@ const ResourceDetail = () => {
             id: "content-marketing",
             title: "Stratégies de Content Marketing",
             description: "Découvrez comment créer et distribuer du contenu pertinent pour attirer votre audience cible.",
+            excerpt: "Découvrez comment créer et distribuer du contenu pertinent pour attirer votre audience cible.",
+            image: "",
+            image_url: "",
             category: "Marketing",
             type: "article",
+            download_url: "",
+            downloadUrl: "",
             author: "Alexandre Durand",
             date: new Date().toISOString(),
+            readTime: "8 min",
             readtime: "8 min",
+            tags: [],
             status: "published",
             created_at: new Date().toISOString()
           },
@@ -116,11 +200,18 @@ const ResourceDetail = () => {
             id: "social-media-tips",
             title: "Astuces pour les Réseaux Sociaux",
             description: "Maximisez votre présence sur les réseaux sociaux avec ces conseils d'experts.",
+            excerpt: "Maximisez votre présence sur les réseaux sociaux avec ces conseils d'experts.",
+            image: "",
+            image_url: "",
             category: "Marketing",
             type: "tutorial",
+            download_url: "",
+            downloadUrl: "",
             author: "Émilie Bernard",
             date: new Date().toISOString(),
+            readTime: "5 min",
             readtime: "5 min",
+            tags: [],
             status: "published",
             created_at: new Date().toISOString()
           }
@@ -168,7 +259,6 @@ const ResourceDetail = () => {
     );
   }
 
-  // Function to render content based on type
   const renderContent = () => {
     if (resource.type === 'download' && resource.download_url) {
       return (
@@ -190,7 +280,6 @@ const ResourceDetail = () => {
       );
     }
     
-    // For articles, tutorials, or any other type with content
     return (
       <div className="prose prose-invert prose-lg max-w-none">
         {resource.content ? (
@@ -232,7 +321,6 @@ const ResourceDetail = () => {
     );
   };
 
-  // Get the correct icon based on resource type
   const getResourceTypeIcon = () => {
     switch(resource.type) {
       case 'download':
