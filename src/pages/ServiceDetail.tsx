@@ -25,80 +25,98 @@ const ServiceDetail = () => {
       
       try {
         setIsLoading(true);
+        console.log("Fetching service with ID:", id);
         
-        // Fetch the service details
-        const { data, error } = await supabase
-          .from('services')
-          .select('*')
-          .eq('id', id)
-          .single();
+        // First try to get services from the fetchServices function
+        // This will include both Supabase services and fallback services
+        const servicesData = await fetchServices();
         
-        if (error) throw error;
+        // Find the service with matching ID
+        const foundService = servicesData.find(s => s.id === id);
         
-        if (data) {
-          console.log("Service details:", data);
+        if (foundService) {
+          console.log("Service found in fetchServices:", foundService);
+          setService(foundService);
           
-          // Transform data to match Service type
-          const serviceData: Service = {
-            id: data.id,
-            title: data.title,
-            icon: data.icon || "",
-            description: data.description || "",
-            longDescription: data.longdescription || "",
-            imageUrl: data.imageurl || "",
-            status: (data.status as "active" | "draft" | "archived") || "active",
-            created_at: data.created_at || new Date().toISOString(),
-            updated_at: data.updated_at
-          };
+          // Get up to 3 related services from the same data source
+          const related = servicesData
+            .filter(s => s.id !== id)
+            .slice(0, 3);
           
-          setService(serviceData);
-          
-          // Fetch related services (excluding current one)
-          const { data: relatedData, error: relatedError } = await supabase
-            .from('services')
-            .select('*')
-            .neq('id', id)
-            .eq('status', 'active')
-            .limit(3);
-          
-          if (relatedError) throw relatedError;
-          
-          if (relatedData) {
-            console.log("Related services:", relatedData);
-            
-            // Transform data to match Service[] type
-            const relatedServicesData: Service[] = relatedData.map(item => ({
-              id: item.id,
-              title: item.title,
-              icon: item.icon || "",
-              description: item.description || "",
-              longDescription: item.longdescription || "",
-              imageUrl: item.imageurl || "",
-              status: (item.status as "active" | "draft" | "archived") || "active",
-              created_at: item.created_at || new Date().toISOString(),
-              updated_at: item.updated_at
-            }));
-            
-            setRelatedServices(relatedServicesData);
-          }
+          setRelatedServices(related);
         } else {
-          // If no service found, try to get it from our database function
-          const servicesData = await fetchServices();
-          const foundService = servicesData.find(s => s.id === id);
-          
-          if (foundService) {
-            setService(foundService);
+          // If not found, try the Supabase direct query as a fallback
+          // This query might only work with UUID format IDs
+          try {
+            const { data, error } = await supabase
+              .from('services')
+              .select('*')
+              .eq('id', id)
+              .single();
             
-            // Get up to 3 related services
-            const related = servicesData
-              .filter(s => s.id !== id)
-              .slice(0, 3);
+            if (error) {
+              console.error("Error fetching from Supabase directly:", error);
+              throw error;
+            }
             
-            setRelatedServices(related);
-          } else {
+            if (data) {
+              console.log("Service found in Supabase:", data);
+              
+              // Transform data to match Service type
+              const serviceData: Service = {
+                id: data.id,
+                title: data.title,
+                icon: data.icon || "",
+                description: data.description || "",
+                longDescription: data.longdescription || "",
+                imageUrl: data.imageurl || "",
+                status: (data.status as "active" | "draft" | "archived") || "active",
+                created_at: data.created_at || new Date().toISOString(),
+                updated_at: data.updated_at
+              };
+              
+              setService(serviceData);
+              
+              // Fetch related services
+              const { data: relatedData, error: relatedError } = await supabase
+                .from('services')
+                .select('*')
+                .neq('id', id)
+                .eq('status', 'active')
+                .limit(3);
+              
+              if (relatedError) throw relatedError;
+              
+              if (relatedData) {
+                console.log("Related services:", relatedData);
+                
+                // Transform data to match Service[] type
+                const relatedServicesData: Service[] = relatedData.map(item => ({
+                  id: item.id,
+                  title: item.title,
+                  icon: item.icon || "",
+                  description: item.description || "",
+                  longDescription: item.longdescription || "",
+                  imageUrl: item.imageurl || "",
+                  status: (item.status as "active" | "draft" | "archived") || "active",
+                  created_at: item.created_at || new Date().toISOString(),
+                  updated_at: item.updated_at
+                }));
+                
+                setRelatedServices(relatedServicesData);
+              }
+            } else {
+              toast({
+                title: "Service introuvable",
+                description: "Impossible de trouver le service demandé",
+                variant: "destructive",
+              });
+            }
+          } catch (dbError) {
+            console.error("Database query error:", dbError);
             toast({
-              title: "Service introuvable",
-              description: "Impossible de trouver le service demandé",
+              title: "Erreur",
+              description: "Impossible de charger les détails du service",
               variant: "destructive",
             });
           }
