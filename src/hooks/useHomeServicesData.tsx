@@ -32,25 +32,29 @@ export const useHomeServicesData = () => {
               id: "1",
               title: "Web Design",
               description: "Création de sites web modernes et responsives adaptés à votre marque",
-              icon: "🎨"
+              icon: "🎨",
+              created_at: new Date().toISOString()
             },
             {
               id: "2",
               title: "Développement",
               description: "Solutions web personnalisées avec les dernières technologies",
-              icon: "💻"
+              icon: "💻",
+              created_at: new Date().toISOString()
             },
             {
               id: "3",
               title: "Stratégie Digitale",
               description: "Optimisation de votre présence en ligne et acquisition de clients",
-              icon: "📊"
+              icon: "📊",
+              created_at: new Date().toISOString()
             },
             {
               id: "4",
               title: "Branding",
               description: "Création et refonte d'identités de marque mémorables",
-              icon: "✨"
+              icon: "✨",
+              created_at: new Date().toISOString()
             }
           ]);
           console.log("Fallback - Services prédéfinis chargés");
@@ -69,13 +73,15 @@ export const useHomeServicesData = () => {
             id: "1",
             title: "Web Design",
             description: "Création de sites web modernes et responsives adaptés à votre marque",
-            icon: "🎨"
+            icon: "🎨",
+            created_at: new Date().toISOString()
           },
           {
             id: "2",
             title: "Développement",
             description: "Solutions web personnalisées avec les dernières technologies",
-            icon: "💻"
+            icon: "💻",
+            created_at: new Date().toISOString()
           }
         ]);
       } finally {
