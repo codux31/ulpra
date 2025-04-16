@@ -16,6 +16,17 @@ const About = () => {
   useEffect(() => {
     // Scroll to top on page load
     window.scrollTo(0, 0);
+    
+    // Force initial reveal of elements that are above the fold
+    setTimeout(() => {
+      const elementsAboveFold = document.querySelectorAll('.reveal-content');
+      elementsAboveFold.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight) {
+          el.classList.add('is-revealed');
+        }
+      });
+    }, 200);
   }, []);
 
   return (

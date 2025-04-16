@@ -12,8 +12,6 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({
   className = "",
   delay = 50
 }) => {
-  // Nous supprimons la partie animation qui cause le problème
-  // et rendons simplement le texte directement
   return (
     <span className={className}>
       {text}
