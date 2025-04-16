@@ -13,6 +13,7 @@ import ServiceDetail from './pages/ServiceDetail';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
 import Resources from './pages/Resources';
+import ResourceDetail from './pages/ResourceDetail';
 import NotFound from './pages/NotFound';
 
 // Admin Pages
@@ -56,6 +57,7 @@ function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
           <Route path="/resources" element={<Resources />} />
+          <Route path="/resources/:id" element={<ResourceDetail />} />
           
           {/* Admin Routes */}
           <Route path="/admin/login" element={<Login />} />
