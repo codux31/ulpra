@@ -15,7 +15,7 @@ const ProjectCard = ({ project, isActive, onMouseEnter, onMouseLeave }: ProjectC
   return (
     <Link 
       to={`/projects/${project.id}`}
-      className="group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-500 ease-out"
+      className="group relative overflow-hidden rounded-2xl cursor-pointer transition-all duration-500 ease-out block"
       onMouseEnter={() => onMouseEnter(project.id)}
       onMouseLeave={onMouseLeave}
     >

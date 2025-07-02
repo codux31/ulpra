@@ -19,9 +19,12 @@ export const useProjectsData = () => {
           .filter(project => project.status === "published" || !project.status)
           .map(project => ({
             ...project,
-            category: project.category || 'Non catégorisé'
+            category: project.category || 'Non catégorisé',
+            // S'assurer que l'ID est bien présent
+            id: project.id || ''
           }));
 
+        console.log('Projects loaded with IDs:', publishedProjects.map(p => ({ id: p.id, title: p.title })));
         setProjects(publishedProjects);
       } catch (error) {
         console.error('Error loading projects:', error);
@@ -40,4 +43,3 @@ export const useProjectsData = () => {
 
   return { projects, isLoading };
 };
-
